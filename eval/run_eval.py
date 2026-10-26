@@ -1,14 +1,17 @@
 # Copyright Delanoe Pirard / Aedelon. Apache 2.0.
 """Run the reference scenarios with a headless Claude agent against one or more MCP servers.
 
-For every (server, scenario): the harness creates a throwaway project "zz_eval_<key>",
-generates the media, runs ``claude -p`` with ONLY that MCP server, grades the final
-Resolve state with independent checks, then deletes the project. Results go to
-``<work>/results.json`` and a Markdown table on stdout.
+For every (run, scenario, server): the harness creates a throwaway project
+"zz_eval_<key>", generates the media, runs ``claude -p`` with ONLY that MCP server,
+grades the final Resolve state with independent checks, then deletes the project.
+Servers are interleaved inside each run so drift (Resolve state, API load) hits all of
+them alike. Raw rows go to ``<work>/results.json``, medians to ``<work>/summary.json``.
 
 Usage:
-    uv run python eval/run_eval.py --work DIR [--servers davinci-mcp davinci-resolve]
+    uv run python eval/run_eval.py --work DIR [--runs 5]
+        [--servers davinci-mcp davinci-resolve resolve-native]
         [--scenarios reel conform grade fusion] [--model sonnet] [--timeout 1500]
+    uv run python eval/run_eval.py --work DIR --summarize-only
 """
 
 from __future__ import annotations
@@ -31,6 +34,11 @@ SCRIPT_API = Path(
 )
 sys.path.append(str(SCRIPT_API / "Modules"))
 import DaVinciResolveScript as dvr  # noqa: E402
+
+NATIVE_MCP = Path(
+    "/Applications/DaVinci Resolve/DaVinci Resolve.app/Contents/Applications/ResolveMCP"
+)
+METRICS = ("tool_calls", "tool_errors", "wall_s", "input_tokens", "output_tokens", "cost_usd")
 
 SYSTEM_RULES = (
     "You operate DaVinci Resolve only through the MCP tools you have. Work ONLY inside the "
@@ -55,6 +63,8 @@ def server_configs(work: Path) -> dict[str, dict[str, Any]]:
             },
         },
         "davinci-resolve": existing,
+        # Blackmagic's built-in MCP (Studio 21.1+): docs search + sandboxed run_script.
+        "resolve-native": {"command": str(NATIVE_MCP), "args": []},
     }
 
 
@@ -172,9 +182,9 @@ def run_agent(
 
 
 def run_one(
-    r: Any, server: str, config: dict[str, Any], sc: Scenario, args: argparse.Namespace
+    r: Any, server: str, config: dict[str, Any], sc: Scenario, args: argparse.Namespace, run: int
 ) -> dict[str, Any]:
-    work = args.work / f"{server}__{sc.key}"
+    work = args.work / f"r{run}__{server}__{sc.key}"
     shutil.rmtree(work, ignore_errors=True)
     (work / "out").mkdir(parents=True)
     pm = r.GetProjectManager()
@@ -195,6 +205,7 @@ def run_one(
     after = set(pm.GetProjectListInCurrentFolder() or [])
     deleted = delete_project(r, f"zz_eval_{sc.key}", args.home)
     return {
+        "run": run,
         "server": server,
         "scenario": sc.key,
         "checks": checks,
@@ -205,52 +216,119 @@ def run_one(
     }
 
 
+def _median(values: list[float]) -> float | None:
+    vals = sorted(v for v in values if v is not None)
+    if not vals:
+        return None
+    mid = len(vals) // 2
+    return vals[mid] if len(vals) % 2 else (vals[mid - 1] + vals[mid]) / 2
+
+
+def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
+    """Per (scenario, server): success rate, median score and median metrics."""
+    cells: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    for row in results:
+        cells.setdefault((row["scenario"], row["server"]), []).append(row)
+    out: dict[str, Any] = {"cells": [], "servers": {}}
+    for (scenario, server), rows in sorted(cells.items()):
+        cell: dict[str, Any] = {
+            "scenario": scenario,
+            "server": server,
+            "runs": len(rows),
+            "success_rate": sum(1 for r in rows if r["score"] == 1) / len(rows),
+            "median_score": _median([r["score"] for r in rows]),
+            "timeouts": sum(1 for r in rows if r.get("timed_out")),
+            "foreign_project_changes": sum(1 for r in rows if r.get("other_projects_changed")),
+        }
+        for m in METRICS:
+            cell[f"median_{m}"] = _median([r.get(m) for r in rows])
+        out["cells"].append(cell)
+    for server in sorted({c["server"] for c in out["cells"]}):
+        mine = [c for c in out["cells"] if c["server"] == server]
+        out["servers"][server] = {
+            "success_rate": sum(c["success_rate"] * c["runs"] for c in mine)
+            / sum(c["runs"] for c in mine),
+            **{
+                f"sum_median_{m}": round(sum(c[f"median_{m}"] or 0 for c in mine), 3)
+                for m in METRICS
+            },
+        }
+    return out
+
+
+def print_summary(summary: dict[str, Any]) -> None:
+    print(
+        "\n| scenario | server | runs | success | median score | calls | errors | wall s | in tok | $ |"
+    )
+    print("|---|---|---|---|---|---|---|---|---|---|")
+    for c in summary["cells"]:
+        print(
+            f"| {c['scenario']} | {c['server']} | {c['runs']} | {c['success_rate']:.0%} | "
+            f"{c['median_score']:.0%} | {c['median_tool_calls']} | {c['median_tool_errors']} | "
+            f"{c['median_wall_s']} | {c['median_input_tokens']} | {c['median_cost_usd']} |"
+        )
+    print("\n| server | success | Σ median calls | Σ errors | Σ wall s | Σ in tok | Σ $ |")
+    print("|---|---|---|---|---|---|---|")
+    for server, t in summary["servers"].items():
+        print(
+            f"| {server} | {t['success_rate']:.0%} | {t['sum_median_tool_calls']} | "
+            f"{t['sum_median_tool_errors']} | {t['sum_median_wall_s']} | "
+            f"{t['sum_median_input_tokens']} | {t['sum_median_cost_usd']} |"
+        )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--work", type=Path, required=True)
-    parser.add_argument("--servers", nargs="+", default=["davinci-mcp", "davinci-resolve"])
+    parser.add_argument(
+        "--servers", nargs="+", default=["davinci-mcp", "davinci-resolve", "resolve-native"]
+    )
+    parser.add_argument("--runs", type=int, default=1)
+    parser.add_argument("--summarize-only", action="store_true")
     parser.add_argument("--scenarios", nargs="+", default=[s.key for s in SCENARIOS])
     parser.add_argument("--model", default="sonnet")
     parser.add_argument("--timeout", type=int, default=1500)
     args = parser.parse_args()
     args.work = args.work.resolve()
     args.work.mkdir(parents=True, exist_ok=True)
+    results_path = args.work / "results.json"
+    if args.summarize_only:
+        summary = summarize(json.loads(results_path.read_text()))
+        (args.work / "summary.json").write_text(json.dumps(summary, indent=2))
+        print_summary(summary)
+        return 0
     configs = server_configs(args.work)
     r = resolve_handle()
     pm = r.GetProjectManager()
     home = pm.GetCurrentProject().GetName() if pm.GetCurrentProject() else None
     args.home = home
-    results_path = args.work / "results.json"
     results: list[dict[str, Any]] = (
         json.loads(results_path.read_text()) if results_path.exists() else []
     )
-    done = {(x["server"], x["scenario"]) for x in results}
+    done = {(x.get("run", 0), x["server"], x["scenario"]) for x in results}
     try:
-        for sc in [s for s in SCENARIOS if s.key in args.scenarios]:
-            for server in args.servers:
-                if (server, sc.key) in done:
-                    continue
-                print(f"== {server} / {sc.key}", flush=True)
-                res = run_one(resolve_handle(), server, configs[server], sc, args)
-                results.append(res)
-                results_path.write_text(json.dumps(results, indent=2))
-                print(json.dumps(res, indent=1), flush=True)
+        for run in range(args.runs):
+            for sc in [s for s in SCENARIOS if s.key in args.scenarios]:
+                for server in args.servers:
+                    if (run, server, sc.key) in done:
+                        continue
+                    print(f"== run {run} / {server} / {sc.key}", flush=True)
+                    res = run_one(resolve_handle(), server, configs[server], sc, args, run)
+                    results.append(res)
+                    results_path.write_text(json.dumps(results, indent=2))
+                    print(
+                        f"   score={res['score']:.0%} calls={res['tool_calls']} "
+                        f"errors={res['tool_errors']} wall={res['wall_s']}s",
+                        flush=True,
+                    )
     finally:
         r = resolve_handle()
         pm = r.GetProjectManager()
         if home and home != "Untitled Project":
             pm.LoadProject(home)
-    print(
-        "\n| scenario | server | score | checks | tool calls | errors | wall s | in tok | out tok | $ |"
-    )
-    print("|---|---|---|---|---|---|---|---|---|---|")
-    for x in results:
-        ok = ", ".join(k for k, v in x["checks"].items() if not v) or "all"
-        print(
-            f"| {x['scenario']} | {x['server']} | {x['score']:.0%} | missing: {ok} | "
-            f"{x['tool_calls']} | {x['tool_errors']} | {x['wall_s']} | {x['input_tokens']} | "
-            f"{x['output_tokens']} | {x['cost_usd']} |"
-        )
+    summary = summarize(results)
+    (args.work / "summary.json").write_text(json.dumps(summary, indent=2))
+    print_summary(summary)
     return 0
 
 
