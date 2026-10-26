@@ -8,12 +8,15 @@ from typing import Any, cast
 
 import pytest
 from fastmcp import Client
+from pydantic import BaseModel
 
+from davinci_mcp.actions.spec import JobRequest, Kind, action
 from davinci_mcp.config import Settings
 from davinci_mcp.connection.backend import Backend
 from davinci_mcp.server import build_server
 from tests.conftest import RESOLVE_ARGV, FakeBackend
 from tests.fakes.fake_resolve import FakeResolve, make_resolve
+from tests.helpers import call, mcp_client
 
 
 @pytest.fixture
@@ -169,3 +172,23 @@ async def test_status_when_unreachable(settings: Settings) -> None:
         assert content is not None
         assert content["connected"] is False
         assert content["error"]["code"] == "NOT_CONNECTED"
+
+
+async def test_long_running_action_starts_a_job(resolve: FakeResolve, settings: Settings) -> None:
+    state = {"pct": 0}
+
+    def poll(_s: Any) -> dict[str, Any]:
+        state["pct"] = min(100, state["pct"] + 50)
+        return {"CompletionPercentage": state["pct"]}
+
+    @action(domain="demo", kind=Kind.WRITE, long_running=True)
+    def render_demo(_s: Any, _p: BaseModel) -> JobRequest:
+        """Pretend to render."""
+        return JobRequest(kind="render", label="demo", launch=lambda _x: True, poll=poll)
+
+    async with mcp_client(resolve, settings, [render_demo]) as client:
+        err, out = await call(client, "demo_write", {"op": {"action": "render_demo"}})
+        assert not err and out["status"] == "started"
+        job_id = out["job"]["id"]
+        err, waited = await call(client, "job_wait", {"job_id": job_id, "timeout_s": 10})
+        assert not err and waited["state"] == "succeeded"
