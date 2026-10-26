@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field, PrivateAttr
 from davinci_mcp import __version__
 from davinci_mcp.actions.pipeline import Pipeline, error_result, tool_result
 from davinci_mcp.actions.registry import ActionRegistry, ToolDefinition
+from davinci_mcp.actions.spec import ActionSpec
 from davinci_mcp.api.surface import SearchHit, load_surface, search
 from davinci_mcp.audit import AuditLog
 from davinci_mcp.cache import ReadCache
@@ -27,7 +28,8 @@ from davinci_mcp.connection.bridge import BridgeBackend
 from davinci_mcp.connection.external import ExternalBackend, find_resolve_process, resolve_paths
 from davinci_mcp.connection.manager import ConnectionManager, ProcessProbe, ResolveSession
 from davinci_mcp.domains import all_actions
-from davinci_mcp.domains import snapshots as snapshot_domain
+from davinci_mcp.domains._runtime import Runtime
+from davinci_mcp.domains._runtime import bind as bind_runtime
 from davinci_mcp.errors import DavinciError, ErrorCode, ErrorPayload
 from davinci_mcp.executor import ResolveExecutor
 from davinci_mcp.jobs import JobInfo, JobManager
@@ -90,7 +92,7 @@ class Services:
         audit = AuditLog(state / "audit.jsonl")
         cache = ReadCache()
         jobs = JobManager(connection, state / "jobs.json")
-        pipeline = Pipeline(connection, consent, snapshots, audit, cache)
+        pipeline = Pipeline(connection, consent, snapshots, audit, cache, jobs)
         return cls(settings, executor, connection, consent, snapshots, audit, cache, jobs, pipeline)
 
     async def aclose(self) -> None:
@@ -146,9 +148,9 @@ def _ok(model: BaseModel) -> ToolResult:
     return tool_result(model.model_dump(mode="json"))
 
 
-def build_registry() -> ActionRegistry:
+def build_registry(actions: Sequence[ActionSpec] | None = None) -> ActionRegistry:
     registry = ActionRegistry()
-    registry.extend(all_actions())
+    registry.extend(all_actions() if actions is None else actions)
     return registry
 
 
@@ -157,10 +159,12 @@ def build_server(
     *,
     backends: Sequence[Backend] | None = None,
     process_probe: ProcessProbe | None = None,
+    actions: Sequence[ActionSpec] | None = None,
 ) -> FastMCP:
+    """Build the server. ``actions`` restricts the registry (tests); default: all domains."""
     settings = settings or load_settings()
     services = Services.create(settings, backends, process_probe)
-    snapshot_domain.bind(services.snapshots)
+    bind_runtime(Runtime(settings, services.cache, services.snapshots))
     surface = load_surface()
 
     @asynccontextmanager
@@ -181,7 +185,7 @@ def build_server(
         "davinci-mcp", version=__version__, instructions=INSTRUCTIONS, lifespan=lifespan, auth=auth
     )
 
-    for definition in build_registry().tool_definitions():
+    for definition in build_registry(actions).tool_definitions():
         mcp.add_tool(RegistryTool.create(definition, services.pipeline))
 
     @mcp.tool(

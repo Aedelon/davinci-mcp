@@ -8,7 +8,7 @@ consent, snapshot, page handling, receipt, audit) is derived from its spec.
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import TYPE_CHECKING, Any, Literal
@@ -43,7 +43,26 @@ class PlanDraft(BaseModel):
     fingerprint: str
 
 
-type Handler = Callable[[ResolveSession, Any], BaseModel]
+type Handler = Callable[[ResolveSession, Any], Any]  # a result model, or a JobRequest
+type JobStatusPoll = Callable[[ResolveSession], Mapping[str, Any]]
+
+
+@dataclass(frozen=True)
+class JobRequest:
+    """Returned by ``long_running`` handlers: what to launch and how to poll it.
+
+    ``launch`` runs once (never replayed) and must return a truthy value on
+    success; ``poll`` returns a status dict (``CompletionPercentage``, ``Error``…).
+    """
+
+    kind: str
+    label: str
+    launch: Callable[[ResolveSession], Any]
+    poll: JobStatusPoll
+    cancel: Callable[[ResolveSession], Any] | None = None
+    interpret: Callable[[Mapping[str, Any]], tuple[str, float | None, str | None]] | None = None
+
+
 type Verifier = Callable[[ResolveSession, Any, Any], Verification]
 type Capture = Callable[[ResolveSession, Any], dict[str, Any]]
 type Planner = Callable[[ResolveSession, Any], PlanDraft]
@@ -73,6 +92,7 @@ class ActionSpec:
     capture: Capture | None = None
     plan: Planner | None = None
     timeout_s: float | None = None
+    long_running: bool = False
     tags: frozenset[str] = field(default_factory=frozenset[str])
 
     @property
@@ -89,6 +109,10 @@ class ActionSpec:
 
     def validate_spec(self) -> None:
         """Enforce the invariants that make the registry trustworthy."""
+        if self.long_running and (self.kind is Kind.READ or self.snapshot or self.verify):
+            raise ValueError(f"{self.qualified_name}: long-running actions are plain writes")
+        if self.long_running:
+            return
         if self.kind is not Kind.READ and self.verify is None and not self.verify_reason:
             raise ValueError(f"{self.qualified_name}: writes need verify= or verify_reason=")
         if self.kind is Kind.DESTRUCTIVE and self.plan is None:
@@ -99,12 +123,18 @@ class ActionSpec:
             raise ValueError(f"{self.qualified_name}: names must be identifiers")
 
 
+def _job_result() -> type[BaseModel]:
+    from davinci_mcp.jobs import JobInfo  # noqa: PLC0415 - avoid an import cycle
+
+    return JobInfo
+
+
 def action(
     *,
     domain: str,
     kind: Kind,
     params: type[BaseModel] = Empty,
-    result: type[BaseModel],
+    result: type[BaseModel] | None = None,
     name: str | None = None,
     requires: tuple[str, ...] = (),
     since: Version | None = None,
@@ -117,6 +147,7 @@ def action(
     capture: Capture | None = None,
     plan: Planner | None = None,
     timeout_s: float | None = None,
+    long_running: bool = False,
     tags: frozenset[str] = frozenset(),
 ) -> Callable[[Handler], ActionSpec]:
     """Turn a handler into an ``ActionSpec``. Register it with ``ActionRegistry.add``."""
@@ -129,7 +160,7 @@ def action(
             kind=kind,
             handler=fn,
             params=params,
-            result=result,
+            result=result or _job_result(),
             summary=doc.splitlines()[0] if doc else (name or fn.__name__).replace("_", " "),
             requires=requires,
             since=since,
@@ -142,6 +173,7 @@ def action(
             capture=capture,
             plan=plan,
             timeout_s=timeout_s,
+            long_running=long_running,
             tags=tags,
         )
         spec.validate_spec()

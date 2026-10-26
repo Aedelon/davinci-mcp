@@ -10,14 +10,15 @@ from __future__ import annotations
 import json
 import time
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from mcp.types import TextContent
 from pydantic import BaseModel, ValidationError
 
 from davinci_mcp.actions.registry import WriteOutput
-from davinci_mcp.actions.spec import Kind, PlanDraft
+from davinci_mcp.actions.spec import JobRequest, Kind, PlanDraft
 from davinci_mcp.errors import DavinciError, ErrorCode
+from davinci_mcp.jobs import default_interpret
 from davinci_mcp.receipts import Receipt, Verification
 from davinci_mcp.safety.pages import PageGuard
 
@@ -29,6 +30,7 @@ if TYPE_CHECKING:
     from davinci_mcp.audit import AuditLog
     from davinci_mcp.cache import ReadCache
     from davinci_mcp.connection.manager import ConnectionManager, ResolveSession
+    from davinci_mcp.jobs import Interpreter, JobManager
     from davinci_mcp.safety.consent import ConsentManager
     from davinci_mcp.safety.snapshots import SnapshotManager
 
@@ -67,6 +69,7 @@ class Pipeline:
     snapshots: SnapshotManager
     audit: AuditLog
     cache: ReadCache
+    jobs: JobManager | None = None
 
     async def execute(self, tool: ToolDefinition, arguments: dict[str, Any]) -> ToolResult:
         try:
@@ -127,6 +130,9 @@ class Pipeline:
                 )
             self.consent.verify(token, spec.qualified_name, params_json, draft.fingerprint)
 
+        if spec.long_running:
+            return await self._start_job(spec, params, params_json, session, started)
+
         try:
             applied = await self.connection.call(
                 lambda s: self._apply(spec, s, params),
@@ -144,6 +150,47 @@ class Pipeline:
             WriteOutput(status="applied", receipt=receipt).model_dump(
                 mode="json", exclude_none=True
             )
+        )
+
+    async def _start_job(
+        self,
+        spec: ActionSpec,
+        params: BaseModel,
+        params_json: dict[str, Any],
+        session: ResolveSession,
+        started: float,
+    ) -> ToolResult:
+        if self.jobs is None:
+            raise DavinciError(ErrorCode.INTERNAL, "No job manager configured.", retryable=False)
+        request = await self.connection.call(lambda s: spec.handler(s, params), retry_safe=True)
+        if not isinstance(request, JobRequest):
+            raise DavinciError(
+                ErrorCode.INTERNAL, f"{spec.qualified_name} did not return a JobRequest."
+            )
+        interpret = cast("Interpreter", request.interpret or default_interpret)
+        try:
+            job = await self.jobs.start(
+                request.kind,
+                request.label,
+                request.launch,
+                request.poll,
+                cancel=request.cancel,
+                interpret=interpret,
+            )
+        finally:
+            self.cache.bump()
+        self.audit.record(
+            {
+                "action": spec.qualified_name,
+                "kind": spec.kind.value,
+                "params": params_json,
+                "channel": session.caps.channel,
+                "duration_ms": int((time.monotonic() - started) * 1000),
+                "job_id": job.id,
+            }
+        )
+        return tool_result(
+            WriteOutput(status="started", job=job.model_dump(mode="json")).model_dump(mode="json")
         )
 
     @staticmethod

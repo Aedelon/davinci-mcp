@@ -8,27 +8,14 @@ from typing import TYPE_CHECKING
 from pydantic import BaseModel, ConfigDict, Field
 
 from davinci_mcp.actions.spec import Kind, action
+from davinci_mcp.domains._runtime import runtime
 from davinci_mcp.refs import TimelineRef, resolve_timeline
-from davinci_mcp.safety.snapshots import SnapshotInfo, SnapshotManager
+from davinci_mcp.safety.snapshots import SnapshotInfo
 
 if TYPE_CHECKING:
     from davinci_mcp.connection.manager import ResolveSession
 
 DOMAIN = "snapshot"
-
-# Set by the server at startup; actions run on the executor thread and need the manager.
-_manager: SnapshotManager | None = None
-
-
-def bind(manager: SnapshotManager) -> None:
-    global _manager  # noqa: PLW0603 - single process-wide manager
-    _manager = manager
-
-
-def _get_manager() -> SnapshotManager:
-    if _manager is None:
-        raise RuntimeError("snapshot manager not bound")
-    return _manager
 
 
 class TimelineSnapshotParams(BaseModel):
@@ -51,7 +38,7 @@ class ProjectSnapshotParams(BaseModel):
 )
 def snapshot_timeline(s: ResolveSession, p: TimelineSnapshotParams) -> SnapshotInfo:
     """Duplicate a timeline as a safety copy (current timeline by default)."""
-    return _get_manager().snapshot_timeline(s, resolve_timeline(s, p.timeline), p.label)
+    return runtime().snapshots.snapshot_timeline(s, resolve_timeline(s, p.timeline), p.label)
 
 
 @action(
@@ -63,7 +50,7 @@ def snapshot_timeline(s: ResolveSession, p: TimelineSnapshotParams) -> SnapshotI
 )
 def snapshot_project(s: ResolveSession, p: ProjectSnapshotParams) -> SnapshotInfo:
     """Save the project and export it as a .drp file in the snapshot directory."""
-    return _get_manager().snapshot_project(s, p.label)
+    return runtime().snapshots.snapshot_project(s, p.label)
 
 
 ACTIONS = [snapshot_project, snapshot_timeline]

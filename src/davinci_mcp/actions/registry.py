@@ -26,8 +26,11 @@ def _camel(text: str) -> str:
 
 
 class WriteOutput(BaseModel):
-    status: Literal["applied", "planned"]
+    status: Literal["applied", "planned", "started"]
     receipt: Receipt | None = None
+    job: dict[str, Any] | None = Field(
+        default=None, description="Present when status='started': poll it with job_status."
+    )
     plan: dict[str, Any] | None = Field(
         default=None, description="Present when status='planned' (dry run or consent needed)."
     )
@@ -128,7 +131,9 @@ def _build_tool(name: str, specs: list[ActionSpec]) -> ToolDefinition:
         output_model = WriteOutput
 
     lines = [f"{_camel(domain)} — {kind.value} actions. Set op.action to one of:"]
-    lines += [f"- {s.name}: {s.summary}" for s in specs]
+    lines += [
+        f"- {s.name}: {s.summary}" + (" [starts a job]" if s.long_running else "") for s in specs
+    ]
     if kind is Kind.DESTRUCTIVE:
         lines.append(
             "Destructive: the first call returns a plan and a confirm_token; "
