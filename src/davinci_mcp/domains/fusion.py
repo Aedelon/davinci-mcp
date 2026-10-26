@@ -49,11 +49,9 @@ if TYPE_CHECKING:
 DOMAIN = "fusion"
 
 
-# Fusion settings text and expressions are Lua: these markers mean "can run code".
-_SCRIPT_MARKERS = re.compile(
-    r"RenderScript|\b(os|io|bmd|ffi|debug|package)\s*\.|\b(require|loadstring|loadfile|dofile|"
-    r"Execute|RunScript|ExecuteFile)\s*\("
-)
+# Fusion settings text, comp files and expressions are Lua. A keyword denylist is
+# bypassable (string concatenation, _G[...], load...), so: whole-file / whole-snippet
+# features require code execution, and expressions must match a strict allowlist.
 
 
 def _require_code_execution(feature: str) -> None:
@@ -66,10 +64,77 @@ def _require_code_execution(feature: str) -> None:
         )
 
 
-def _guard_script(text: str | None, feature: str) -> None:
-    """Refuse script-bearing Fusion text unless code execution is enabled."""
-    if text and _SCRIPT_MARKERS.search(text):
-        _require_code_execution(f"{feature} with script content")
+_EXPR_TOKEN = re.compile(
+    r"\s+|\d+(?:\.\d+)?(?:[eE][-+]?\d+)?|[A-Za-z_]\w*(?:\.[A-Za-z_]\w*){0,3}|[-+*/%^(),<>=~]"
+)
+_EXPR_NAMES = frozenset(
+    {
+        "time",
+        "pi",
+        "abs",
+        "min",
+        "max",
+        "floor",
+        "ceil",
+        "sqrt",
+        "exp",
+        "log",
+        "log10",
+        "sin",
+        "cos",
+        "tan",
+        "asin",
+        "acos",
+        "atan",
+        "atan2",
+        "pow",
+        "iif",
+        "and",
+        "or",
+        "not",
+        "true",
+        "false",
+        "comp",
+    }
+)
+
+
+def _check_expression(expression: str, tool_names: set[str]) -> None:
+    """Allow arithmetic over numbers, math helpers and ``Tool.Input[.X]`` references only."""
+    if runtime().settings.safety.enable_code_execution:
+        return
+    pos = 0
+    while pos < len(expression):
+        match = _EXPR_TOKEN.match(expression, pos)
+        if match is None:
+            raise _expression_refused(expression, f"unexpected {expression[pos]!r}")
+        token = match.group(0)
+        pos = match.end()
+        if not token[0].isalpha() and token[0] != "_":
+            continue
+        head, _, rest = token.partition(".")
+        if rest:
+            if head not in tool_names:
+                raise _expression_refused(expression, f"{head!r} is not a tool of this comp")
+        elif token not in _EXPR_NAMES:
+            raise _expression_refused(expression, f"name {token!r} is not allowed")
+
+
+def _expression_refused(expression: str, why: str) -> DavinciError:
+    return DavinciError(
+        ErrorCode.CAPABILITY_UNAVAILABLE,
+        f"Expression refused ({why}): {expression!r}.",
+        hint="Without code execution, expressions may use numbers, + - * / % ^ ( ), time, "
+        "math functions and Tool.Input references. Enable safety.enable_code_execution "
+        "for arbitrary Lua.",
+        retryable=False,
+    )
+
+
+def _guard_input_id(input_id: str) -> None:
+    """Script inputs (FrameRenderScript, StartRenderScript...) run Lua at render time."""
+    if "script" in input_id.lower():
+        _require_code_execution(f"setting the script input {input_id!r}")
 
 
 _AUTO_POS = -32768  # AddTool(id, x, y): "place automatically"
@@ -651,6 +716,7 @@ class ImportCompParams(_Params):
 )
 def import_comp(s: ResolveSession, p: ImportCompParams) -> CompResult:
     """Import a .comp file as a new Fusion composition of a timeline item."""
+    _require_code_execution("import_comp (.comp files may embed scripts)")
     path = check_path(p.path, runtime().allowed_roots, must_exist=True)
     if path.suffix.lower() != ".comp":
         raise DavinciError(ErrorCode.INVALID_PARAMS, "Only .comp files can be imported.")
@@ -856,6 +922,7 @@ def set_inputs(s: ResolveSession, p: SetInputsParams) -> SetInputsResult:
     """Set many tool inputs in one undo step (the comp is not locked: renders need it)."""
     _, comp, _ = _open_comp(s, p)
     for e in p.sets:  # fail before touching anything
+        _guard_input_id(e.input)
         _find_input(s, _find_tool(comp, e.tool), e.input)
     applied: list[AppliedInput] = []
     with _transaction(comp, "MCP set inputs"):
@@ -1014,6 +1081,7 @@ def set_keyframes(s: ResolveSession, p: SetKeyframesParams) -> KeyframesResult:
     """Animate an input: add a BezierSpline when needed, then key each (time, value)."""
     _, comp, _ = _open_comp(s, p)
     tool = _find_tool(comp, p.tool)
+    _guard_input_id(p.input)
     inp = _find_input(s, tool, p.input)
     with _transaction(comp, f"MCP keyframes {p.tool}.{p.input}"):
         if not _is_animated(inp):
@@ -1060,8 +1128,10 @@ def _verify_expression(
 )
 def set_expression(s: ResolveSession, p: SetExpressionParams) -> ExpressionResult:
     """Set (or clear, with an empty string) the expression of a tool input."""
-    _guard_script(p.expression, "set_expression")
+    _guard_input_id(p.input)
     _, comp, _ = _open_comp(s, p)
+    if p.expression:
+        _check_expression(p.expression, {_tool_name(t) for t in _tools(comp)})
     inp = _find_input(s, _find_tool(comp, p.tool), p.input)
     with _transaction(comp, f"MCP expression {p.tool}.{p.input}"):
         inp.SetExpression(p.expression or None)
@@ -1166,6 +1236,7 @@ class SaveSettingsParams(_CompParams):
 )
 def load_tool_settings(s: ResolveSession, p: LoadSettingsParams) -> ToolResult:
     """Load a .setting file onto an existing tool (replaces its parameters)."""
+    _require_code_execution("load_tool_settings (.setting files may embed scripts)")
     path = check_path(p.path, runtime().allowed_roots, must_exist=True)
     if path.suffix.lower() != ".setting":
         raise DavinciError(ErrorCode.INVALID_PARAMS, "Only .setting files can be loaded.")
@@ -1228,7 +1299,7 @@ def _verify_pasted(s: ResolveSession, p: PasteSettingsParams, r: PasteResult) ->
 )
 def paste_settings(s: ResolveSession, p: PasteSettingsParams) -> PasteResult:
     """Paste a Fusion .setting snippet (text) into a comp; reports the tools it created."""
-    _guard_script(p.text, "paste_settings")
+    _require_code_execution("paste_settings (settings text may embed scripts)")
     _, comp, _ = _open_comp(s, p)
     before = {_tool_name(t) for t in _tools(comp)}
     with _transaction(comp, "MCP paste settings", lock=True):
