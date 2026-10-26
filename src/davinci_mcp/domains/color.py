@@ -244,12 +244,19 @@ def _lut_reference(s: ResolveSession, lut_path: str) -> str:
     allowed roots are copied into <LUT root>/MCP (Resolve's own folder) and the LUT list is
     refreshed, which is what makes them selectable.
     """
-    root = lut_root()
+    root = lut_root().resolve()
     candidate = Path(lut_path)
     if not candidate.is_absolute():
-        return lut_path
-    if candidate.resolve().is_relative_to(root.resolve()):
-        return str(candidate.resolve().relative_to(root.resolve()))
+        inside = (root / candidate).resolve()
+        if not inside.is_relative_to(root):
+            raise DavinciError(
+                ErrorCode.PATH_NOT_ALLOWED,
+                f"LUT path {lut_path!r} escapes the LUT root.",
+                retryable=False,
+            )
+        return str(inside.relative_to(root))
+    if candidate.resolve().is_relative_to(root):
+        return str(candidate.resolve().relative_to(root))
     source = check_path(lut_path, runtime().allowed_roots, must_exist=True)
     data = source.read_bytes()
     target = root / "MCP" / source.name

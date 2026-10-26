@@ -66,6 +66,9 @@ async def test_set_node_lut(
         assert out["receipt"]["verified"] is False
         err, out = await call(c, "color_write", {"op": {**op, "node": 9}})
         assert err and out["code"] == "INVALID_PARAMS"
+        escape = {**op, "lut_path": "../../etc/passwd"}
+        err, out = await call(c, "color_write", {"op": escape})
+        assert err and out["code"] == "PATH_NOT_ALLOWED"
         outside = {**op, "lut_path": "/etc/passwd"}
         err, out = await call(c, "color_write", {"op": outside})
         assert err and out["code"] == "PATH_NOT_ALLOWED"
