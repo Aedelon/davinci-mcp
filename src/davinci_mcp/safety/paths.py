@@ -12,6 +12,13 @@ from pydantic import Field
 from davinci_mcp.config import config_home, state_home
 from davinci_mcp.errors import DavinciError, ErrorCode
 
+_extra_protected: list[Path] = []
+
+
+def protect(paths: Sequence[Path]) -> None:
+    """Register the live settings' sensitive locations (called once by the server)."""
+    _extra_protected[:] = [Path(p).expanduser().resolve() for p in paths]
+
 
 def protected_paths() -> list[Path]:
     """Never readable or writable through client paths, whatever the allowed roots.
@@ -32,7 +39,7 @@ def protected_paths() -> list[Path]:
             home / ".config/Claude",
             home / "AppData/Roaming/Claude",
         )
-    ]
+    ] + list(_extra_protected)
 
 
 def check_path(path: str | Path, roots: Sequence[Path], *, must_exist: bool = False) -> Path:

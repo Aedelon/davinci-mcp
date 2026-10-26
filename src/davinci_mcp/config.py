@@ -95,6 +95,14 @@ class Settings(_Section):
     recipes: RecipeSettings = Field(default_factory=RecipeSettings)
     telemetry: TelemetrySettings = Field(default_factory=TelemetrySettings)
     state_dir: Path = Field(default_factory=state_home)
+    config_file: Path | None = Field(default=None, description="Set by load_settings.")
+
+    def protected_paths(self) -> list[Path]:
+        """Locations tools must never read or write (see safety.paths.check_path)."""
+        extra = [self.state_dir, self.safety.snapshot_dir, *self.recipes.dirs]
+        if self.config_file is not None:
+            extra.append(self.config_file)
+        return extra
 
 
 def _env_overrides(environ: dict[str, str]) -> dict[str, dict[str, str]]:
@@ -129,4 +137,5 @@ def load_settings(path: Path | None = None, environ: dict[str, str] | None = Non
         target: dict[str, Any] = data.setdefault(section, {})
         for field, raw in fields.items():
             target[field] = _parse_env_value(raw)
+    data["config_file"] = str(config_path)
     return Settings.model_validate(data)

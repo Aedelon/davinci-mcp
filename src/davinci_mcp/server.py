@@ -37,6 +37,7 @@ from davinci_mcp.recipes.engine import RecipeEngine
 from davinci_mcp.recipes.loader import load_recipes
 from davinci_mcp.recipes.model import RecipeInfo, RecipeRun
 from davinci_mcp.safety.consent import ConsentManager
+from davinci_mcp.safety.paths import protect
 from davinci_mcp.safety.snapshots import SnapshotInfo, SnapshotManager
 
 INSTRUCTIONS = """\
@@ -188,6 +189,7 @@ def build_server(
     settings = settings or load_settings()
     services = Services.create(settings, backends, process_probe)
     bind_runtime(Runtime(settings, services.cache, services.snapshots))
+    protect(settings.protected_paths())
     surface = load_surface()
 
     @asynccontextmanager

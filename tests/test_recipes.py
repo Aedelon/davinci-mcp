@@ -15,7 +15,7 @@ from davinci_mcp.errors import DavinciError, ErrorCode
 from davinci_mcp.receipts import Verification
 from davinci_mcp.recipes.loader import load_recipes
 from davinci_mcp.recipes.templating import render
-from davinci_mcp.safety.paths import check_path
+from davinci_mcp.safety.paths import check_path, protect
 from tests.fakes.fake_resolve import make_resolve
 from tests.helpers import call, mcp_client
 
@@ -266,3 +266,15 @@ def test_protected_paths_are_refused(tmp_path: Path) -> None:
         with pytest.raises(DavinciError) as exc:
             check_path(target, home)
         assert exc.value.code is ErrorCode.PATH_NOT_ALLOWED
+
+
+def test_live_settings_locations_are_protected(tmp_path: Path) -> None:
+    secret_state = tmp_path / "custom-state"
+    protect([secret_state])
+    try:
+        with pytest.raises(DavinciError) as exc:
+            check_path(secret_state / "consent.key", [tmp_path])
+        assert exc.value.code is ErrorCode.PATH_NOT_ALLOWED
+        assert check_path(tmp_path / "media.mov", [tmp_path]) == (tmp_path / "media.mov").resolve()
+    finally:
+        protect([])

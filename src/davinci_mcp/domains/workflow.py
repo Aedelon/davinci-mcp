@@ -183,12 +183,11 @@ def _expand_media(paths: list[str]) -> list[Path]:
     for raw in paths:
         path = check_path(raw, roots, must_exist=True)
         if path.is_dir():
-            files.extend(
-                f
-                for f in sorted(path.rglob("*"))
-                if f.is_file()
-                and not any(part.startswith(".") for part in f.relative_to(path).parts)
-            )
+            for f in sorted(path.rglob("*")):
+                rel = f.relative_to(path)
+                if f.is_symlink() or not f.is_file() or any(p.startswith(".") for p in rel.parts):
+                    continue  # symlinks could point outside the sandbox: never followed
+                files.append(check_path(f, roots, must_exist=True))
         else:
             files.append(path)
         if len(files) > _MAX_MEDIA_FILES:
