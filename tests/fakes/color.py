@@ -311,7 +311,10 @@ def _wire_item(
     item.DeleteVersionByName = delete_version  # type: ignore[attr-defined]
     item.GetVersionNameList = lambda vt: list(versions[vt])  # type: ignore[attr-defined]
     item.GetCurrentVersion = lambda: dict(current)  # type: ignore[attr-defined]
-    item.SetCDL = lambda cdl: item.cdl_calls.append(cdl) or True  # type: ignore[attr-defined]
+    # Live Resolve 21.1 refuses the whole map when any value is not a string.
+    item.SetCDL = lambda cdl: (  # type: ignore[attr-defined]
+        item.cdl_calls.append(cdl) or all(isinstance(v, str) for v in cdl.values())
+    )
     item.ExportLUT = export_lut  # type: ignore[attr-defined]
     item.CopyGrades = lambda targets: item.copied_to.extend(targets) or True  # type: ignore[attr-defined]
     item.ResetAllNodeColors = lambda: True  # type: ignore[attr-defined]

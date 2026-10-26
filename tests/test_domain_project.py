@@ -150,6 +150,15 @@ async def test_set_settings_reports_unstuck_keys(settings: Settings) -> None:
     assert err and out["code"] == "API_CALL_FAILED"
 
 
+async def test_set_settings_compares_numbers_by_value(settings: Settings) -> None:
+    r = make_project_resolve()
+    _pm(r)._current.float_keys.add("timelineFrameRate")  # type: ignore[union-attr]
+    op = {"action": "set_settings", "settings": {"timelineFrameRate": "25"}}
+    err, out = await _w(r, settings, "project_write", op)
+    assert not err and out["receipt"]["verified"] is True
+    assert out["receipt"]["result"]["applied"] == {"timelineFrameRate": "25.0"}
+
+
 async def test_settings_presets(settings: Settings, tmp_path: Path) -> None:
     r = make_project_resolve()
     for op in (

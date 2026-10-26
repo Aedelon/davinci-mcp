@@ -24,6 +24,7 @@ from davinci_mcp.recipes.model import (
     RecipeInfo,
     RecipeRun,
     StepOutcome,
+    StepSpec,
     YamlRecipe,
 )
 from davinci_mcp.recipes.templating import render
@@ -148,7 +149,31 @@ class RecipeEngine:
         dry_run: bool = False,
         confirm_token: str | None = None,
     ) -> RecipeRun:
-        recipe = self._get(name)
+        return await self._run(self._get(name), params, dry_run, confirm_token)
+
+    async def run_batch(
+        self,
+        steps: list[StepSpec],
+        *,
+        dry_run: bool = False,
+        confirm_token: str | None = None,
+    ) -> RecipeRun:
+        """Run ad-hoc steps like an inline recipe (same validation, consent and reports)."""
+        recipe = YamlRecipe(
+            name="batch",
+            description=f"Batch of {len(steps)} steps.",
+            steps=steps,
+        )
+        return await self._run(recipe, {}, dry_run, confirm_token)
+
+    async def _run(
+        self,
+        recipe: Recipe,
+        params: dict[str, Any],
+        dry_run: bool,
+        confirm_token: str | None,
+    ) -> RecipeRun:
+        name = recipe.name
         model = recipe.params_model() if isinstance(recipe, YamlRecipe) else recipe.params
         try:
             validated = model.model_validate(params)

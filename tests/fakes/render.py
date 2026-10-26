@@ -29,6 +29,7 @@ class FakeRenderProject(FakeProject):
         self.loaded: list[str] = []
         self.ignore_mode = False
         self.reject_settings = False
+        self.bad_keys: set[str] = set()  # any payload containing one is refused
         self.qe_pct = 0
         self.qe_enabled_noop = False
 
@@ -112,6 +113,8 @@ class FakeRenderProject(FakeProject):
     @recorded
     def SetRenderSettings(self, settings: dict[str, Any]) -> bool:
         if self.reject_settings or ("CustomName" in settings and not settings["CustomName"]):
+            return False
+        if self.bad_keys & set(settings):
             return False
         self.applied.append(dict(settings))
         return True

@@ -92,3 +92,8 @@ For the common jobs there are typed, single-call actions in `workflow_write`:
 - `title_overlay`.
 
 Recipes can chain them.
+
+So that agents find these actions:
+- `workflow_write` is marked always-load (`anthropic/alwaysLoad`) and ships its full parameter schema, so `describe_action` is not needed;
+- the server instructions list the composites;
+- each base tool they replace (`render_write`, `media_write`, `color_write`…) ends with a "Shortcuts" line naming them. Mark your own composite action with `@action(..., shortcut_for=("<tool>.<action>", ...))` to get the same treatment.

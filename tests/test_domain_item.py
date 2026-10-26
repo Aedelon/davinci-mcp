@@ -128,6 +128,17 @@ async def test_set_fades(settings: Settings) -> None:
     assert _verified(out) is False
 
 
+async def test_near_miss_params_are_repaired_and_reported(settings: Settings) -> None:
+    resolve = make_item_resolve()
+    op = {"action": "set_fades", "items": [POS1], "fades": {"fade_out": 12}}
+    err, out = await _op(settings, resolve, "item_write", op)
+    assert not err and _verified(out) is True
+    assert out["notes"] == ["op.fades: read 'fade_out' as 'FadeOut'"]
+    err, out = await _op(settings, resolve, "item_write", {**op, "fades": {"x": 1}})
+    assert err and out["code"] == "INVALID_PARAMS"
+    assert "fades*: {FadeIn, FadeOut}" in out["hint"]
+
+
 async def test_add_transition(settings: Settings) -> None:
     resolve = make_item_resolve()
     op = {

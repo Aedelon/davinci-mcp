@@ -133,7 +133,7 @@ async def test_cdl_and_node_colors(settings: Settings) -> None:
         }
         err, out = await call(c, "color_write", {"op": op})
         assert not err and out["receipt"].get("verified") is None
-        assert item.cdl_calls[0]["Slope"] == "1.1 1 0.9" and item.cdl_calls[0]["NodeIndex"] == 2
+        assert item.cdl_calls[0]["Slope"] == "1.1 1 0.9" and item.cdl_calls[0]["NodeIndex"] == "2"
         err, out = await call(c, "color_write", {"op": {**op, "node": 7}})
         assert err and out["code"] == "INVALID_PARAMS"
         err, _ = await call(c, "color_write", {"op": {"action": "reset_node_colors", "item": ITEM}})

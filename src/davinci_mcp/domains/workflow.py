@@ -498,6 +498,13 @@ def _verify_deliver(s: ResolveSession, p: DeliverParams, r: DeliverResult) -> Ve
     result=DeliverResult,
     verify=_verify_deliver,
     timeout_s=_ACTION_TIMEOUT_S,
+    shortcut_for=(
+        "render_write.set_render_settings",
+        "render_write.set_render_format",
+        "render_write.add_render_job",
+        "render_write.start_rendering",
+        "render_write.render_timeline",
+    ),
 )
 def deliver(s: ResolveSession, p: DeliverParams) -> DeliverResult:
     """Render one or more outputs (preset/format/size) and report the real files produced."""
@@ -669,6 +676,12 @@ def _verify_conform(s: ResolveSession, _: ConformParams, r: ConformResult) -> Ve
     result=ConformResult,
     verify=_verify_conform,
     timeout_s=600.0,
+    shortcut_for=(
+        "media_write.import_media",
+        "media_write.relink_clips",
+        "timeline_write.import_timeline",
+        "timeline_write.set_start_timecode",
+    ),
 )
 def conform_from_edl(s: ResolveSession, p: ConformParams) -> ConformResult:
     """Import media + EDL as a timeline, fix offline events via Start TC, report linkage."""
@@ -849,6 +862,13 @@ def _verify_reel(s: ResolveSession, p: ReelParams, r: ReelResult) -> Verificatio
     result=ReelResult,
     verify=_verify_reel,
     timeout_s=_ACTION_TIMEOUT_S,
+    shortcut_for=(
+        "timeline_write.create_timeline",
+        "timeline_write.create_timeline_from_clips",
+        "timeline_write.set_settings",
+        "ai_write.create_subtitles_from_audio",
+        "render_write.render_timeline",
+    ),
 )
 def build_vertical_reel(s: ResolveSession, p: ReelParams) -> ReelResult:
     """Build a vertical timeline from clips, add subtitles and optionally render it."""
@@ -1023,6 +1043,12 @@ def _existing_group(s: ResolveSession, name: str) -> ResolveObject | None:
     verify=_verify_look,
     page="color",
     timeout_s=300.0,
+    shortcut_for=(
+        "color_write.set_node_lut",
+        "color_write.create_color_group",
+        "color_write.assign_to_color_group",
+        "gallery_write.grab_still",
+    ),
 )
 def apply_look(s: ResolveSession, p: LookParams) -> LookResult:
     """Apply a LUT to every video item, group them in a color group and grab a still."""
@@ -1204,6 +1230,13 @@ def _verify_title(s: ResolveSession, p: TitleParams, r: TitleResult) -> Verifica
     result=TitleResult,
     verify=_verify_title,
     timeout_s=120.0,
+    shortcut_for=(
+        "fusion_write.create_text_title",
+        "fusion_write.add_tool",
+        "fusion_write.connect",
+        "fusion_write.set_inputs",
+        "fusion_write.set_keyframes",
+    ),
 )
 def title_overlay(s: ResolveSession, p: TitleParams) -> TitleResult:
     """Add an animated Text+ title (and Merge over the clip) to a timeline item's Fusion comp."""

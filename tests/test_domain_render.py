@@ -104,6 +104,15 @@ async def test_set_settings_payload(settings: Settings, tmp_path: Path) -> None:
             client, "render_write", "set_render_settings", settings={"ExportAudio": True}
         )
         assert err
+        project.reject_settings = False
+        project.bad_keys.add("ExportVideo")
+        err, out = await _do(
+            client,
+            "render_write",
+            "set_render_settings",
+            settings={"ExportAudio": True, "ExportVideo": True},
+        )
+        assert err and out["details"]["rejected"] == ["ExportVideo=True"]
 
 
 async def test_mode_verification(settings: Settings) -> None:

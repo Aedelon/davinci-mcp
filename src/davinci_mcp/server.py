@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 from collections.abc import AsyncGenerator, Sequence
 from contextlib import asynccontextmanager
@@ -12,7 +13,7 @@ from typing import Annotated, Any
 from fastmcp import FastMCP
 from fastmcp.tools import Tool, ToolResult
 from mcp.types import ToolAnnotations
-from pydantic import BaseModel, Field, PrivateAttr
+from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, ValidationError
 
 from davinci_mcp import __version__
 from davinci_mcp.actions.pipeline import Pipeline, error_result, tool_result
@@ -35,7 +36,7 @@ from davinci_mcp.executor import ResolveExecutor
 from davinci_mcp.jobs import JobInfo, JobManager
 from davinci_mcp.recipes.engine import RecipeEngine
 from davinci_mcp.recipes.loader import load_recipes
-from davinci_mcp.recipes.model import RecipeInfo, RecipeRun
+from davinci_mcp.recipes.model import RecipeInfo, RecipeRun, StepSpec
 from davinci_mcp.safety.consent import ConsentManager
 from davinci_mcp.safety.paths import protect
 from davinci_mcp.safety.snapshots import SnapshotInfo, SnapshotManager
@@ -44,7 +45,7 @@ INSTRUCTIONS = """\
 davinci-mcp controls DaVinci Resolve (Studio, or the free edition through the in-app bridge).
 Start with resolve_status. Domain tools are named <domain>_read, <domain>_write and
 <domain>_delete; pass {"op": {"action": ..., ...params}}. Each tool description lists its
-actions with parameter names (* = required); call describe_action(tool, action) for the full
+actions with parameter names (* = required); call this server's describe_action tool for the full
 schema before using an unfamiliar action. Most actions also take an optional `timeline`
 selector (default: the current timeline). Read tools are side-effect free.
 Write tools return a receipt with verified=true|false from a read-back: treat
@@ -54,6 +55,11 @@ keep a safety copy of the timeline first (destructive actions take one automatic
 with confirm_token to apply. Timelines, items and clips are addressed by id (preferred),
 exact name or 1-based index. Long operations return a job id: poll with job_status or
 job_wait. search_api finds Resolve scripting API methods when you need the exact name.
+Prefer the one-call composites of workflow_write over chaining base actions (they
+validate, verify and report like any write): conform_from_edl (media + EDL → timeline,
+offline fix), deliver (one or more renders, files checked), build_vertical_reel (vertical
+timeline, subtitles, render), apply_look (LUT on every clip, color group, still),
+title_overlay (animated Text+ over a clip). recipe_list / recipe_run chain more steps.
 """
 
 ALWAYS_LOAD = {"anthropic/alwaysLoad": True}
@@ -124,6 +130,7 @@ class RegistryTool(Tool):
             parameters=definition.input_schema,
             output_schema=definition.output_schema,
             annotations=ToolAnnotations.model_validate(definition.annotations),
+            meta=ALWAYS_LOAD if definition.featured else None,
         )
         tool._definition = definition
         tool._pipeline = pipeline
@@ -214,6 +221,9 @@ def build_server(
         compact=settings.server.schema_mode == "compact"
     )
     by_name = {d.name: d for d in definitions}
+    for definition in definitions:
+        for action_name in definition.actions:
+            services.pipeline.action_tools.setdefault(action_name, []).append(definition.name)
     for definition in definitions:
         mcp.add_tool(RegistryTool.create(definition, services.pipeline))
 
@@ -309,6 +319,7 @@ def _add_recipe_tools(
         recipes=loaded.recipes,
         sources=loaded.sources,
     )
+    _add_batch_tool(mcp, engine)
 
     @mcp.tool(annotations=_READ_ONLY, output_schema=RecipeListOutput.model_json_schema())
     async def recipe_list() -> ToolResult:
@@ -334,6 +345,68 @@ def _add_recipe_tools(
         """
         try:
             run = await engine.run(name, params or {}, dry_run=dry_run, confirm_token=confirm_token)
+        except DavinciError as err:
+            return error_result(err)
+        return _ok(run)
+
+
+class BatchStep(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str | None = Field(
+        default=None, description="Optional name; later steps read its output as steps.<id>."
+    )
+    tool: str = Field(description="Domain tool, e.g. media_write.")
+    op: dict[str, Any] = Field(description="The op object, exactly as for that tool.")
+    snapshot: bool | None = None
+    wait: bool = Field(default=True, description="Wait for a job this step starts.")
+
+
+MAX_BATCH_STEPS = 50
+
+
+def _add_batch_tool(mcp: FastMCP, engine: RecipeEngine) -> None:
+    @mcp.tool(
+        annotations=ToolAnnotations(destructive_hint=True, open_world_hint=False),
+        meta=ALWAYS_LOAD,
+        output_schema=RecipeRun.model_json_schema(),
+    )
+    async def batch_run(
+        steps: Annotated[
+            list[BatchStep],
+            Field(min_length=1, max_length=MAX_BATCH_STEPS, description="Steps, in order."),
+        ],
+        dry_run: bool = Field(default=False, description="Plan only."),
+        confirm_token: str | None = Field(
+            default=None, description="When it contains *_delete steps: token from the plan."
+        ),
+    ) -> ToolResult:
+        """Run several domain-tool calls in ONE call, in order, server-side.
+
+        Prefer it whenever the next calls are known: e.g. set metadata and color on four
+        clips, add markers, rename tracks. Each step is {tool, op} exactly as you would call
+        that tool, and is validated, verified and audited the same way. A step's op may read
+        an earlier step's output with a template: "{{ steps.<id>.receipt.result.id }}"
+        (writes), "{{ steps.<id>.result... }}" (reads), [n] and [*] supported. Stops at the
+        first failed or unverified step; every outcome is reported. With *_delete steps the
+        first call returns a plan + confirm_token for the whole batch.
+        """
+        try:
+            specs = [
+                StepSpec(id=s.id or f"s{i}", tool=s.tool, op=s.op, snapshot=s.snapshot, wait=s.wait)
+                for i, s in enumerate(steps, start=1)
+            ]
+        except ValidationError as exc:
+            return error_result(
+                DavinciError(
+                    ErrorCode.INVALID_PARAMS,
+                    "Invalid batch step id (use letters, digits and _).",
+                    retryable=False,
+                    details={"errors": json.loads(exc.json(include_url=False))},
+                )
+            )
+        try:
+            run = await engine.run_batch(specs, dry_run=dry_run, confirm_token=confirm_token)
         except DavinciError as err:
             return error_result(err)
         return _ok(run)
