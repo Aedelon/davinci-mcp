@@ -67,10 +67,8 @@ def _require_code_execution(feature: str) -> None:
 _EXPR_TOKEN = re.compile(
     r"\s+|\d+(?:\.\d+)?(?:[eE][-+]?\d+)?|[A-Za-z_]\w*(?:\.[A-Za-z_]\w*){0,3}|[-+*/%^(),<>=~]"
 )
-_EXPR_NAMES = frozenset(
+_EXPR_FUNCTIONS = frozenset(
     {
-        "time",
-        "pi",
         "abs",
         "min",
         "max",
@@ -89,35 +87,119 @@ _EXPR_NAMES = frozenset(
         "atan2",
         "pow",
         "iif",
-        "and",
-        "or",
-        "not",
-        "true",
-        "false",
+    }
+)
+_EXPR_VALUES = frozenset({"time", "pi", "and", "or", "not", "true", "false"})
+_EXPR_COMPONENTS = frozenset({"X", "Y", "Z"})
+_MAX_REF_PARTS = 2  # Input, then optionally X/Y/Z
+# Lua and Fusion globals: never accepted as a tool reference nor as a tool name, so a tool
+# renamed "os" or "comp" cannot smuggle a global into an expression.
+RESERVED_NAMES = frozenset(
+    {
+        "_G",
+        "_ENV",
+        "os",
+        "io",
+        "debug",
+        "package",
+        "string",
+        "table",
+        "math",
+        "coroutine",
+        "utf8",
+        "bit",
+        "bit32",
+        "jit",
+        "ffi",
+        "load",
+        "loadstring",
+        "loadfile",
+        "dofile",
+        "require",
+        "getfenv",
+        "setfenv",
+        "rawget",
+        "rawset",
+        "setmetatable",
+        "getmetatable",
+        "pcall",
+        "xpcall",
+        "select",
+        "next",
+        "pairs",
+        "ipairs",
+        "print",
+        "error",
+        "assert",
+        "self",
         "comp",
+        "fusion",
+        "app",
+        "bmd",
+        "resolve",
+        "fu",
+        "composition",
+        "tool",
     }
 )
 
 
-def _check_expression(expression: str, tool_names: set[str]) -> None:
-    """Allow arithmetic over numbers, math helpers and ``Tool.Input[.X]`` references only."""
+def _is_name(token: str) -> bool:
+    return bool(token) and (token[0].isalpha() or token[0] == "_")
+
+
+def check_tool_name(name: str) -> str:
+    """Tool names must be plain identifiers that do not shadow Lua/Fusion globals."""
+    if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,63}", name) or name in RESERVED_NAMES:
+        raise DavinciError(
+            ErrorCode.INVALID_PARAMS,
+            f"Invalid tool name {name!r}: use a plain identifier that is not a reserved name.",
+            retryable=False,
+        )
+    return name
+
+
+def _check_expression(expression: str, inputs_by_tool: dict[str, set[str]]) -> None:
+    """Allow numbers, arithmetic, math functions and ``Tool.Input[.X|Y|Z]`` references only.
+
+    A reference must name an existing tool AND one of its inputs; only allowlisted math
+    functions may be called, so tool members (``Tool.Comp.Execute``) are unreachable.
+    """
     if runtime().settings.safety.enable_code_execution:
         return
     pos = 0
+    previous = ""
     while pos < len(expression):
         match = _EXPR_TOKEN.match(expression, pos)
         if match is None:
             raise _expression_refused(expression, f"unexpected {expression[pos]!r}")
         token = match.group(0)
         pos = match.end()
-        if not token[0].isalpha() and token[0] != "_":
+        if token.isspace():
             continue
-        head, _, rest = token.partition(".")
-        if rest:
-            if head not in tool_names:
-                raise _expression_refused(expression, f"{head!r} is not a tool of this comp")
-        elif token not in _EXPR_NAMES:
+        is_call = token == "("  # noqa: S105 - a token, not a secret
+        if is_call and _is_name(previous) and previous not in _EXPR_FUNCTIONS:
+            raise _expression_refused(expression, f"{previous!r} cannot be called")
+        if _is_name(token):
+            _check_name(expression, token, inputs_by_tool)
+        previous = token
+
+
+def _check_name(expression: str, token: str, inputs_by_tool: dict[str, set[str]]) -> None:
+    head, *parts = token.split(".")
+    if not parts:
+        if token not in _EXPR_FUNCTIONS and token not in _EXPR_VALUES:
             raise _expression_refused(expression, f"name {token!r} is not allowed")
+        return
+    inputs = None if head in RESERVED_NAMES else inputs_by_tool.get(head)
+    if inputs is None:
+        raise _expression_refused(expression, f"{head!r} is not a tool of this comp")
+    if parts[0] not in inputs:
+        raise _expression_refused(expression, f"{head}.{parts[0]} is not an input")
+    if len(parts) > _MAX_REF_PARTS or (
+        len(parts) == _MAX_REF_PARTS and parts[1] not in _EXPR_COMPONENTS
+    ):
+        raise _expression_refused(expression, f"{token!r} is not Tool.Input[.X|Y|Z]")
 
 
 def _expression_refused(expression: str, why: str) -> DavinciError:
@@ -856,6 +938,8 @@ def _verify_tool_added(s: ResolveSession, p: Any, r: ToolResult) -> Verification
 def add_tool(s: ResolveSession, p: AddToolParams) -> ToolResult:
     """Add a tool to a comp by registry id, with optional name and flow position."""
     _, comp, _ = _open_comp(s, p)
+    if p.name is not None:
+        check_tool_name(p.name)
     if p.name is not None and comp.FindTool(p.name) is not None:
         _fail(f"A tool named {p.name!r} already exists.", code=ErrorCode.WRONG_STATE)
     x = _AUTO_POS if p.x is None else p.x
@@ -1131,7 +1215,10 @@ def set_expression(s: ResolveSession, p: SetExpressionParams) -> ExpressionResul
     _guard_input_id(p.input)
     _, comp, _ = _open_comp(s, p)
     if p.expression:
-        _check_expression(p.expression, {_tool_name(t) for t in _tools(comp)})
+        _check_expression(
+            p.expression,
+            {_tool_name(t): {_input_label(e) for e in _input_objects(t)} for t in _tools(comp)},
+        )
     inp = _find_input(s, _find_tool(comp, p.tool), p.input)
     with _transaction(comp, f"MCP expression {p.tool}.{p.input}"):
         inp.SetExpression(p.expression or None)
@@ -1162,6 +1249,7 @@ def rename_tool(s: ResolveSession, p: RenameToolParams) -> ToolResult:
     """Rename a tool of a comp (expressions referring to the old name keep working in Fusion)."""
     _, comp, _ = _open_comp(s, p)
     tool = _find_tool(comp, p.tool)
+    check_tool_name(p.new_name)
     if comp.FindTool(p.new_name) is not None:
         _fail(f"A tool named {p.new_name!r} already exists.", code=ErrorCode.WRONG_STATE)
     with _transaction(comp, f"MCP rename {p.tool}"):
@@ -1376,7 +1464,7 @@ def create_text_title(s: ResolveSession, p: TextTitleParams) -> ToolResult:
         if tool is None:
             _fail("Comp.AddTool('TextPlus') returned nothing.")
         if p.name is not None:
-            tool.SetAttrs({"TOOLS_Name": p.name})
+            tool.SetAttrs({"TOOLS_Name": check_tool_name(p.name)})
     # Input edits happen unlocked: SetInput under Comp.Lock is not applied at render.
     with _transaction(comp, "MCP Text+ values"):
         for key, value in values.items():
