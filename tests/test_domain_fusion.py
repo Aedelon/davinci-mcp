@@ -275,28 +275,34 @@ async def test_fuses(settings: Settings, tmp_path: Path, monkeypatch: pytest.Mon
     resolve, _ = _setup()
     official = tmp_path / "official"
     monkeypatch.setattr(fusion, "_official_fuses_dir", lambda: official)
+    install = {"op": {"action": "install_fuse", "filename": "A.fuse", "source": "x"}}
     async with mcp_client(resolve, settings, ACTIONS) as client:
-        err, out = await call(
-            client,
-            "fusion_write",
-            {"op": {"action": "install_fuse", "filename": "A.fuse", "source": "x"}},
-        )
+        err, out = await call(client, "fusion_delete", install)
+        assert err and out["code"] == "CAPABILITY_UNAVAILABLE"  # code execution is off
+    enabled = settings.model_copy(
+        update={"safety": settings.safety.model_copy(update={"enable_code_execution": True})}
+    )
+    async with mcp_client(resolve, enabled, ACTIONS) as client:
+        err, out = await call(client, "fusion_delete", install)
+        assert not err and out["status"] == "planned"
+        assert any("sha256" in e for e in out["plan"]["effects"])
+        err, out = await confirm(client, "fusion_delete", install)
         assert not err and (official / "A.fuse").read_text() == "x"
-        err, _o = await call(
+        err, _o = await confirm(
             client,
-            "fusion_write",
+            "fusion_delete",
             {"op": {"action": "install_fuse", "filename": "A.fuse", "source": "y"}},
         )
         assert err  # never overwritten
-        err, _o = await call(
+        err, _o = await confirm(
             client,
-            "fusion_write",
+            "fusion_delete",
             {"op": {"action": "install_fuse", "filename": "../b.fuse", "source": "y"}},
         )
         assert err
-        err, _o = await call(
+        err, _o = await confirm(
             client,
-            "fusion_write",
+            "fusion_delete",
             {
                 "op": {
                     "action": "install_fuse",
@@ -309,3 +315,22 @@ async def test_fuses(settings: Settings, tmp_path: Path, monkeypatch: pytest.Mon
         assert err
         err, out = await call(client, "fusion_read", {"op": {"action": "list_fuses"}})
         assert not err and [f["path"] for f in res(out)["fuses"]] == ["A.fuse"]
+
+
+async def test_script_content_is_gated(settings: Settings) -> None:
+    resolve, _ = _setup()
+    async with mcp_client(resolve, settings, ACTIONS) as client:
+        err, out = await call(
+            client,
+            "fusion_write",
+            _op("paste_settings", text='{ Tools = { A = { FrameRenderScript = "os.exit()" } } }'),
+        )
+        assert err and out["code"] == "CAPABILITY_UNAVAILABLE"
+        err, out = await call(
+            client,
+            "fusion_write",
+            _op(
+                "set_expression", tool="Background1", input="TopLeftRed", expression="io.open('x')"
+            ),
+        )
+        assert err and out["code"] == "CAPABILITY_UNAVAILABLE"

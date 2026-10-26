@@ -254,11 +254,14 @@ class MPool(FakeMediaPool):
         return folder
 
     @recorded
-    def ImportMedia(self, infos: list[dict[str, Any]]) -> list[MItem]:
+    def ImportMedia(self, infos: list[dict[str, Any] | str]) -> list[MItem] | None:
+        # Mirrors Resolve 21.1.1: plain dicts without a sequence index return None.
+        if any(isinstance(i, dict) and "StartIndex" not in i for i in infos):
+            return None
         out: list[MItem] = []
         for info in infos:
-            path = info["FilePath"]
-            if Path(path).exists() or "StartIndex" in info:
+            path = info if isinstance(info, str) else info["FilePath"]
+            if Path(path).exists() or (isinstance(info, dict) and "StartIndex" in info):
                 clip = MItem(self._root, Path(path).name, path)
                 self._current.clips.append(clip)
                 out.append(clip)
@@ -390,8 +393,8 @@ class MStorage(FakeMediaStorage):
         return sorted(str(p) for p in Path(path).iterdir() if p.is_file())
 
     @recorded
-    def AddItemListToMediaPool(self, infos: list[dict[str, Any]]) -> list[MItem]:
-        return self.pool.ImportMedia([{"FilePath": i["media"]} for i in infos])
+    def AddItemListToMediaPool(self, infos: list[dict[str, Any]]) -> list[MItem] | None:
+        return self.pool.ImportMedia([i["media"] if isinstance(i, dict) else i for i in infos])
 
     @recorded
     def AddClipMattesToMediaPool(
@@ -401,8 +404,8 @@ class MStorage(FakeMediaStorage):
         return True
 
     @recorded
-    def AddTimelineMattesToMediaPool(self, paths: list[str]) -> list[MItem]:
-        return self.pool.ImportMedia([{"FilePath": p} for p in paths])
+    def AddTimelineMattesToMediaPool(self, paths: list[str]) -> list[MItem] | None:
+        return self.pool.ImportMedia(list(paths))
 
     @recorded
     def RevealInStorage(self, path: str) -> bool:
