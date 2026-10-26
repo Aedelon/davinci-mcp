@@ -22,6 +22,7 @@ from davinci_mcp.domains import (
     timeline,
     ui,
     vision,
+    workflow,
 )
 
 if TYPE_CHECKING:
@@ -44,6 +45,7 @@ DOMAIN_MODULES = (
     timeline,
     ui,
     vision,
+    workflow,
 )
 
 

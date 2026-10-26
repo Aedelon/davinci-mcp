@@ -9,7 +9,8 @@ from typing import Any
 import pytest
 
 from davinci_mcp.config import Settings
-from davinci_mcp.domains.render import ACTIONS
+from davinci_mcp.domains.render import ACTIONS, RenderCodec, RenderFormat, _find_codec
+from davinci_mcp.errors import DavinciError
 from tests.fakes.render import make_render_resolve
 from tests.helpers import call, confirm, mcp_client
 
@@ -262,3 +263,21 @@ async def test_delete_jobs(settings: Settings, action: str) -> None:
         err, out = await confirm(client, "render_delete", {"op": op})
         assert not err and out["receipt"]["verified"] is True
         assert project.jobs == {}
+
+
+def test_codec_matching_is_forgiving() -> None:
+    fmt = RenderFormat(
+        format="QuickTime",
+        extension="mov",
+        codecs=[
+            RenderCodec(id="ProRes422", description="Apple ProRes 422"),
+            RenderCodec(id="ProRes422HQ", description="Apple ProRes 422 HQ"),
+            RenderCodec(id="H264", description="H.264"),
+        ],
+    )
+    assert _find_codec(fmt, "ProRes 422 HQ").id == "ProRes422HQ"
+    assert _find_codec(fmt, "prores 422").id == "ProRes422"
+    assert _find_codec(fmt, "H.264").id == "H264"
+    assert _find_codec(fmt, "h264").id == "H264"
+    with pytest.raises(DavinciError):
+        _find_codec(fmt, "ProRes")  # ambiguous

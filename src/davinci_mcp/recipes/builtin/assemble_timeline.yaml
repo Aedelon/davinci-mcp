@@ -1,0 +1,24 @@
+# Copyright Delanoe Pirard / Aedelon. Apache 2.0.
+name: assemble_timeline
+description: Import media files and create a timeline with them, in order (one call).
+params:
+  clips:
+    type: array
+    required: true
+    description: Absolute media paths, in timeline order.
+  name:
+    type: string
+    default: Assembly
+    description: Name of the new timeline.
+steps:
+  - id: import
+    tool: media_write
+    op:
+      action: import_media
+      items: "{{ params.clips }}"
+  - id: timeline
+    tool: timeline_write
+    op:
+      action: create_timeline_from_clips
+      name: "{{ params.name }}"
+      clips: "{{ steps.import.receipt.result.imported[*].id }}"
