@@ -1,0 +1,70 @@
+[project]
+name = "davinci-mcp"
+version = "0.1.0"
+description = "Exhaustive, typed and safe MCP server for DaVinci Resolve."
+authors = [{ name = "Delanoe Pirard", email = "delanoe.pirard@gmail.com" }]
+license = "Apache-2.0"
+requires-python = ">=3.13"
+dependencies = [
+    "fastmcp>=4.1.3,<5",
+    "pydantic>=2.11",
+]
+
+[project.scripts]
+davinci-mcp = "davinci_mcp.__main__:main"
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.400",
+    "pytest>=8.4",
+    "pytest-asyncio>=1.0",
+    "pytest-cov>=6.0",
+    "ruff>=0.13",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.11,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "SIM", "RUF", "PL", "PT", "TRY", "S", "ANN"]
+ignore = ["PLR0913", "TRY003", "S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ANN", "PLR2004", "S", "PT018"]
+"tools/introspect/**" = ["ANN401", "N813", "PLR0912", "PLR0915", "S603", "S607"]
+"src/davinci_mcp/api/_generated/**" = ["E501", "N815", "RUF012"]
+
+[tool.pyright]
+include = ["src", "tests", "tools"]
+exclude = ["tools/introspect", "**/.venv*"]
+pythonVersion = "3.13"
+typeCheckingMode = "strict"
+reportMissingModuleSource = false
+
+[[tool.pyright.executionEnvironments]]
+# Tests drive untyped Resolve fakes: keep strict checks, relax "unknown type" noise.
+root = "tests"
+extraPaths = [".", "src", "tools"]
+reportPrivateUsage = false
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+reportUnknownArgumentType = false
+reportUnknownParameterType = false
+reportUnknownLambdaType = false
+reportMissingParameterType = false
+reportMissingTypeArgument = false
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = ["live: requires a running DaVinci Resolve Studio (deselect with -m 'not live')"]
+addopts = "-m 'not live'"
+
+[tool.coverage.run]
+source = ["davinci_mcp"]
+omit = ["src/davinci_mcp/api/_generated/*"]

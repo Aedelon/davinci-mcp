@@ -1,0 +1,108 @@
+# Copyright Delanoe Pirard / Aedelon. Apache 2.0.
+"""Settings loaded from ``config.toml`` and overridden by ``DAVINCI_MCP_*`` env vars.
+
+Env var format: ``DAVINCI_MCP_<SECTION>__<KEY>``, e.g. ``DAVINCI_MCP_CONNECTION__AUTO_LAUNCH=0``.
+"""
+
+from __future__ import annotations
+
+import os
+import tomllib
+from pathlib import Path
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+ENV_PREFIX = "DAVINCI_MCP_"
+
+
+def _config_home() -> Path:
+    return Path(os.environ.get("XDG_CONFIG_HOME", "~/.config")).expanduser() / "davinci-mcp"
+
+
+def _state_home() -> Path:
+    return Path(os.environ.get("XDG_STATE_HOME", "~/.local/state")).expanduser() / "davinci-mcp"
+
+
+class _Section(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+class ConnectionSettings(_Section):
+    auto_launch: bool = True
+    headless: bool = False
+    call_timeout_s: float = Field(default=30.0, gt=0)
+    launch_timeout_s: float = Field(default=90.0, gt=0)
+    script_api: Path | None = None
+    script_lib: Path | None = None
+
+
+class SafetySettings(_Section):
+    allowed_roots: list[Path] = Field(default_factory=lambda: [Path.home()])
+    snapshot_dir: Path = Field(default_factory=lambda: _state_home() / "snapshots")
+    snapshot_retention: int = Field(default=20, ge=0)
+    consent_ttl_s: float = Field(default=300.0, gt=0)
+    enable_code_execution: bool = False
+
+    @field_validator("allowed_roots", mode="after")
+    @classmethod
+    def _expand_roots(cls, roots: list[Path]) -> list[Path]:
+        return [r.expanduser().resolve() for r in roots]
+
+    @field_validator("snapshot_dir", mode="after")
+    @classmethod
+    def _expand_dir(cls, p: Path) -> Path:
+        return p.expanduser()
+
+
+class HttpSettings(_Section):
+    host: str = "127.0.0.1"
+    port: int = Field(default=8765, ge=1, le=65535)
+    token_env: str = "DAVINCI_MCP_TOKEN"  # noqa: S105 - env var name, not a secret
+
+
+class TelemetrySettings(_Section):
+    otlp_endpoint: str = ""
+
+
+class Settings(_Section):
+    connection: ConnectionSettings = Field(default_factory=ConnectionSettings)
+    safety: SafetySettings = Field(default_factory=SafetySettings)
+    http: HttpSettings = Field(default_factory=HttpSettings)
+    telemetry: TelemetrySettings = Field(default_factory=TelemetrySettings)
+    state_dir: Path = Field(default_factory=_state_home)
+
+
+def _env_overrides(environ: dict[str, str]) -> dict[str, dict[str, str]]:
+    overrides: dict[str, dict[str, str]] = {}
+    for key, value in environ.items():
+        if not key.startswith(ENV_PREFIX) or "__" not in key:
+            continue
+        section, _, field = key.removeprefix(ENV_PREFIX).lower().partition("__")
+        overrides.setdefault(section, {})[field] = value
+    return overrides
+
+
+def _parse_env_value(raw: str) -> bool | str | list[str]:
+    lowered = raw.strip().lower()
+    if lowered in {"1", "true", "yes", "on"}:
+        return True
+    if lowered in {"0", "false", "no", "off"}:
+        return False
+    if raw.startswith("["):
+        return [s.strip() for s in raw.strip("[]").split(",") if s.strip()]
+    return raw
+
+
+def load_settings(path: Path | None = None, environ: dict[str, str] | None = None) -> Settings:
+    """Load settings: defaults < TOML file < environment."""
+    env = dict(os.environ if environ is None else environ)
+    config_path = path or Path(env.get(f"{ENV_PREFIX}CONFIG", _config_home() / "config.toml"))
+    data: dict[str, Any] = {}
+    if config_path.exists():
+        data = tomllib.loads(config_path.read_text(encoding="utf-8"))
+    for section, fields in _env_overrides(env).items():
+        target: dict[str, Any] = data.setdefault(section, {})
+        for field, raw in fields.items():
+            target[field] = _parse_env_value(raw)
+    return Settings.model_validate(data)

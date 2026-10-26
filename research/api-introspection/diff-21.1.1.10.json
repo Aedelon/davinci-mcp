@@ -1,0 +1,172 @@
+{
+  "Resolve": {
+    "live_count": 47,
+    "documented_count": 46,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "ProjectManager": {
+    "live_count": 30,
+    "documented_count": 27,
+    "undocumented": [
+      "GetFoldersInCurrentFolder",
+      "GetProjectsInCurrentFolder",
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "Project": {
+    "live_count": 67,
+    "documented_count": 60,
+    "undocumented": [
+      "GetPresetList",
+      "GetPresets",
+      "GetRenderJobs",
+      "GetRenderPresets",
+      "GetSetting",
+      "SetPreset",
+      "SetSetting"
+    ],
+    "documented_missing_live": []
+  },
+  "MediaStorage": {
+    "live_count": 16,
+    "documented_count": 11,
+    "undocumented": [
+      "AddItemsToMediaPool",
+      "GetFiles",
+      "GetMountedVolumes",
+      "GetSubFolders",
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "MediaPool": {
+    "live_count": 28,
+    "documented_count": 28,
+    "undocumented": [],
+    "documented_missing_live": []
+  },
+  "Folder": {
+    "live_count": 15,
+    "documented_count": 13,
+    "undocumented": [
+      "GetClips",
+      "GetSubFolders"
+    ],
+    "documented_missing_live": []
+  },
+  "MediaPoolItem": {
+    "live_count": 45,
+    "documented_count": 44,
+    "undocumented": [
+      "GetFlags"
+    ],
+    "documented_missing_live": []
+  },
+  "Timeline": {
+    "live_count": 67,
+    "documented_count": 64,
+    "undocumented": [
+      "GetItemsInTrack",
+      "GetSetting",
+      "SetSetting"
+    ],
+    "documented_missing_live": []
+  },
+  "TimelineItem": {
+    "live_count": 102,
+    "documented_count": 93,
+    "undocumented": [
+      "GetFlags",
+      "GetFusionCompNames",
+      "GetLUT",
+      "GetNodeLabel",
+      "GetNumNodes",
+      "GetProperty",
+      "GetVersionNames",
+      "SetLUT",
+      "SetProperty"
+    ],
+    "documented_missing_live": []
+  },
+  "Graph": {
+    "live_count": 11,
+    "documented_count": 11,
+    "undocumented": [],
+    "documented_missing_live": []
+  },
+  "FusionComposition": {
+    "live_count": 92,
+    "documented_count": 0,
+    "undocumented": null,
+    "documented_missing_live": []
+  },
+  "FusionTool": {
+    "live_count": 38,
+    "documented_count": 0,
+    "undocumented": null,
+    "documented_missing_live": []
+  },
+  "FusionInput": {
+    "live_count": 26,
+    "documented_count": 0,
+    "undocumented": null,
+    "documented_missing_live": []
+  },
+  "TimelineItem(audio)": {
+    "live_count": 102,
+    "documented_count": 93,
+    "undocumented": [
+      "GetFlags",
+      "GetFusionCompNames",
+      "GetLUT",
+      "GetNodeLabel",
+      "GetNumNodes",
+      "GetProperty",
+      "GetVersionNames",
+      "SetLUT",
+      "SetProperty"
+    ],
+    "documented_missing_live": []
+  },
+  "GalleryStill": {
+    "live_count": 0,
+    "documented_count": 0,
+    "undocumented": null,
+    "documented_missing_live": []
+  },
+  "Graph(timeline)": {
+    "live_count": 11,
+    "documented_count": 11,
+    "undocumented": [],
+    "documented_missing_live": []
+  },
+  "Gallery": {
+    "live_count": 8,
+    "documented_count": 8,
+    "undocumented": [],
+    "documented_missing_live": []
+  },
+  "GalleryStillAlbum": {
+    "live_count": 6,
+    "documented_count": 6,
+    "undocumented": [],
+    "documented_missing_live": []
+  },
+  "ColorGroup": {
+    "live_count": 5,
+    "documented_count": 5,
+    "undocumented": [],
+    "documented_missing_live": []
+  },
+  "Fusion": {
+    "live_count": 141,
+    "documented_count": 0,
+    "undocumented": null,
+    "documented_missing_live": []
+  },
+  "_classes_documented_not_reached": []
+}

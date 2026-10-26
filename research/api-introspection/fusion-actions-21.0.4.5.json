@@ -1,0 +1,6204 @@
+[
+ {
+  "ID": "Bin_New_Reel",
+  "Name": "New Reel",
+  "FullName": "New Reel",
+  "ToolTip": "New Reel",
+  "Source": ""
+ },
+ {
+  "ID": "Bin_New_Folder",
+  "Name": "New Folder",
+  "FullName": "New Folder",
+  "ToolTip": "New Folder",
+  "Source": ""
+ },
+ {
+  "ID": "Bin_New_Item",
+  "Name": "New Item\u2026",
+  "FullName": "New Item\u2026",
+  "ToolTip": "New Item\u2026",
+  "Source": ""
+ },
+ {
+  "ID": "Bin_Icon_Size",
+  "Name": "Icon Size",
+  "FullName": "Icon Size",
+  "ToolTip": "Icon Size",
+  "Source": ""
+ },
+ {
+  "ID": "Bin_Show_Checker",
+  "Name": "Show Checker",
+  "FullName": "Show Checker",
+  "ToolTip": "Show Checker",
+  "Source": ""
+ },
+ {
+  "ID": "Bin_View_Mode",
+  "Name": "View Mode",
+  "FullName": "View Mode",
+  "ToolTip": "View Mode",
+  "Source": ""
+ },
+ {
+  "ID": "Inspector_Combining",
+  "Name": "Combine Selected Tools",
+  "FullName": "Combine Selected Tools",
+  "ToolTip": "Combine Selected Tools",
+  "Source": ""
+ },
+ {
+  "ID": "Effects_ShowSearch",
+  "Name": "Search",
+  "FullName": "Search",
+  "ToolTip": "Search",
+  "Source": ""
+ },
+ {
+  "ID": "Effects_Search",
+  "Name": "Search",
+  "FullName": "Search",
+  "ToolTip": "Search",
+  "Source": ""
+ },
+ {
+  "ID": "Close_Frame",
+  "Name": "Close Frame",
+  "FullName": "Close Frame",
+  "ToolTip": "Close Frame",
+  "Source": ""
+ },
+ {
+  "ID": "Flow_Add_Bookmark",
+  "Name": "Add Bookmark",
+  "FullName": "Add Bookmark",
+  "ToolTip": "Add Bookmark",
+  "Source": ""
+ },
+ {
+  "ID": "Flow_Go_To_Bookmark",
+  "Name": "Go To Bookmark",
+  "FullName": "Go To Bookmark",
+  "ToolTip": "Go To Bookmark",
+  "Source": ""
+ },
+ {
+  "ID": "Flow_Manage_Bookmarks",
+  "Name": "Manage Bookmarks",
+  "FullName": "Manage Bookmarks",
+  "ToolTip": "Manage Bookmarks",
+  "Source": ""
+ },
+ {
+  "ID": "ShapeViewer_Checker_Enable",
+  "Name": "Checker Underlay",
+  "FullName": "Checker Underlay",
+  "ToolTip": "Checker Underlay",
+  "Source": ""
+ },
+ {
+  "ID": "GraphView_ZoomToFit",
+  "Name": "Zoom To Fit",
+  "FullName": "Zoom To Fit",
+  "ToolTip": "Zoom To Fit",
+  "Source": ""
+ },
+ {
+  "ID": "GraphView_SortMenu",
+  "Name": "Filter",
+  "FullName": "Filter",
+  "ToolTip": "Filter",
+  "Source": ""
+ },
+ {
+  "ID": "GraphView_ZoomX",
+  "Name": "Zoom X",
+  "FullName": "Zoom X",
+  "ToolTip": "Zoom X",
+  "Source": ""
+ },
+ {
+  "ID": "KeyframeView_ZoomY",
+  "Name": "Zoom Y",
+  "FullName": "Zoom Y",
+  "ToolTip": "Zoom Y",
+  "Source": ""
+ },
+ {
+  "ID": "GraphView_ZoomY",
+  "Name": "Zoom Y",
+  "FullName": "Zoom Y",
+  "ToolTip": "Zoom Y",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Item_Next",
+  "Name": "Next Item",
+  "FullName": "Next Item",
+  "ToolTip": "Next Item",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Item_Prev",
+  "Name": "Prev Item",
+  "FullName": "Prev Item",
+  "ToolTip": "Prev Item",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Play",
+  "Name": "Play",
+  "FullName": "Play",
+  "ToolTip": "Play",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Play_Forward",
+  "Name": "Play Fwd",
+  "FullName": "Play Fwd",
+  "ToolTip": "Play Fwd",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Play_Reverse",
+  "Name": "Play Rev",
+  "FullName": "Play Rev",
+  "ToolTip": "Play Rev",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Play",
+  "Name": "Play",
+  "FullName": "Play",
+  "ToolTip": "Play",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Seek_By",
+  "Name": "Seek By",
+  "FullName": "Seek By",
+  "ToolTip": "Seek By",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Seek_To",
+  "Name": "Seek To",
+  "FullName": "Seek To",
+  "ToolTip": "Seek To",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Seek_Start",
+  "Name": "Seek Start",
+  "FullName": "Seek Start",
+  "ToolTip": "Seek Start",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Seek_End",
+  "Name": "Seek End",
+  "FullName": "Seek End",
+  "ToolTip": "Seek End",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Seek_Prev",
+  "Name": "Seek Prev",
+  "FullName": "Seek Prev",
+  "ToolTip": "Seek Prev",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Seek_Next",
+  "Name": "Seek Next",
+  "FullName": "Seek Next",
+  "ToolTip": "Seek Next",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Set_Loop",
+  "Name": "Loop",
+  "FullName": "Loop",
+  "ToolTip": "Loop",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Trim_Set_In",
+  "Name": "Trim In",
+  "FullName": "Trim In",
+  "ToolTip": "Trim In",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Trim_Set_Out",
+  "Name": "Trim Out",
+  "FullName": "Trim Out",
+  "ToolTip": "Trim Out",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Gamma",
+  "Name": "Gamma",
+  "FullName": "Gamma",
+  "ToolTip": "Gamma",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Gain",
+  "Name": "Gain",
+  "FullName": "Gain",
+  "ToolTip": "Gain",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Set_FPS",
+  "Name": "Frames/Sec",
+  "FullName": "Frames/Sec",
+  "ToolTip": "Frames/Sec",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Set_Time",
+  "Name": "Current Time",
+  "FullName": "Current Time",
+  "ToolTip": "Current Time",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Guide_Enable",
+  "Name": "Toggle Guide",
+  "FullName": "Toggle Guide",
+  "ToolTip": "Toggle Guide",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Guide_Select",
+  "Name": "Select Guide",
+  "FullName": "Select Guide",
+  "ToolTip": "Select Guide",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Channel",
+  "Name": "Channel",
+  "FullName": "Channel",
+  "ToolTip": "Channel",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Show_Metadata",
+  "Name": "Show Metadata",
+  "FullName": "Show Metadata",
+  "ToolTip": "Show Metadata",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Sync_Mode",
+  "Name": "Sync Mode",
+  "FullName": "Sync Mode",
+  "ToolTip": "Sync Mode",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Loop_Set_In",
+  "Name": "Set Loop In",
+  "FullName": "Set Loop In",
+  "ToolTip": "Set Loop In",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Loop_Set_Out",
+  "Name": "Set Loop Out",
+  "FullName": "Set Loop Out",
+  "ToolTip": "Set Loop Out",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Loop_Reset",
+  "Name": "Reset Loop",
+  "FullName": "Reset Loop",
+  "ToolTip": "Reset Loop",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Loop_Set_Shot",
+  "Name": "Set Loop Shot",
+  "FullName": "Set Loop Shot",
+  "ToolTip": "Set Loop Shot",
+  "Source": ""
+ },
+ {
+  "ID": "Player_Device_DeckLink",
+  "Name": "Video Monitor",
+  "FullName": "Video Monitor",
+  "ToolTip": "Video Monitor",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_Screen_Mode",
+  "Name": "Fusion_Screen_Mode",
+  "FullName": "Fusion_Screen_Mode",
+  "ToolTip": "Fusion_Screen_Mode",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Fusion_View_Show",
+  "FullName": "Fusion_View_Show",
+  "ToolTip": "Fusion_View_Show",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Viewer",
+  "FullName": "Viewer",
+  "ToolTip": "Viewer",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Viewer",
+  "FullName": "Viewer",
+  "ToolTip": "Viewer",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Effects",
+  "FullName": "Effects",
+  "ToolTip": "Effects",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Inspector",
+  "FullName": "Inspector",
+  "ToolTip": "Inspector",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Keyframes",
+  "FullName": "Keyframes",
+  "ToolTip": "Keyframes",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Nodes",
+  "FullName": "Nodes",
+  "ToolTip": "Nodes",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Spline",
+  "FullName": "Spline",
+  "ToolTip": "Spline",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_Zone_Expand",
+  "Name": "Fusion_Zone_Expand",
+  "FullName": "Fusion_Zone_Expand",
+  "ToolTip": "Fusion_Zone_Expand",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_Time_Set",
+  "Name": "Fusion_Time_Set",
+  "FullName": "Fusion_Time_Set",
+  "ToolTip": "Fusion_Time_Set",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_Time_Get",
+  "Name": "Fusion_Time_Get",
+  "FullName": "Fusion_Time_Get",
+  "ToolTip": "Fusion_Time_Get",
+  "Source": ""
+ },
+ {
+  "ID": "ACTION_GET_UI_LAYOUT",
+  "Name": "ACTION_GET_UI_LAYOUT",
+  "FullName": "ACTION_GET_UI_LAYOUT",
+  "ToolTip": "ACTION_GET_UI_LAYOUT",
+  "Source": ""
+ },
+ {
+  "ID": "ACTION_SET_UI_LAYOUT",
+  "Name": "ACTION_SET_UI_LAYOUT",
+  "FullName": "ACTION_SET_UI_LAYOUT",
+  "ToolTip": "ACTION_SET_UI_LAYOUT",
+  "Source": ""
+ },
+ {
+  "ID": "ACTION_SHOW_CONSOLE",
+  "Name": "Console",
+  "FullName": "Console",
+  "ToolTip": "Console",
+  "Source": ""
+ },
+ {
+  "ID": "ACTION_PRINT_CONSOLE",
+  "Name": "Console",
+  "FullName": "Console",
+  "ToolTip": "Console",
+  "Source": ""
+ },
+ {
+  "ID": "ACTION_CLOSE_COMP",
+  "Name": "ACTION_CLOSE_COMP",
+  "FullName": "ACTION_CLOSE_COMP",
+  "ToolTip": "ACTION_CLOSE_COMP",
+  "Source": ""
+ },
+ {
+  "ID": "ACTION_INSTALL_FILE",
+  "Name": "ACTION_INSTALL_FILE",
+  "FullName": "ACTION_INSTALL_FILE",
+  "ToolTip": "ACTION_INSTALL_FILE",
+  "Source": ""
+ },
+ {
+  "ID": "No_Action",
+  "Name": "No Action",
+  "FullName": "No Action",
+  "ToolTip": "No Action",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Checker_Enable",
+  "Name": "Checker Underlay",
+  "FullName": "Checker Underlay",
+  "ToolTip": "Checker Underlay",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_ROI_Enable",
+  "Name": "ROI",
+  "FullName": "ROI",
+  "ToolTip": "ROI",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Layer",
+  "Name": "Layer",
+  "FullName": "Layer",
+  "ToolTip": "Layer",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Layer_Toggle",
+  "Name": "Toggle Layer",
+  "FullName": "Toggle Layer",
+  "ToolTip": "Toggle Layer",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Layer_Change",
+  "Name": "View Prev/Next Layer",
+  "FullName": "View Prev/Next Layer",
+  "ToolTip": "View Prev/Next Layer",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_ROI_Auto",
+  "Name": "Auto ROI",
+  "FullName": "Auto ROI",
+  "ToolTip": "Auto ROI",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_ROI_Lock",
+  "Name": "Lock ROI",
+  "FullName": "Lock ROI",
+  "ToolTip": "Lock ROI",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_ROI_Set",
+  "Name": "Set ROI",
+  "FullName": "Set ROI",
+  "ToolTip": "Set ROI",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_ROI_Reset",
+  "Name": "Reset ROI",
+  "FullName": "Reset ROI",
+  "ToolTip": "Reset ROI",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_DOD_Enable",
+  "Name": "DOD",
+  "FullName": "DOD",
+  "ToolTip": "DOD",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_3D_Lighting",
+  "Name": "Lighting",
+  "FullName": "Lighting",
+  "ToolTip": "Lighting",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_3D_Wireframe",
+  "Name": "Wireframe",
+  "FullName": "Wireframe",
+  "ToolTip": "Wireframe",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_3D_Solid",
+  "Name": "Solid",
+  "FullName": "Solid",
+  "ToolTip": "Solid",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_3D_Lights",
+  "Name": "Lights",
+  "FullName": "Lights",
+  "ToolTip": "Lights",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_3D_Shadows",
+  "Name": "Shadows",
+  "FullName": "Shadows",
+  "ToolTip": "Shadows",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_3D_Transparency",
+  "Name": "Transparency",
+  "FullName": "Transparency",
+  "ToolTip": "Transparency",
+  "Source": ""
+ },
+ {
+  "ID": "Frame_Activate_SubWnd",
+  "Name": "SubWnd",
+  "FullName": "SubWnd",
+  "ToolTip": "SubWnd",
+  "Source": ""
+ },
+ {
+  "ID": "Frame_Activate_Frame",
+  "Name": "Frame",
+  "FullName": "Frame",
+  "ToolTip": "Frame",
+  "Source": ""
+ },
+ {
+  "ID": "Frame_Activate_Next",
+  "Name": "Next Frame",
+  "FullName": "Next Frame",
+  "ToolTip": "Next Frame",
+  "Source": ""
+ },
+ {
+  "ID": "Frame_Activate_Prev",
+  "Name": "Prev Frame",
+  "FullName": "Prev Frame",
+  "ToolTip": "Prev Frame",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Choose_Tool",
+  "Name": "Choose Tool",
+  "FullName": "Choose Tool",
+  "ToolTip": "Choose Tool",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Choose_Action",
+  "Name": "Choose Action",
+  "FullName": "Choose Action",
+  "ToolTip": "Choose Action",
+  "Source": ""
+ },
+ {
+  "ID": "Execute",
+  "Name": "Execute",
+  "FullName": "Execute",
+  "ToolTip": "Execute",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_New",
+  "Name": "&New",
+  "FullName": "New",
+  "ToolTip": "New",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Open",
+  "Name": "&Open\u2026",
+  "FullName": "Open\u2026",
+  "ToolTip": "Open\u2026",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Save",
+  "Name": "&Save",
+  "FullName": "Save",
+  "ToolTip": "Save",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_SaveVersion",
+  "Name": "&Save Version",
+  "FullName": "Save Version",
+  "ToolTip": "Save Version",
+  "Source": ""
+ },
+ {
+  "ID": "AddTool",
+  "Name": "AddTool",
+  "FullName": "AddTool",
+  "ToolTip": "AddTool",
+  "Source": ""
+ },
+ {
+  "ID": "AddLUT",
+  "Name": "AddLUT",
+  "FullName": "AddLUT",
+  "ToolTip": "AddLUT",
+  "Source": ""
+ },
+ {
+  "ID": "RunScript",
+  "Name": "RunScript",
+  "FullName": "RunScript",
+  "ToolTip": "RunScript",
+  "Source": ""
+ },
+ {
+  "ID": "AddSetting",
+  "Name": "AddSetting",
+  "FullName": "AddSetting",
+  "ToolTip": "AddSetting",
+  "Source": ""
+ },
+ {
+  "ID": "Layout_Switch",
+  "Name": "Switch Layout",
+  "FullName": "Switch Layout",
+  "ToolTip": "Switch Layout",
+  "Source": ""
+ },
+ {
+  "ID": "Layout_Switch",
+  "Name": "Switch Layout 1",
+  "FullName": "Switch Layout 1",
+  "ToolTip": "Switch Layout 1",
+  "Source": ""
+ },
+ {
+  "ID": "Layout_Switch",
+  "Name": "Switch Layout 2",
+  "FullName": "Switch Layout 2",
+  "ToolTip": "Switch Layout 2",
+  "Source": ""
+ },
+ {
+  "ID": "Layout_Switch",
+  "Name": "Switch Layout 3",
+  "FullName": "Switch Layout 3",
+  "ToolTip": "Switch Layout 3",
+  "Source": ""
+ },
+ {
+  "ID": "Layout_Switch",
+  "Name": "Switch Layout 4",
+  "FullName": "Switch Layout 4",
+  "ToolTip": "Switch Layout 4",
+  "Source": ""
+ },
+ {
+  "ID": "Prefs_Show",
+  "Name": "&Preferences\u2026",
+  "FullName": "Preferences\u2026",
+  "ToolTip": "Preferences\u2026",
+  "Source": ""
+ },
+ {
+  "ID": "App_Exit",
+  "Name": "E&xit",
+  "FullName": "Exit",
+  "ToolTip": "Exit",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_BackgroundRender",
+  "Name": "Back&ground Render",
+  "FullName": "Background Render",
+  "ToolTip": "Background Render",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Undo",
+  "Name": "&Undo",
+  "FullName": "Undo",
+  "ToolTip": "Undo",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Redo",
+  "Name": "&Redo",
+  "FullName": "Redo",
+  "ToolTip": "Redo",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_ShowTimeCode",
+  "Name": "Show Time Code",
+  "FullName": "Show Time Code",
+  "ToolTip": "Show Time Code",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_TimeCodeFormat",
+  "Name": "Time Code Format",
+  "FullName": "Time Code Format",
+  "ToolTip": "Time Code Format",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_TimeCodeFormat",
+  "Name": "&SMPTE",
+  "FullName": "SMPTE",
+  "ToolTip": "SMPTE",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_TimeCodeFormat",
+  "Name": "&Feet+Frames",
+  "FullName": "Feet+Frames",
+  "ToolTip": "Feet+Frames",
+  "Source": ""
+ },
+ {
+  "ID": "App_About",
+  "Name": "&About\u2026",
+  "FullName": "About\u2026",
+  "ToolTip": "About\u2026",
+  "Source": ""
+ },
+ {
+  "ID": "App_NewImageView",
+  "Name": "New &Image View",
+  "FullName": "New Image View",
+  "ToolTip": "New Image View",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_NewTabbedFrame",
+  "Name": "New &Tabbed Frame",
+  "FullName": "New Tabbed Frame",
+  "ToolTip": "New Tabbed Frame",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_NewFloatFrame",
+  "Name": "New &Floating Frame",
+  "FullName": "New Floating Frame",
+  "ToolTip": "New Floating Frame",
+  "Source": ""
+ },
+ {
+  "ID": "App_Help",
+  "Name": "H&elp",
+  "FullName": "Help",
+  "ToolTip": "Help",
+  "Source": ""
+ },
+ {
+  "ID": "App_OnlyActiveComp",
+  "Name": "&Show Only Active Comp",
+  "FullName": "Show Only Active Comp",
+  "ToolTip": "Show Only Active Comp",
+  "Source": ""
+ },
+ {
+  "ID": "App_ShowUI",
+  "Name": "Show UI",
+  "FullName": "Show UI",
+  "ToolTip": "Show UI",
+  "Source": ""
+ },
+ {
+  "ID": "App_ShowUI",
+  "Name": "&View Bar",
+  "FullName": "View Bar",
+  "ToolTip": "View Bar",
+  "Source": ""
+ },
+ {
+  "ID": "App_ShowUI",
+  "Name": "St&atus Bar",
+  "FullName": "Status Bar",
+  "ToolTip": "Status Bar",
+  "Source": ""
+ },
+ {
+  "ID": "App_CustomizeToolBars",
+  "Name": "C&ustomize Tool Bars\u2026",
+  "FullName": "Customize Tool Bars\u2026",
+  "ToolTip": "Customize Tool Bars\u2026",
+  "Source": ""
+ },
+ {
+  "ID": "App_CustomizeHotkeys",
+  "Name": "Customize Hotkeys\u2026",
+  "FullName": "Customize Hotkeys\u2026",
+  "ToolTip": "Customize Hotkeys\u2026",
+  "Source": ""
+ },
+ {
+  "ID": "App_Cut",
+  "Name": "&Cut",
+  "FullName": "Cut",
+  "ToolTip": "Cut",
+  "Source": ""
+ },
+ {
+  "ID": "App_Copy",
+  "Name": "C&opy",
+  "FullName": "Copy",
+  "ToolTip": "Copy",
+  "Source": ""
+ },
+ {
+  "ID": "App_Paste",
+  "Name": "&Paste",
+  "FullName": "Paste",
+  "ToolTip": "Paste",
+  "Source": ""
+ },
+ {
+  "ID": "App_Delete",
+  "Name": "&Delete",
+  "FullName": "Delete",
+  "ToolTip": "Delete",
+  "Source": ""
+ },
+ {
+  "ID": "App_SelectAll",
+  "Name": "&Select All",
+  "FullName": "Select All",
+  "ToolTip": "Select All",
+  "Source": ""
+ },
+ {
+  "ID": "App_DeselectAll",
+  "Name": "D&eselect All",
+  "FullName": "Deselect All",
+  "ToolTip": "Deselect All",
+  "Source": ""
+ },
+ {
+  "ID": "App_PasteSettings",
+  "Name": "Pas&te Settings",
+  "FullName": "Paste Settings",
+  "ToolTip": "Paste Settings",
+  "Source": ""
+ },
+ {
+  "ID": "View_Show",
+  "Name": "Show View",
+  "FullName": "Show View",
+  "ToolTip": "Show View",
+  "Source": ""
+ },
+ {
+  "ID": "View_Show",
+  "Name": "Show &Flow View",
+  "FullName": "Show Flow View",
+  "ToolTip": "Show Flow View",
+  "Source": ""
+ },
+ {
+  "ID": "View_Show",
+  "Name": "Show Co&nsole View",
+  "FullName": "Show Console View",
+  "ToolTip": "Show Console View",
+  "Source": ""
+ },
+ {
+  "ID": "View_Show",
+  "Name": "Show &Timeline View",
+  "FullName": "Show Timeline View",
+  "ToolTip": "Show Timeline View",
+  "Source": ""
+ },
+ {
+  "ID": "View_Show",
+  "Name": "Show &Spline View",
+  "FullName": "Show Spline View",
+  "ToolTip": "Show Spline View",
+  "Source": ""
+ },
+ {
+  "ID": "View_Show",
+  "Name": "Show &Control View",
+  "FullName": "Show Control View",
+  "ToolTip": "Show Control View",
+  "Source": ""
+ },
+ {
+  "ID": "View_Show",
+  "Name": "Show Modifie&r View",
+  "FullName": "Show Modifier View",
+  "ToolTip": "Show Modifier View",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Close",
+  "Name": "&Close",
+  "FullName": "Close",
+  "ToolTip": "Close",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_SaveAs",
+  "Name": "Save &As\u2026",
+  "FullName": "Save As\u2026",
+  "ToolTip": "Save As\u2026",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_SaveCopyAs",
+  "Name": "Save a C&opy As\u2026",
+  "FullName": "Save a Copy As\u2026",
+  "ToolTip": "Save a Copy As\u2026",
+  "Source": ""
+ },
+ {
+  "ID": "Script_Edit",
+  "Name": "&New Script\u2026",
+  "FullName": "New Script\u2026",
+  "ToolTip": "New Script\u2026",
+  "Source": ""
+ },
+ {
+  "ID": "Layout_Load",
+  "Name": "&Load Layout\u2026",
+  "FullName": "Load Layout\u2026",
+  "ToolTip": "Load Layout\u2026",
+  "Source": ""
+ },
+ {
+  "ID": "Layout_Save",
+  "Name": "&Save Layout\u2026",
+  "FullName": "Save Layout\u2026",
+  "ToolTip": "Save Layout\u2026",
+  "Source": ""
+ },
+ {
+  "ID": "Layout_Reset",
+  "Name": "&Reset Layout",
+  "FullName": "Reset Layout",
+  "ToolTip": "Reset Layout",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Recent_Open",
+  "Name": "Open Recent",
+  "FullName": "Open Recent",
+  "ToolTip": "Open Recent",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Recent_Clear",
+  "Name": "&Clear Recent",
+  "FullName": "Clear Recent",
+  "ToolTip": "Clear Recent",
+  "Source": ""
+ },
+ {
+  "ID": "Utility_Show",
+  "Name": "Utility_Show",
+  "FullName": "Utility_Show",
+  "ToolTip": "Utility_Show",
+  "Source": ""
+ },
+ {
+  "ID": "Tool_ViewOn",
+  "Name": "View On",
+  "FullName": "View On",
+  "ToolTip": "View On",
+  "Source": ""
+ },
+ {
+  "ID": "Tool_ViewClear",
+  "Name": "Clear Views",
+  "FullName": "Clear Views",
+  "ToolTip": "Clear Views",
+  "Source": ""
+ },
+ {
+  "ID": "Utility_Show",
+  "Name": "&Bins\u2026",
+  "FullName": "Bins\u2026",
+  "ToolTip": "Bins\u2026",
+  "Source": ""
+ },
+ {
+  "ID": "Bins_Play",
+  "Name": "Play",
+  "FullName": "Play",
+  "ToolTip": "Play",
+  "Source": ""
+ },
+ {
+  "ID": "Bins_Stop",
+  "Name": "Stop",
+  "FullName": "Stop",
+  "ToolTip": "Stop",
+  "Source": ""
+ },
+ {
+  "ID": "Bins_Delete",
+  "Name": "Delete",
+  "FullName": "Delete",
+  "ToolTip": "Delete",
+  "Source": ""
+ },
+ {
+  "ID": "Bins_Rename",
+  "Name": "Rename",
+  "FullName": "Rename",
+  "ToolTip": "Rename",
+  "Source": ""
+ },
+ {
+  "ID": "Bins_Refresh",
+  "Name": "Refresh",
+  "FullName": "Refresh",
+  "ToolTip": "Refresh",
+  "Source": ""
+ },
+ {
+  "ID": "Bins_SelectAll",
+  "Name": "Select All",
+  "FullName": "Select All",
+  "ToolTip": "Select All",
+  "Source": ""
+ },
+ {
+  "ID": "Time_Step_Forward",
+  "Name": "Step Forward",
+  "FullName": "Step Forward",
+  "ToolTip": "Step Forward",
+  "Source": ""
+ },
+ {
+  "ID": "Time_Step_Back",
+  "Name": "Step Back",
+  "FullName": "Step Back",
+  "ToolTip": "Step Back",
+  "Source": ""
+ },
+ {
+  "ID": "Time_Step_NextKey",
+  "Name": "Step Next Key",
+  "FullName": "Step Next Key",
+  "ToolTip": "Step Next Key",
+  "Source": ""
+ },
+ {
+  "ID": "Time_Step_PrevKey",
+  "Name": "Step Prev Key",
+  "FullName": "Step Prev Key",
+  "ToolTip": "Step Prev Key",
+  "Source": ""
+ },
+ {
+  "ID": "Time_Goto_GlobalStart",
+  "Name": "Goto Global Start",
+  "FullName": "Goto Global Start",
+  "ToolTip": "Goto Global Start",
+  "Source": ""
+ },
+ {
+  "ID": "Time_Goto_GlobalEnd",
+  "Name": "Goto Global End",
+  "FullName": "Goto Global End",
+  "ToolTip": "Goto Global End",
+  "Source": ""
+ },
+ {
+  "ID": "Time_Goto_RenderStart",
+  "Name": "Goto Render Start",
+  "FullName": "Goto Render Start",
+  "ToolTip": "Goto Render Start",
+  "Source": ""
+ },
+ {
+  "ID": "Time_Goto_RenderEnd",
+  "Name": "Goto Render End",
+  "FullName": "Goto Render End",
+  "ToolTip": "Goto Render End",
+  "Source": ""
+ },
+ {
+  "ID": "Time_Set",
+  "Name": "Set Current Time",
+  "FullName": "Set Current Time",
+  "ToolTip": "Set Current Time",
+  "Source": ""
+ },
+ {
+  "ID": "Tool_Settings_Activate",
+  "Name": "Activate Settings",
+  "FullName": "Activate Settings",
+  "ToolTip": "Activate Settings",
+  "Source": ""
+ },
+ {
+  "ID": "Tool_Settings_Store",
+  "Name": "Store Settings",
+  "FullName": "Store Settings",
+  "ToolTip": "Store Settings",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_SubView_Enable",
+  "Name": "SubView",
+  "FullName": "SubView",
+  "ToolTip": "SubView",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Lock",
+  "Name": "Lock",
+  "FullName": "Lock",
+  "ToolTip": "Lock",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_QuadView",
+  "Name": "Quad View",
+  "FullName": "Quad View",
+  "ToolTip": "Quad View",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Scale_Rel",
+  "Name": "Scale",
+  "FullName": "Scale",
+  "ToolTip": "Scale",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Scale_Abs",
+  "Name": "Scale",
+  "FullName": "Scale",
+  "ToolTip": "Scale",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Buffer",
+  "Name": "Buffer",
+  "FullName": "Buffer",
+  "ToolTip": "Buffer",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Reset",
+  "Name": "Reset",
+  "FullName": "Reset",
+  "ToolTip": "Reset",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_SubView_Swap",
+  "Name": "Swap SubView",
+  "FullName": "Swap SubView",
+  "ToolTip": "Swap SubView",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Tools_Disable",
+  "Name": "Disable Tools",
+  "FullName": "Disable Tools",
+  "ToolTip": "Disable Tools",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Unview_All",
+  "Name": "Unview All",
+  "FullName": "Unview All",
+  "ToolTip": "Unview All",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_LUT_Enable",
+  "Name": "LUT",
+  "FullName": "LUT",
+  "ToolTip": "LUT",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Show_GainGamma",
+  "Name": "Gain / Gamma",
+  "FullName": "Gain / Gamma",
+  "ToolTip": "Gain / Gamma",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_LUT_Edit",
+  "Name": "Edit LUT",
+  "FullName": "Edit LUT",
+  "ToolTip": "Edit LUT",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Channel",
+  "Name": "Channel",
+  "FullName": "Color",
+  "ToolTip": "Color",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Guides_Show",
+  "Name": "Show Guides",
+  "FullName": "Show Guides",
+  "ToolTip": "Show Guides",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_Controls_Show",
+  "Name": "Show Controls",
+  "FullName": "Show Controls",
+  "ToolTip": "Show Controls",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_3D_CentreSelected",
+  "Name": "Centre Selected",
+  "FullName": "Centre Selected",
+  "ToolTip": "Centre Selected",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_3D_FitSelected",
+  "Name": "Fit Selected",
+  "FullName": "Fit Selected",
+  "ToolTip": "Fit Selected",
+  "Source": ""
+ },
+ {
+  "ID": "Viewer_3D_FitAll",
+  "Name": "Fit All",
+  "FullName": "Fit All",
+  "ToolTip": "Fit All",
+  "Source": ""
+ },
+ {
+  "ID": "View_Zoom_In",
+  "Name": "Zoom In",
+  "FullName": "Zoom In",
+  "ToolTip": "Zoom In",
+  "Source": ""
+ },
+ {
+  "ID": "View_Zoom_Out",
+  "Name": "Zoom Out",
+  "FullName": "Zoom Out",
+  "ToolTip": "Zoom Out",
+  "Source": ""
+ },
+ {
+  "ID": "View_Zoom_Fit",
+  "Name": "Zoom Fit",
+  "FullName": "Zoom Fit",
+  "ToolTip": "Zoom Fit",
+  "Source": ""
+ },
+ {
+  "ID": "View_Zoom_Rectangle",
+  "Name": "Zoom Rectangle",
+  "FullName": "Zoom Rectangle",
+  "ToolTip": "Zoom Rectangle",
+  "Source": ""
+ },
+ {
+  "ID": "Time_Goto_Key_Next",
+  "Name": "Next Key",
+  "FullName": "Next Key",
+  "ToolTip": "Next Key",
+  "Source": ""
+ },
+ {
+  "ID": "Time_Goto_Key_Prev",
+  "Name": "Prev Key",
+  "FullName": "Prev Key",
+  "ToolTip": "Prev Key",
+  "Source": ""
+ },
+ {
+  "ID": "Playback_Mode",
+  "Name": "Play Mode",
+  "FullName": "Play Mode",
+  "ToolTip": "Play Mode",
+  "Source": ""
+ },
+ {
+  "ID": "Playback_Seek",
+  "Name": "Seek",
+  "FullName": "Seek",
+  "ToolTip": "Seek",
+  "Source": ""
+ },
+ {
+  "ID": "Playback_Seek_Start",
+  "Name": "Seek Start",
+  "FullName": "Seek Start",
+  "ToolTip": "Seek Start",
+  "Source": ""
+ },
+ {
+  "ID": "Playback_Seek_End",
+  "Name": "Seek End",
+  "FullName": "Seek End",
+  "ToolTip": "Seek End",
+  "Source": ""
+ },
+ {
+  "ID": "NetRender_Allow",
+  "Name": "A&llow Network Renders",
+  "FullName": "Allow Network Renders",
+  "ToolTip": "Allow Network Renders",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Render_Frame",
+  "Name": "Render Frame",
+  "FullName": "Render Frame",
+  "ToolTip": "Render Frame",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Render_End",
+  "Name": "Render End",
+  "FullName": "Render End",
+  "ToolTip": "Render End",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Activate_Tool",
+  "Name": "Activate Tool",
+  "FullName": "Activate Tool",
+  "ToolTip": "Activate Tool",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Set_Active",
+  "Name": "Set Active Tool",
+  "FullName": "Set Active Tool",
+  "ToolTip": "Set Active Tool",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_StartRender",
+  "Name": "&Render All Savers",
+  "FullName": "Render All Savers",
+  "ToolTip": "Render All Savers",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Start_Render",
+  "Name": "Start Render",
+  "FullName": "Start Render",
+  "ToolTip": "Start Render",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Render",
+  "Name": "Render",
+  "FullName": "Render",
+  "ToolTip": "Render",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Abort",
+  "Name": "Abort",
+  "FullName": "Abort",
+  "ToolTip": "Abort",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Opened",
+  "Name": "Comp_Opened",
+  "FullName": "Comp_Opened",
+  "ToolTip": "Comp_Opened",
+  "Source": ""
+ },
+ {
+  "ID": "Drag_Drop",
+  "Name": "Drag_Drop",
+  "FullName": "Drag_Drop",
+  "ToolTip": "Drag_Drop",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_High_Quality",
+  "Name": "High Quality",
+  "FullName": "High Quality",
+  "ToolTip": "High Quality",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Motion_Blur",
+  "Name": "Motion Blur",
+  "FullName": "Motion Blur",
+  "ToolTip": "Motion Blur",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Proxy",
+  "Name": "Proxy",
+  "FullName": "Proxy",
+  "ToolTip": "Proxy",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Auto_Proxy",
+  "Name": "Auto Proxy",
+  "FullName": "Auto Proxy",
+  "ToolTip": "Auto Proxy",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Play_Loop",
+  "Name": "Playback Loop",
+  "FullName": "Playback Loop",
+  "ToolTip": "Playback Loop",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Play_PingPong",
+  "Name": "Ping Pong Loop",
+  "FullName": "Ping Pong Loop",
+  "ToolTip": "Ping Pong Loop",
+  "Source": ""
+ },
+ {
+  "ID": "Reel_Delete_Selected",
+  "Name": "Reel_Delete_Selected",
+  "FullName": "Reel_Delete_Selected",
+  "ToolTip": "Reel_Delete_Selected",
+  "Source": ""
+ },
+ {
+  "ID": "Target_Show_Menu",
+  "Name": "Menu",
+  "FullName": "Menu",
+  "ToolTip": "Menu",
+  "Source": ""
+ },
+ {
+  "ID": "Target_Show_Scripts",
+  "Name": "Scripts",
+  "FullName": "Scripts",
+  "ToolTip": "Scripts",
+  "Source": ""
+ },
+ {
+  "ID": "Console_Show",
+  "Name": "Console",
+  "FullName": "Console",
+  "ToolTip": "Console",
+  "Source": ""
+ },
+ {
+  "ID": "Comp_Reset",
+  "Name": "Reset Composition",
+  "FullName": "Reset Composition",
+  "ToolTip": "Reset Composition",
+  "Source": ""
+ },
+ {
+  "ID": "Expose_Tool_Name_Mode",
+  "Name": "Expose Tool Names",
+  "FullName": "Expose Tool Names",
+  "ToolTip": "Expose Tool Names",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Toggle Dual Viewer 1",
+  "FullName": "Toggle Dual Viewer 1",
+  "ToolTip": "Viewer",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Toggle Dual Viewer 2",
+  "FullName": "Toggle Dual Viewer 2",
+  "ToolTip": "Viewer",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Toggle Effects View",
+  "FullName": "Toggle Effects View",
+  "ToolTip": "Toggle Effects View",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Toggle Inspector View",
+  "FullName": "Toggle Inspector View",
+  "ToolTip": "Toggle Inspector View",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Toggle Keyframes View",
+  "FullName": "Toggle Keyframes View",
+  "ToolTip": "Toggle Keyframes View",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Toggle Nodes View",
+  "FullName": "Toggle Nodes View",
+  "ToolTip": "Toggle Nodes View",
+  "Source": ""
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Toggle Spline View",
+  "FullName": "Toggle Spline View",
+  "ToolTip": "Toggle Spline View",
+  "Source": ""
+ },
+ {
+  "ID": "MultiView_Popout",
+  "Name": "Undock",
+  "FullName": "Undock",
+  "ToolTip": "Undock",
+  "Source": ""
+ },
+ {
+  "ID": "Recenter_To_Pivot",
+  "Name": "Recenter To Pivot",
+  "FullName": "Recenter To Pivot",
+  "ToolTip": "Recenter To Pivot",
+  "Source": ""
+ },
+ {
+  "ID": "License_Deactivate",
+  "Name": "&Deactivate License\u2026",
+  "FullName": "Deactivate License\u2026",
+  "ToolTip": "Deactivate License\u2026",
+  "Source": ""
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Merge",
+  "FullName": "Merge",
+  "ToolTip": "Merge",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Merge 3D",
+  "FullName": "Merge 3D",
+  "ToolTip": "Merge 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uCamera",
+  "FullName": "uCamera",
+  "ToolTip": "uCamera",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uMerge",
+  "FullName": "uMerge",
+  "ToolTip": "uMerge",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "3D Keyer",
+  "FullName": "3D Keyer",
+  "ToolTip": "3D Keyer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "3D Keyer (Legacy)",
+  "FullName": "3D Keyer (Legacy)",
+  "ToolTip": "3D Keyer (Legacy)",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Abstraction",
+  "FullName": "Abstraction",
+  "ToolTip": "Abstraction",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "ACES Transform",
+  "FullName": "ACES Transform",
+  "ToolTip": "ACES Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "ACES Transform",
+  "FullName": "ACES Transform",
+  "ToolTip": "ACES Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Blemish Removal",
+  "FullName": "Blemish Removal",
+  "ToolTip": "Blemish Removal",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "CineFocus",
+  "FullName": "CineFocus",
+  "ToolTip": "CineFocus",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Cinematic Haze",
+  "FullName": "Cinematic Haze",
+  "ToolTip": "Cinematic Haze",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Depth Map",
+  "FullName": "Depth Map",
+  "ToolTip": "Depth Map",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Motion Deblur",
+  "FullName": "Motion Deblur",
+  "ToolTip": "Motion Deblur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Relight",
+  "FullName": "Relight",
+  "ToolTip": "Relight",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Stylize",
+  "FullName": "Stylize",
+  "ToolTip": "Stylize",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "UltraSharpen",
+  "FullName": "UltraSharpen",
+  "ToolTip": "UltraSharpen",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Alembic Mesh 3D",
+  "FullName": "Alembic Mesh 3D",
+  "ToolTip": "Alembic Mesh 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Align 3D",
+  "FullName": "Align 3D",
+  "ToolTip": "Align 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Alpha Divide",
+  "FullName": "Alpha Divide",
+  "ToolTip": "Alpha Divide",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Alpha Matte Shrink and Grow",
+  "FullName": "Alpha Matte Shrink and Grow",
+  "ToolTip": "Alpha Matte Shrink and Grow",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Alpha Multiply",
+  "FullName": "Alpha Multiply",
+  "ToolTip": "Alpha Multiply",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Ambient Light",
+  "FullName": "Ambient Light",
+  "ToolTip": "Ambient Light",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Ambient Occlusion",
+  "FullName": "Ambient Occlusion",
+  "ToolTip": "Ambient Occlusion",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Anaglyph",
+  "FullName": "Anaglyph",
+  "ToolTip": "Anaglyph",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Analog Damage",
+  "FullName": "Analog Damage",
+  "ToolTip": "Analog Damage",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Analyzer",
+  "FullName": "Analyzer",
+  "ToolTip": "Analyzer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Aperture Diffraction",
+  "FullName": "Aperture Diffraction",
+  "ToolTip": "Aperture Diffraction",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Auto Domain",
+  "FullName": "Auto Domain",
+  "ToolTip": "Auto Domain",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Auto Gain",
+  "FullName": "Auto Gain",
+  "ToolTip": "Auto Gain",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Automatic Dirt Removal",
+  "FullName": "Automatic Dirt Removal",
+  "ToolTip": "Automatic Dirt Removal",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Average",
+  "FullName": "Average",
+  "ToolTip": "Average",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Background",
+  "FullName": "Background",
+  "ToolTip": "Background",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Beams",
+  "FullName": "Beams",
+  "ToolTip": "Beams",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Beauty",
+  "FullName": "Beauty",
+  "ToolTip": "Beauty",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Bend",
+  "FullName": "Bend",
+  "ToolTip": "Bend",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Bender 3D",
+  "FullName": "Bender 3D",
+  "ToolTip": "Bender 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Bevel",
+  "FullName": "Bevel",
+  "ToolTip": "Bevel",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Bitmap",
+  "FullName": "Bitmap",
+  "ToolTip": "Bitmap",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Blanking Fill",
+  "FullName": "Blanking Fill",
+  "ToolTip": "Blanking Fill",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Blinn",
+  "FullName": "Blinn",
+  "ToolTip": "Blinn",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Blobs",
+  "FullName": "Blobs",
+  "ToolTip": "Blobs",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Blur",
+  "FullName": "Blur",
+  "ToolTip": "Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Border",
+  "FullName": "Border",
+  "ToolTip": "Border",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Bounding Box",
+  "FullName": "Bounding Box",
+  "ToolTip": "Bounding Box",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Box Blur",
+  "FullName": "Box Blur",
+  "ToolTip": "Box Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Brightness / Contrast",
+  "FullName": "Brightness / Contrast",
+  "ToolTip": "Brightness / Contrast",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "BSpline",
+  "FullName": "BSpline",
+  "ToolTip": "BSpline",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "BumpMap",
+  "FullName": "BumpMap",
+  "ToolTip": "BumpMap",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Burn Away",
+  "FullName": "Burn Away",
+  "ToolTip": "Burn Away",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Camera 3D",
+  "FullName": "Camera 3D",
+  "ToolTip": "Camera 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Camera Shake",
+  "FullName": "Camera Shake",
+  "ToolTip": "Camera Shake",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Camera Shake",
+  "FullName": "Camera Shake",
+  "ToolTip": "Camera Shake",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Camera Tracker",
+  "FullName": "Camera Tracker",
+  "ToolTip": "Camera Tracker",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Catcher",
+  "FullName": "Catcher",
+  "ToolTip": "Catcher",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Change Depth",
+  "FullName": "Change Depth",
+  "ToolTip": "Change Depth",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Channel Boolean",
+  "FullName": "Channel Boolean",
+  "ToolTip": "Channel Boolean",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Channel Booleans",
+  "FullName": "Channel Booleans",
+  "ToolTip": "Channel Booleans",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Channel Shifter",
+  "FullName": "Channel Shifter",
+  "ToolTip": "Channel Shifter",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Chroma Keyer",
+  "FullName": "Chroma Keyer",
+  "ToolTip": "Chroma Keyer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Chromatic Aberration Removal",
+  "FullName": "Chromatic Aberration Removal",
+  "ToolTip": "Chromatic Aberration Removal",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Chromatic Aberration Removal",
+  "FullName": "Chromatic Aberration Removal",
+  "ToolTip": "Chromatic Aberration Removal",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Chromatic Adaptation",
+  "FullName": "Chromatic Adaptation",
+  "ToolTip": "Chromatic Adaptation",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Chromatic Adaptation",
+  "FullName": "Chromatic Adaptation",
+  "ToolTip": "Chromatic Adaptation",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Cineon Log",
+  "FullName": "Cineon Log",
+  "ToolTip": "Cineon Log",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Clean Edges",
+  "FullName": "Clean Edges",
+  "ToolTip": "Clean Edges",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Clean Plate",
+  "FullName": "Clean Plate",
+  "ToolTip": "Clean Plate",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Color",
+  "FullName": "Color",
+  "ToolTip": "Color",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Color Compressor",
+  "FullName": "Color Compressor",
+  "ToolTip": "Color Compressor",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Color Corrector",
+  "FullName": "Color Corrector",
+  "ToolTip": "Color Corrector",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Color Curves",
+  "FullName": "Color Curves",
+  "ToolTip": "Color Curves",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Color Gain",
+  "FullName": "Color Gain",
+  "ToolTip": "Color Gain",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Color Generator",
+  "FullName": "Color Generator",
+  "ToolTip": "Color Generator",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Color Map",
+  "FullName": "Color Map",
+  "ToolTip": "Color Map",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Color Matrix",
+  "FullName": "Color Matrix",
+  "ToolTip": "Color Matrix",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Color Palette",
+  "FullName": "Color Palette",
+  "ToolTip": "Color Palette",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Color Space",
+  "FullName": "Color Space",
+  "ToolTip": "Color Space",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Color Space Transform",
+  "FullName": "Color Space Transform",
+  "ToolTip": "Color Space Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Color Space Transform",
+  "FullName": "Color Space Transform",
+  "ToolTip": "Color Space Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Color Space Transform (Legacy)",
+  "FullName": "Color Space Transform (Legacy)",
+  "ToolTip": "Color Space Transform (Legacy)",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "ColorTone Diffuser",
+  "FullName": "ColorTone Diffuser",
+  "ToolTip": "ColorTone Diffuser",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Combine",
+  "FullName": "Combine",
+  "ToolTip": "Combine",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Combiner",
+  "FullName": "Combiner",
+  "ToolTip": "Combiner",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Connect",
+  "FullName": "Connect",
+  "ToolTip": "Connect",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Connect 3D",
+  "FullName": "Connect 3D",
+  "ToolTip": "Connect 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Contour",
+  "FullName": "Contour",
+  "ToolTip": "Contour",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Contrast Pop",
+  "FullName": "Contrast Pop",
+  "ToolTip": "Contrast Pop",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "CookTorrance",
+  "FullName": "CookTorrance",
+  "ToolTip": "CookTorrance",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Coordinate Space",
+  "FullName": "Coordinate Space",
+  "ToolTip": "Coordinate Space",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Copy Aux",
+  "FullName": "Copy Aux",
+  "ToolTip": "Copy Aux",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Corner Positioner",
+  "FullName": "Corner Positioner",
+  "ToolTip": "Corner Positioner",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Create Bump Map",
+  "FullName": "Create Bump Map",
+  "ToolTip": "Create Bump Map",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Create Relief Map",
+  "FullName": "Create Relief Map",
+  "ToolTip": "Create Relief Map",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Crop",
+  "FullName": "Crop",
+  "ToolTip": "Crop",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Cryptomatte",
+  "FullName": "Cryptomatte",
+  "ToolTip": "Cryptomatte",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Cube 3D",
+  "FullName": "Cube 3D",
+  "ToolTip": "Cube 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "CubeMap",
+  "FullName": "CubeMap",
+  "ToolTip": "CubeMap",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Custom Filter",
+  "FullName": "Custom Filter",
+  "ToolTip": "Custom Filter",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Custom Tool",
+  "FullName": "Custom Tool",
+  "ToolTip": "Custom Tool",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Custom Vertex 3D",
+  "FullName": "Custom Vertex 3D",
+  "ToolTip": "Custom Vertex 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Cut and Bleed",
+  "FullName": "Cut and Bleed",
+  "ToolTip": "Cut and Bleed",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Data Duplicate 3D",
+  "FullName": "Data Duplicate 3D",
+  "ToolTip": "Data Duplicate 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "DaySky",
+  "FullName": "DaySky",
+  "ToolTip": "DaySky",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dChannels Create",
+  "FullName": "dChannels Create",
+  "ToolTip": "dChannels Create",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dColor Corrector",
+  "FullName": "dColor Corrector",
+  "ToolTip": "dColor Corrector",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dCopy",
+  "FullName": "dCopy",
+  "ToolTip": "dCopy",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dCrop",
+  "FullName": "dCrop",
+  "ToolTip": "dCrop",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "DCTL",
+  "FullName": "DCTL",
+  "ToolTip": "DCTL",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dDelete",
+  "FullName": "dDelete",
+  "ToolTip": "dDelete",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Dead Pixel Fixer",
+  "FullName": "Dead Pixel Fixer",
+  "ToolTip": "Dead Pixel Fixer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Dead Pixel Fixer (Legacy)",
+  "FullName": "Dead Pixel Fixer (Legacy)",
+  "ToolTip": "Dead Pixel Fixer (Legacy)",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Deband",
+  "FullName": "Deband",
+  "ToolTip": "Deband",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Deep To Image",
+  "FullName": "Deep To Image",
+  "ToolTip": "Deep To Image",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Deep To Points",
+  "FullName": "Deep To Points",
+  "ToolTip": "Deep To Points",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Deflicker",
+  "FullName": "Deflicker",
+  "ToolTip": "Deflicker",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Deflicker",
+  "FullName": "Deflicker",
+  "ToolTip": "Deflicker",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Defocus",
+  "FullName": "Defocus",
+  "ToolTip": "Defocus",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Dehaze",
+  "FullName": "Dehaze",
+  "ToolTip": "Dehaze",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Delta Keyer",
+  "FullName": "Delta Keyer",
+  "ToolTip": "Delta Keyer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Dent",
+  "FullName": "Dent",
+  "ToolTip": "Dent",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Dent",
+  "FullName": "Dent",
+  "ToolTip": "Dent",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Depth Blur",
+  "FullName": "Depth Blur",
+  "ToolTip": "Depth Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Depth Map",
+  "FullName": "Depth Map",
+  "ToolTip": "Depth Map",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Despill",
+  "FullName": "Despill",
+  "ToolTip": "Despill",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Detail Recovery",
+  "FullName": "Detail Recovery",
+  "ToolTip": "Detail Recovery",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dFrom Image Analyzer Create",
+  "FullName": "dFrom Image Analyzer Create",
+  "ToolTip": "dFrom Image Analyzer Create",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dFrom Image Create",
+  "FullName": "dFrom Image Create",
+  "ToolTip": "dFrom Image Create",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dFrom Image Pack Create",
+  "FullName": "dFrom Image Pack Create",
+  "ToolTip": "dFrom Image Pack Create",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dFrom Region Create",
+  "FullName": "dFrom Region Create",
+  "ToolTip": "dFrom Region Create",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dGrow",
+  "FullName": "dGrow",
+  "ToolTip": "dGrow",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dHoldout",
+  "FullName": "dHoldout",
+  "ToolTip": "dHoldout",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Difference Keyer",
+  "FullName": "Difference Keyer",
+  "ToolTip": "Difference Keyer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dInfo",
+  "FullName": "dInfo",
+  "ToolTip": "dInfo",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Directional Blur",
+  "FullName": "Directional Blur",
+  "ToolTip": "Directional Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Directional Blur",
+  "FullName": "Directional Blur",
+  "ToolTip": "Directional Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Directional Light",
+  "FullName": "Directional Light",
+  "ToolTip": "Directional Light",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Directional Scale",
+  "FullName": "Directional Scale",
+  "ToolTip": "Directional Scale",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Disparity",
+  "FullName": "Disparity",
+  "ToolTip": "Disparity",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Disparity To Z",
+  "FullName": "Disparity To Z",
+  "ToolTip": "Disparity To Z",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Displace",
+  "FullName": "Displace",
+  "ToolTip": "Displace",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Displace 3D",
+  "FullName": "Displace 3D",
+  "ToolTip": "Displace 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Dissolve",
+  "FullName": "Dissolve",
+  "ToolTip": "Dissolve",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Dither",
+  "FullName": "Dither",
+  "ToolTip": "Dither",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dLoader Create",
+  "FullName": "dLoader Create",
+  "ToolTip": "dLoader Create",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dMath",
+  "FullName": "dMath",
+  "ToolTip": "dMath",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dMerge",
+  "FullName": "dMerge",
+  "ToolTip": "dMerge",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dMerge",
+  "FullName": "dMerge",
+  "ToolTip": "dMerge",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Dome Light",
+  "FullName": "Dome Light",
+  "ToolTip": "Dome Light",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dPattern Create",
+  "FullName": "dPattern Create",
+  "ToolTip": "dPattern Create",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dRecolor",
+  "FullName": "dRecolor",
+  "ToolTip": "dRecolor",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dRemap",
+  "FullName": "dRemap",
+  "ToolTip": "dRemap",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dResize",
+  "FullName": "dResize",
+  "ToolTip": "dResize",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Drip",
+  "FullName": "Drip",
+  "ToolTip": "Drip",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Drop Shadow",
+  "FullName": "Drop Shadow",
+  "ToolTip": "Drop Shadow",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dSelect",
+  "FullName": "dSelect",
+  "ToolTip": "dSelect",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dSet Constant",
+  "FullName": "dSet Constant",
+  "ToolTip": "dSet Constant",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dSet Manual",
+  "FullName": "dSet Manual",
+  "ToolTip": "dSet Manual",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dSet Ramp",
+  "FullName": "dSet Ramp",
+  "ToolTip": "dSet Ramp",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dSet Random",
+  "FullName": "dSet Random",
+  "ToolTip": "dSet Random",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dSort",
+  "FullName": "dSort",
+  "ToolTip": "dSort",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dTool",
+  "FullName": "dTool",
+  "ToolTip": "dTool",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dTransform",
+  "FullName": "dTransform",
+  "ToolTip": "dTransform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "dTransform",
+  "FullName": "dTransform",
+  "ToolTip": "dTransform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Duplicate",
+  "FullName": "Duplicate",
+  "ToolTip": "Duplicate",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Duplicate 3D",
+  "FullName": "Duplicate 3D",
+  "ToolTip": "Duplicate 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Dust Buster",
+  "FullName": "Dust Buster",
+  "ToolTip": "Dust Buster",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Dust Buster (Legacy)",
+  "FullName": "Dust Buster (Legacy)",
+  "ToolTip": "Dust Buster (Legacy)",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "DVE",
+  "FullName": "DVE",
+  "ToolTip": "DVE",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Eat",
+  "FullName": "Eat",
+  "ToolTip": "Eat",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Edge Detect",
+  "FullName": "Edge Detect",
+  "ToolTip": "Edge Detect",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Ellipse",
+  "FullName": "Ellipse",
+  "ToolTip": "Ellipse",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Emboss",
+  "FullName": "Emboss",
+  "ToolTip": "Emboss",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Erode / Dilate",
+  "FullName": "Erode / Dilate",
+  "ToolTip": "Erode / Dilate",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Extend",
+  "FullName": "Extend",
+  "ToolTip": "Extend",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Extrude",
+  "FullName": "Extrude",
+  "ToolTip": "Extrude",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Extrude 3D",
+  "FullName": "Extrude 3D",
+  "ToolTip": "Extrude 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Falloff",
+  "FullName": "Falloff",
+  "ToolTip": "Falloff",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "False Color",
+  "FullName": "False Color",
+  "ToolTip": "False Color",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Fast Noise Texture",
+  "FullName": "Fast Noise Texture",
+  "ToolTip": "Fast Noise Texture",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "FastNoise",
+  "FullName": "FastNoise",
+  "ToolTip": "FastNoise",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "FBX Exporter",
+  "FullName": "FBX Exporter",
+  "ToolTip": "FBX Exporter",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "FBX Mesh 3D",
+  "FullName": "FBX Mesh 3D",
+  "ToolTip": "FBX Mesh 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Fields",
+  "FullName": "Fields",
+  "ToolTip": "Fields",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "File LUT",
+  "FullName": "File LUT",
+  "ToolTip": "File LUT",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Film Damage",
+  "FullName": "Film Damage",
+  "ToolTip": "Film Damage",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Film Grain",
+  "FullName": "Film Grain",
+  "ToolTip": "Film Grain",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Film Grain",
+  "FullName": "Film Grain",
+  "ToolTip": "Film Grain",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Film Look Creator",
+  "FullName": "Film Look Creator",
+  "ToolTip": "Film Look Creator",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Film Look Creator",
+  "FullName": "Film Look Creator",
+  "ToolTip": "Film Look Creator",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Filter",
+  "FullName": "Filter",
+  "ToolTip": "Filter",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Find",
+  "FullName": "Find",
+  "ToolTip": "Find",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Flicker Addition",
+  "FullName": "Flicker Addition",
+  "ToolTip": "Flicker Addition",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Flow Speed",
+  "FullName": "Flow Speed",
+  "ToolTip": "Flow Speed",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Flow Stretcher",
+  "FullName": "Flow Stretcher",
+  "ToolTip": "Flow Stretcher",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Flur",
+  "FullName": "Flur",
+  "ToolTip": "Flur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Fog",
+  "FullName": "Fog",
+  "ToolTip": "Fog",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Fog 3D",
+  "FullName": "Fog 3D",
+  "ToolTip": "Fog 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Fragments",
+  "FullName": "Fragments",
+  "ToolTip": "Fragments",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Frame Replacer",
+  "FullName": "Frame Replacer",
+  "ToolTip": "Frame Replacer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Gamut",
+  "FullName": "Gamut",
+  "ToolTip": "Gamut",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Gamut Limiter",
+  "FullName": "Gamut Limiter",
+  "ToolTip": "Gamut Limiter",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Gamut Limiter",
+  "FullName": "Gamut Limiter",
+  "ToolTip": "Gamut Limiter",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Gamut Mapping",
+  "FullName": "Gamut Mapping",
+  "ToolTip": "Gamut Mapping",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Gamut Mapping",
+  "FullName": "Gamut Mapping",
+  "ToolTip": "Gamut Mapping",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Gamut Mapping (Legacy)",
+  "FullName": "Gamut Mapping (Legacy)",
+  "ToolTip": "Gamut Mapping (Legacy)",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Gaussian Blur",
+  "FullName": "Gaussian Blur",
+  "ToolTip": "Gaussian Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Generate",
+  "FullName": "Generate",
+  "ToolTip": "Generate",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Global Align",
+  "FullName": "Global Align",
+  "ToolTip": "Global Align",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Glow",
+  "FullName": "Glow",
+  "ToolTip": "Glow",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Glow",
+  "FullName": "Glow",
+  "ToolTip": "Glow",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Gradient",
+  "FullName": "Gradient",
+  "ToolTip": "Gradient",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Gradient",
+  "FullName": "Gradient",
+  "ToolTip": "Gradient",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Grain",
+  "FullName": "Grain",
+  "ToolTip": "Grain",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Grid",
+  "FullName": "Grid",
+  "ToolTip": "Grid",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Grid Warp",
+  "FullName": "Grid Warp",
+  "ToolTip": "Grid Warp",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Group",
+  "FullName": "Group",
+  "ToolTip": "Group",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Grow",
+  "FullName": "Grow",
+  "ToolTip": "Grow",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Grow Color",
+  "FullName": "Grow Color",
+  "ToolTip": "Grow Color",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Halation",
+  "FullName": "Halation",
+  "ToolTip": "Halation",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Highlight",
+  "FullName": "Highlight",
+  "ToolTip": "Highlight",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Hot Spot",
+  "FullName": "Hot Spot",
+  "ToolTip": "Hot Spot",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "HSL Keyer",
+  "FullName": "HSL Keyer",
+  "ToolTip": "HSL Keyer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Hue Curves",
+  "FullName": "Hue Curves",
+  "ToolTip": "Hue Curves",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Hue/Saturation",
+  "FullName": "Hue/Saturation",
+  "ToolTip": "Hue/Saturation",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Image Plane 3D",
+  "FullName": "Image Plane 3D",
+  "ToolTip": "Image Plane 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Image To Deep",
+  "FullName": "Image To Deep",
+  "ToolTip": "Image To Deep",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Immersive Patcher",
+  "FullName": "Immersive Patcher",
+  "ToolTip": "Immersive Patcher",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Invert",
+  "FullName": "Invert",
+  "ToolTip": "Invert",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Invert Color",
+  "FullName": "Invert Color",
+  "ToolTip": "Invert Color",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "JPEG Damage",
+  "FullName": "JPEG Damage",
+  "ToolTip": "JPEG Damage",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Kaleidoscope",
+  "FullName": "Kaleidoscope",
+  "ToolTip": "Kaleidoscope",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Keyframe Stretcher",
+  "FullName": "Keyframe Stretcher",
+  "ToolTip": "Keyframe Stretcher",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Kill 3D",
+  "FullName": "Kill 3D",
+  "ToolTip": "Kill 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "LatLong Patcher",
+  "FullName": "LatLong Patcher",
+  "ToolTip": "LatLong Patcher",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Layer Muxer",
+  "FullName": "Layer Muxer",
+  "ToolTip": "Layer Muxer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Layer Regex",
+  "FullName": "Layer Regex",
+  "ToolTip": "Layer Regex",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Layer Remover",
+  "FullName": "Layer Remover",
+  "ToolTip": "Layer Remover",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Lens Blur",
+  "FullName": "Lens Blur",
+  "ToolTip": "Lens Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Lens Distort",
+  "FullName": "Lens Distort",
+  "ToolTip": "Lens Distort",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Lens Distortion",
+  "FullName": "Lens Distortion",
+  "ToolTip": "Lens Distortion",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Lens Flare",
+  "FullName": "Lens Flare",
+  "ToolTip": "Lens Flare",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Lens Flare (Legacy)",
+  "FullName": "Lens Flare (Legacy)",
+  "ToolTip": "Lens Flare (Legacy)",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Lens Reflections",
+  "FullName": "Lens Reflections",
+  "ToolTip": "Lens Reflections",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Letterbox",
+  "FullName": "Letterbox",
+  "ToolTip": "Letterbox",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Light Rays",
+  "FullName": "Light Rays",
+  "ToolTip": "Light Rays",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Light Trim",
+  "FullName": "Light Trim",
+  "ToolTip": "Light Trim",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Light Wrap",
+  "FullName": "Light Wrap",
+  "ToolTip": "Light Wrap",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Line and Fill",
+  "FullName": "Line and Fill",
+  "ToolTip": "Line and Fill",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Lines",
+  "FullName": "Lines",
+  "ToolTip": "Lines",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Loader",
+  "FullName": "Loader",
+  "ToolTip": "Loader",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Locator 3D",
+  "FullName": "Locator 3D",
+  "ToolTip": "Locator 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Luma Keyer",
+  "FullName": "Luma Keyer",
+  "ToolTip": "Luma Keyer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Luma Keyer",
+  "FullName": "Luma Keyer",
+  "ToolTip": "Luma Keyer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Macro",
+  "FullName": "Macro",
+  "ToolTip": "Macro",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Magic Mask",
+  "FullName": "Magic Mask",
+  "ToolTip": "Magic Mask",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Mandelbrot",
+  "FullName": "Mandelbrot",
+  "ToolTip": "Mandelbrot",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Map Filter",
+  "FullName": "Map Filter",
+  "ToolTip": "Map Filter",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Mapped Duplicate 3D",
+  "FullName": "Mapped Duplicate 3D",
+  "ToolTip": "Mapped Duplicate 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Mask Paint",
+  "FullName": "Mask Paint",
+  "ToolTip": "Mask Paint",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Match Color",
+  "FullName": "Match Color",
+  "ToolTip": "Match Color",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Material Merge",
+  "FullName": "Material Merge",
+  "ToolTip": "Material Merge",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Matte Cleaner",
+  "FullName": "Matte Cleaner",
+  "ToolTip": "Matte Cleaner",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Matte Control",
+  "FullName": "Matte Control",
+  "ToolTip": "Matte Control",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Media In",
+  "FullName": "Media In",
+  "ToolTip": "Media In",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Media Out",
+  "FullName": "Media Out",
+  "ToolTip": "Media Out",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Microwaves",
+  "FullName": "Microwaves",
+  "ToolTip": "Microwaves",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Mirror",
+  "FullName": "Mirror",
+  "ToolTip": "Mirror",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Mirrors",
+  "FullName": "Mirrors",
+  "ToolTip": "Mirrors",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Mosaic Blur",
+  "FullName": "Mosaic Blur",
+  "ToolTip": "Mosaic Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Motion Blur",
+  "FullName": "Motion Blur",
+  "ToolTip": "Motion Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Motion Trails",
+  "FullName": "Motion Trails",
+  "ToolTip": "Motion Trails",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "MultiMerge",
+  "FullName": "MultiMerge",
+  "ToolTip": "MultiMerge",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "MultiPoly",
+  "FullName": "MultiPoly",
+  "ToolTip": "MultiPoly",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "MultiText",
+  "FullName": "MultiText",
+  "ToolTip": "MultiText",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "New Eye",
+  "FullName": "New Eye",
+  "ToolTip": "New Eye",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Noise",
+  "FullName": "Noise",
+  "ToolTip": "Noise",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Noise Reduction",
+  "FullName": "Noise Reduction",
+  "ToolTip": "Noise Reduction",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Sticky Note",
+  "FullName": "Sticky Note",
+  "ToolTip": "Sticky Note",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "NVIDIA RTX Video HDR",
+  "FullName": "NVIDIA RTX Video HDR",
+  "ToolTip": "NVIDIA RTX Video HDR",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Object Removal",
+  "FullName": "Object Removal",
+  "ToolTip": "Object Removal",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Objectify 3D",
+  "FullName": "Objectify 3D",
+  "ToolTip": "Objectify 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "OCIO CDL Transform",
+  "FullName": "OCIO CDL Transform",
+  "ToolTip": "OCIO CDL Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "OCIO ColorSpace",
+  "FullName": "OCIO ColorSpace",
+  "ToolTip": "OCIO ColorSpace",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "OCIO Display",
+  "FullName": "OCIO Display",
+  "ToolTip": "OCIO Display",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "OCIO File Transform",
+  "FullName": "OCIO File Transform",
+  "ToolTip": "OCIO File Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Offset",
+  "FullName": "Offset",
+  "ToolTip": "Offset",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "OGrafLoader",
+  "FullName": "OGrafLoader",
+  "ToolTip": "OGrafLoader",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Optical Flow",
+  "FullName": "Optical Flow",
+  "ToolTip": "Optical Flow",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Override 3D",
+  "FullName": "Override 3D",
+  "ToolTip": "Override 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Pack",
+  "FullName": "Pack",
+  "ToolTip": "Pack",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Paint",
+  "FullName": "Paint",
+  "ToolTip": "Paint",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Painterly",
+  "FullName": "Painterly",
+  "ToolTip": "Painterly",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "PanoMap",
+  "FullName": "PanoMap",
+  "ToolTip": "PanoMap",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Patch Replacer",
+  "FullName": "Patch Replacer",
+  "ToolTip": "Patch Replacer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Pattern",
+  "FullName": "Pattern",
+  "ToolTip": "Pattern",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pAvoid",
+  "FullName": "pAvoid",
+  "ToolTip": "pAvoid",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pBounce",
+  "FullName": "pBounce",
+  "ToolTip": "pBounce",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pChangeStyle",
+  "FullName": "pChangeStyle",
+  "ToolTip": "pChangeStyle",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pCustom",
+  "FullName": "pCustom",
+  "ToolTip": "pCustom",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pCustomForce",
+  "FullName": "pCustomForce",
+  "ToolTip": "pCustomForce",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pDirectionalForce",
+  "FullName": "pDirectionalForce",
+  "ToolTip": "pDirectionalForce",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pEmitter",
+  "FullName": "pEmitter",
+  "ToolTip": "pEmitter",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Pencil Sketch",
+  "FullName": "Pencil Sketch",
+  "ToolTip": "Pencil Sketch",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Perspective Positioner",
+  "FullName": "Perspective Positioner",
+  "ToolTip": "Perspective Positioner",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pFlock",
+  "FullName": "pFlock",
+  "ToolTip": "pFlock",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pFollow",
+  "FullName": "pFollow",
+  "ToolTip": "pFollow",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pFriction",
+  "FullName": "pFriction",
+  "ToolTip": "pFriction",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pGradientForce",
+  "FullName": "pGradientForce",
+  "ToolTip": "pGradientForce",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Phong",
+  "FullName": "Phong",
+  "ToolTip": "Phong",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Picture In Picture",
+  "FullName": "Picture In Picture",
+  "ToolTip": "Picture In Picture",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pImageEmitter",
+  "FullName": "pImageEmitter",
+  "ToolTip": "pImageEmitter",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "PipeRouter",
+  "FullName": "PipeRouter",
+  "ToolTip": "PipeRouter",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Pixel Region",
+  "FullName": "Pixel Region",
+  "ToolTip": "Pixel Region",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pKill",
+  "FullName": "pKill",
+  "ToolTip": "pKill",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Planar Tracker",
+  "FullName": "Planar Tracker",
+  "ToolTip": "Planar Tracker",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Planar Transform",
+  "FullName": "Planar Transform",
+  "ToolTip": "Planar Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Plasma",
+  "FullName": "Plasma",
+  "ToolTip": "Plasma",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Plastic",
+  "FullName": "Plastic",
+  "ToolTip": "Plastic",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pMerge",
+  "FullName": "pMerge",
+  "ToolTip": "pMerge",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Point Light",
+  "FullName": "Point Light",
+  "ToolTip": "Point Light",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "PointCloud 3D",
+  "FullName": "PointCloud 3D",
+  "ToolTip": "PointCloud 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Poly Play 3D",
+  "FullName": "Poly Play 3D",
+  "ToolTip": "Poly Play 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Polygon",
+  "FullName": "Polygon",
+  "ToolTip": "Polygon",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Positioner",
+  "FullName": "Positioner",
+  "ToolTip": "Positioner",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pPointForce",
+  "FullName": "pPointForce",
+  "ToolTip": "pPointForce",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pRender",
+  "FullName": "pRender",
+  "ToolTip": "pRender",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "PreviewCleaner",
+  "FullName": "PreviewCleaner",
+  "ToolTip": "PreviewCleaner",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "PreviewSaver",
+  "FullName": "PreviewSaver",
+  "ToolTip": "PreviewSaver",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Prism Blur",
+  "FullName": "Prism Blur",
+  "ToolTip": "Prism Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Projection",
+  "FullName": "Projection",
+  "ToolTip": "Projection",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Projector 3D",
+  "FullName": "Projector 3D",
+  "ToolTip": "Projector 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Pseudo Color",
+  "FullName": "Pseudo Color",
+  "ToolTip": "Pseudo Color",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pSpawn",
+  "FullName": "pSpawn",
+  "ToolTip": "pSpawn",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pTangentForce",
+  "FullName": "pTangentForce",
+  "ToolTip": "pTangentForce",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pTurbulence",
+  "FullName": "pTurbulence",
+  "ToolTip": "pTurbulence",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Push",
+  "FullName": "Push",
+  "ToolTip": "Push",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "pVortex",
+  "FullName": "pVortex",
+  "ToolTip": "pVortex",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Radial",
+  "FullName": "Radial",
+  "ToolTip": "Radial",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Radial Blur",
+  "FullName": "Radial Blur",
+  "ToolTip": "Radial Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Ranges",
+  "FullName": "Ranges",
+  "ToolTip": "Ranges",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Rank Filter",
+  "FullName": "Rank Filter",
+  "ToolTip": "Rank Filter",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Rasterize",
+  "FullName": "Rasterize",
+  "ToolTip": "Rasterize",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "rCube",
+  "FullName": "rCube",
+  "ToolTip": "rCube",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Reassemble",
+  "FullName": "Reassemble",
+  "ToolTip": "Reassemble",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Recolor",
+  "FullName": "Recolor",
+  "ToolTip": "Recolor",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Rectangle",
+  "FullName": "Rectangle",
+  "ToolTip": "Rectangle",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Reflect",
+  "FullName": "Reflect",
+  "ToolTip": "Reflect",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Relative Transform",
+  "FullName": "Relative Transform",
+  "ToolTip": "Relative Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Relief Map",
+  "FullName": "Relief Map",
+  "ToolTip": "Relief Map",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Relight",
+  "FullName": "Relight",
+  "ToolTip": "Relight",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Relight",
+  "FullName": "Relight",
+  "ToolTip": "Relight",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Remap",
+  "FullName": "Remap",
+  "ToolTip": "Remap",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Remove Noise",
+  "FullName": "Remove Noise",
+  "ToolTip": "Remove Noise",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Renderer 3D",
+  "FullName": "Renderer 3D",
+  "ToolTip": "Renderer 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Repair Frame",
+  "FullName": "Repair Frame",
+  "ToolTip": "Repair Frame",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Replace Color",
+  "FullName": "Replace Color",
+  "ToolTip": "Replace Color",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Replace Material 3D",
+  "FullName": "Replace Material 3D",
+  "ToolTip": "Replace Material 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Replace Normals 3D",
+  "FullName": "Replace Normals 3D",
+  "ToolTip": "Replace Normals 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Replicate 3D",
+  "FullName": "Replicate 3D",
+  "ToolTip": "Replicate 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Resize",
+  "FullName": "Resize",
+  "ToolTip": "Resize",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Rest",
+  "FullName": "Rest",
+  "ToolTip": "Rest",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Retime 3D",
+  "FullName": "Retime 3D",
+  "ToolTip": "Retime 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Ribbon 3D",
+  "FullName": "Ribbon 3D",
+  "ToolTip": "Ribbon 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Ripples",
+  "FullName": "Ripples",
+  "ToolTip": "Ripples",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "rMerge",
+  "FullName": "rMerge",
+  "ToolTip": "rMerge",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "rModify",
+  "FullName": "rModify",
+  "ToolTip": "rModify",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "rNoise",
+  "FullName": "rNoise",
+  "ToolTip": "rNoise",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "rPlane",
+  "FullName": "rPlane",
+  "ToolTip": "rPlane",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "rSphere",
+  "FullName": "rSphere",
+  "ToolTip": "rSphere",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "rTransform",
+  "FullName": "rTransform",
+  "ToolTip": "rTransform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "RunCommand",
+  "FullName": "RunCommand",
+  "ToolTip": "RunCommand",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sAlign",
+  "FullName": "sAlign",
+  "ToolTip": "sAlign",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Saver",
+  "FullName": "Saver",
+  "ToolTip": "Saver",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sBoolean",
+  "FullName": "sBoolean",
+  "ToolTip": "sBoolean",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sBoolean",
+  "FullName": "sBoolean",
+  "ToolTip": "sBoolean",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sBSpline",
+  "FullName": "sBSpline",
+  "ToolTip": "sBSpline",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Scale",
+  "FullName": "Scale",
+  "ToolTip": "Scale",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Scanlines",
+  "FullName": "Scanlines",
+  "ToolTip": "Scanlines",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Scanlines (Legacy)",
+  "FullName": "Scanlines (Legacy)",
+  "ToolTip": "Scanlines (Legacy)",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sChangeStyle",
+  "FullName": "sChangeStyle",
+  "ToolTip": "sChangeStyle",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sChart Create",
+  "FullName": "sChart Create",
+  "ToolTip": "sChart Create",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Script Operator",
+  "FullName": "Script Operator",
+  "ToolTip": "Script Operator",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Script Source Operator",
+  "FullName": "Script Source Operator",
+  "ToolTip": "Script Source Operator",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sDuplicate",
+  "FullName": "sDuplicate",
+  "ToolTip": "sDuplicate",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sDuplicate",
+  "FullName": "sDuplicate",
+  "ToolTip": "sDuplicate",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Seamless",
+  "FullName": "Seamless",
+  "ToolTip": "Seamless",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Seamless Loop",
+  "FullName": "Seamless Loop",
+  "ToolTip": "Seamless Loop",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Segment Transform",
+  "FullName": "Segment Transform",
+  "ToolTip": "Segment Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sEllipse",
+  "FullName": "sEllipse",
+  "ToolTip": "sEllipse",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Set Canvas Color",
+  "FullName": "Set Canvas Color",
+  "ToolTip": "Set Canvas Color",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Set Domain",
+  "FullName": "Set Domain",
+  "ToolTip": "Set Domain",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sExpand",
+  "FullName": "sExpand",
+  "ToolTip": "sExpand",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sGrid",
+  "FullName": "sGrid",
+  "ToolTip": "sGrid",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Shade By Sample",
+  "FullName": "Shade By Sample",
+  "ToolTip": "Shade By Sample",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Shader",
+  "FullName": "Shader",
+  "ToolTip": "Shader",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Shadow",
+  "FullName": "Shadow",
+  "ToolTip": "Shadow",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Shape 3D",
+  "FullName": "Shape 3D",
+  "ToolTip": "Shape 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Shapes",
+  "FullName": "Shapes",
+  "ToolTip": "Shapes",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Sharpen",
+  "FullName": "Sharpen",
+  "ToolTip": "Sharpen",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Sharpen",
+  "FullName": "Sharpen",
+  "ToolTip": "Sharpen",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Sharpen Edges",
+  "FullName": "Sharpen Edges",
+  "ToolTip": "Sharpen Edges",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Shear",
+  "FullName": "Shear",
+  "ToolTip": "Shear",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Shuffle",
+  "FullName": "Shuffle",
+  "ToolTip": "Shuffle",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sJitter",
+  "FullName": "sJitter",
+  "ToolTip": "sJitter",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sKill",
+  "FullName": "sKill",
+  "ToolTip": "sKill",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Smart Field Strobe",
+  "FullName": "Smart Field Strobe",
+  "ToolTip": "Smart Field Strobe",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Smear",
+  "FullName": "Smear",
+  "ToolTip": "Smear",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Smear",
+  "FullName": "Smear",
+  "ToolTip": "Smear",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sMerge",
+  "FullName": "sMerge",
+  "ToolTip": "sMerge",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sMerge",
+  "FullName": "sMerge",
+  "ToolTip": "sMerge",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Smooth Motion",
+  "FullName": "Smooth Motion",
+  "ToolTip": "Smooth Motion",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sNGon",
+  "FullName": "sNGon",
+  "ToolTip": "sNGon",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sOffset",
+  "FullName": "sOffset",
+  "ToolTip": "sOffset",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Soft Glow",
+  "FullName": "Soft Glow",
+  "ToolTip": "Soft Glow",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "SoftClip",
+  "FullName": "SoftClip",
+  "ToolTip": "SoftClip",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Soften and Sharpen",
+  "FullName": "Soften and Sharpen",
+  "ToolTip": "Soften and Sharpen",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Sort",
+  "FullName": "Sort",
+  "ToolTip": "Sort",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sOutline",
+  "FullName": "sOutline",
+  "ToolTip": "sOutline",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Speed Warp",
+  "FullName": "Speed Warp",
+  "ToolTip": "Speed Warp",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "SphereMap",
+  "FullName": "SphereMap",
+  "ToolTip": "SphereMap",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Spherical Camera",
+  "FullName": "Spherical Camera",
+  "ToolTip": "Spherical Camera",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Spherical Stabilizer",
+  "FullName": "Spherical Stabilizer",
+  "ToolTip": "Spherical Stabilizer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Spherize",
+  "FullName": "Spherize",
+  "ToolTip": "Spherize",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Spiral",
+  "FullName": "Spiral",
+  "ToolTip": "Spiral",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Split Tone",
+  "FullName": "Split Tone",
+  "ToolTip": "Split Tone",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Splitter",
+  "FullName": "Splitter",
+  "ToolTip": "Splitter",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sPolygon",
+  "FullName": "sPolygon",
+  "ToolTip": "sPolygon",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Spot Light",
+  "FullName": "Spot Light",
+  "ToolTip": "Spot Light",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Spread",
+  "FullName": "Spread",
+  "ToolTip": "Spread",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sPrimitive Create",
+  "FullName": "sPrimitive Create",
+  "ToolTip": "sPrimitive Create",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sRectangle",
+  "FullName": "sRectangle",
+  "ToolTip": "sRectangle",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sRender",
+  "FullName": "sRender",
+  "ToolTip": "sRender",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sResample",
+  "FullName": "sResample",
+  "ToolTip": "sResample",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sShading",
+  "FullName": "sShading",
+  "ToolTip": "sShading",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sSmooth",
+  "FullName": "sSmooth",
+  "ToolTip": "sSmooth",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sSpiral Create",
+  "FullName": "sSpiral Create",
+  "ToolTip": "sSpiral Create",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sStar",
+  "FullName": "sStar",
+  "ToolTip": "sStar",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Stereo Align",
+  "FullName": "Stereo Align",
+  "ToolTip": "Stereo Align",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Stereo Mix",
+  "FullName": "Stereo Mix",
+  "ToolTip": "Stereo Mix",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sText",
+  "FullName": "sText",
+  "ToolTip": "sText",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sTools",
+  "FullName": "sTools",
+  "ToolTip": "sTools",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Stop Motion",
+  "FullName": "Stop Motion",
+  "ToolTip": "Stop Motion",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sTrace Create",
+  "FullName": "sTrace Create",
+  "ToolTip": "sTrace Create",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sTransform",
+  "FullName": "sTransform",
+  "ToolTip": "sTransform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sTransform",
+  "FullName": "sTransform",
+  "ToolTip": "sTransform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Stretch",
+  "FullName": "Stretch",
+  "ToolTip": "Stretch",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sTriangulate",
+  "FullName": "sTriangulate",
+  "ToolTip": "sTriangulate",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Surface Tracker",
+  "FullName": "Surface Tracker",
+  "ToolTip": "Surface Tracker",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Surface Tracker",
+  "FullName": "Surface Tracker",
+  "ToolTip": "Surface Tracker",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Switch",
+  "FullName": "Switch",
+  "ToolTip": "Switch",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Switcher",
+  "FullName": "Switcher",
+  "ToolTip": "Switcher",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Swizzler",
+  "FullName": "Swizzler",
+  "ToolTip": "Swizzler",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sWriteOn",
+  "FullName": "sWriteOn",
+  "ToolTip": "sWriteOn",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "sZigZag",
+  "FullName": "sZigZag",
+  "ToolTip": "sZigZag",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Text 3D",
+  "FullName": "Text 3D",
+  "ToolTip": "Text 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Text+",
+  "FullName": "Text+",
+  "ToolTip": "Text+",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Texture",
+  "FullName": "Texture",
+  "ToolTip": "Texture",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Texture 2D",
+  "FullName": "Texture 2D",
+  "ToolTip": "Texture 2D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Texture 2D",
+  "FullName": "Texture 2D",
+  "ToolTip": "Texture 2D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Texture Pop",
+  "FullName": "Texture Pop",
+  "ToolTip": "Texture Pop",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Texture Transform",
+  "FullName": "Texture Transform",
+  "ToolTip": "Texture Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Threshold",
+  "FullName": "Threshold",
+  "ToolTip": "Threshold",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Tilt-Shift Blur",
+  "FullName": "Tilt-Shift Blur",
+  "ToolTip": "Tilt-Shift Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Time Mapper",
+  "FullName": "Time Mapper",
+  "ToolTip": "Time Mapper",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Time Speed",
+  "FullName": "Time Speed",
+  "ToolTip": "Time Speed",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Time Stretcher",
+  "FullName": "Time Stretcher",
+  "ToolTip": "Time Stretcher",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Timelapse Deflicker (Legacy)",
+  "FullName": "Timelapse Deflicker (Legacy)",
+  "ToolTip": "Timelapse Deflicker (Legacy)",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Tool 3D",
+  "FullName": "Tool 3D",
+  "ToolTip": "Tool 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Tracker",
+  "FullName": "Tracker",
+  "ToolTip": "Tracker",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Trails",
+  "FullName": "Trails",
+  "ToolTip": "Trails",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Transform",
+  "FullName": "Transform",
+  "ToolTip": "Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Transform",
+  "FullName": "Transform",
+  "ToolTip": "Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Transform 3D",
+  "FullName": "Transform 3D",
+  "ToolTip": "Transform 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Triangle",
+  "FullName": "Triangle",
+  "ToolTip": "Triangle",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Triangulate 3D",
+  "FullName": "Triangulate 3D",
+  "ToolTip": "Triangulate 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "TV",
+  "FullName": "TV",
+  "ToolTip": "TV",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Tween",
+  "FullName": "Tween",
+  "ToolTip": "Tween",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uCatcher",
+  "FullName": "uCatcher",
+  "ToolTip": "uCatcher",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uCylinder Light",
+  "FullName": "uCylinder Light",
+  "ToolTip": "uCylinder Light",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uDisk Light",
+  "FullName": "uDisk Light",
+  "ToolTip": "uDisk Light",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uDistant Light",
+  "FullName": "uDistant Light",
+  "ToolTip": "uDistant Light",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uDome Light",
+  "FullName": "uDome Light",
+  "ToolTip": "uDome Light",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uDuplicate",
+  "FullName": "uDuplicate",
+  "ToolTip": "uDuplicate",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uExport",
+  "FullName": "uExport",
+  "ToolTip": "uExport",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uImage Plane",
+  "FullName": "uImage Plane",
+  "ToolTip": "uImage Plane",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uLoader",
+  "FullName": "uLoader",
+  "ToolTip": "uLoader",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Ultra Keyer",
+  "FullName": "Ultra Keyer",
+  "ToolTip": "Ultra Keyer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uMaterialX",
+  "FullName": "uMaterialX",
+  "ToolTip": "uMaterialX",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Underlay",
+  "FullName": "Underlay",
+  "ToolTip": "Underlay",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uNormal Map",
+  "FullName": "uNormal Map",
+  "ToolTip": "uNormal Map",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Unsharp Mask",
+  "FullName": "Unsharp Mask",
+  "ToolTip": "Unsharp Mask",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uProjector",
+  "FullName": "uProjector",
+  "ToolTip": "uProjector",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uRectangle Light",
+  "FullName": "uRectangle Light",
+  "ToolTip": "uRectangle Light",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uRenderer",
+  "FullName": "uRenderer",
+  "ToolTip": "uRenderer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uReplace Material",
+  "FullName": "uReplace Material",
+  "ToolTip": "uReplace Material",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "USDLight",
+  "FullName": "USDLight",
+  "ToolTip": "USDLight",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "USDMaterialNode",
+  "FullName": "USDMaterialNode",
+  "ToolTip": "USDMaterialNode",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uShader",
+  "FullName": "uShader",
+  "ToolTip": "uShader",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uShape",
+  "FullName": "uShape",
+  "ToolTip": "uShape",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uSphere Light",
+  "FullName": "uSphere Light",
+  "ToolTip": "uSphere Light",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uSwitch",
+  "FullName": "uSwitch",
+  "ToolTip": "uSwitch",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uTexture",
+  "FullName": "uTexture",
+  "ToolTip": "uTexture",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uTexture Transform",
+  "FullName": "uTexture Transform",
+  "ToolTip": "uTexture Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uTransform",
+  "FullName": "uTransform",
+  "ToolTip": "uTransform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "UV",
+  "FullName": "UV",
+  "ToolTip": "UV",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "UV Map 3D",
+  "FullName": "UV Map 3D",
+  "ToolTip": "UV Map 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uVariant",
+  "FullName": "uVariant",
+  "ToolTip": "uVariant",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uVisibility",
+  "FullName": "uVisibility",
+  "ToolTip": "uVisibility",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "uVolume",
+  "FullName": "uVolume",
+  "ToolTip": "uVolume",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "VariBlur",
+  "FullName": "VariBlur",
+  "ToolTip": "VariBlur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Vector Denoise",
+  "FullName": "Vector Denoise",
+  "ToolTip": "Vector Denoise",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Vector Distortion",
+  "FullName": "Vector Distortion",
+  "ToolTip": "Vector Distortion",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Vector Field",
+  "FullName": "Vector Field",
+  "ToolTip": "Vector Field",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Vector Motion Blur",
+  "FullName": "Vector Motion Blur",
+  "ToolTip": "Vector Motion Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Vector Transform",
+  "FullName": "Vector Transform",
+  "ToolTip": "Vector Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Vector Visualization",
+  "FullName": "Vector Visualization",
+  "ToolTip": "Vector Visualization",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Vector Warp",
+  "FullName": "Vector Warp",
+  "ToolTip": "Vector Warp",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Vertex Play 3D",
+  "FullName": "Vertex Play 3D",
+  "ToolTip": "Vertex Play 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Video Collage",
+  "FullName": "Video Collage",
+  "ToolTip": "Video Collage",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Vignette",
+  "FullName": "Vignette",
+  "ToolTip": "Vignette",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Volume Fog",
+  "FullName": "Volume Fog",
+  "ToolTip": "Volume Fog",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Volume Mask",
+  "FullName": "Volume Mask",
+  "ToolTip": "Volume Mask",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Vortex",
+  "FullName": "Vortex",
+  "ToolTip": "Vortex",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Vortex",
+  "FullName": "Vortex",
+  "ToolTip": "Vortex",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Wand",
+  "FullName": "Wand",
+  "ToolTip": "Wand",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Ward",
+  "FullName": "Ward",
+  "ToolTip": "Ward",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Warped Transform",
+  "FullName": "Warped Transform",
+  "ToolTip": "Warped Transform",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Warper",
+  "FullName": "Warper",
+  "ToolTip": "Warper",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Watercolor",
+  "FullName": "Watercolor",
+  "ToolTip": "Watercolor",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Waviness",
+  "FullName": "Waviness",
+  "ToolTip": "Waviness",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Weld 3D",
+  "FullName": "Weld 3D",
+  "ToolTip": "Weld 3D",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "White Balance",
+  "FullName": "White Balance",
+  "ToolTip": "White Balance",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Worm",
+  "FullName": "Worm",
+  "ToolTip": "Worm",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Z To Disparity",
+  "FullName": "Z To Disparity",
+  "ToolTip": "Z To Disparity",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Z to WorldPos",
+  "FullName": "Z to WorldPos",
+  "ToolTip": "Z to WorldPos",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Zoom Blur",
+  "FullName": "Zoom Blur",
+  "ToolTip": "Zoom Blur",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Copy Metadata",
+  "FullName": "Copy Metadata",
+  "ToolTip": "Copy Metadata",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Duplicate",
+  "FullName": "Duplicate",
+  "ToolTip": "Duplicate",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Frame Average",
+  "FullName": "Frame Average",
+  "ToolTip": "Frame Average",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "LUT Cube Analyzer",
+  "FullName": "LUT Cube Analyzer",
+  "ToolTip": "LUT Cube Analyzer",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "LUT Cube Apply",
+  "FullName": "LUT Cube Apply",
+  "ToolTip": "LUT Cube Apply",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "LUT Cube Creator",
+  "FullName": "LUT Cube Creator",
+  "ToolTip": "LUT Cube Creator",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Rays",
+  "FullName": "Rays",
+  "ToolTip": "Rays",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Set Metadata",
+  "FullName": "Set Metadata",
+  "ToolTip": "Set Metadata",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Set Time Code",
+  "FullName": "Set Time Code",
+  "ToolTip": "Set Time Code",
+  "Source": null
+ },
+ {
+  "ID": "AddTool",
+  "Name": "Wireless Link",
+  "FullName": "Wireless Link",
+  "ToolTip": "Wireless Link",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_SubWnd",
+  "Name": "SubWnd",
+  "FullName": "Document Frame 1",
+  "ToolTip": "Document Frame 1",
+  "Source": null
+ },
+ {
+  "ID": "Flow_Go_To_Bookmark",
+  "Name": "Go To Bookmark",
+  "FullName": "Go To Bookmark",
+  "ToolTip": "Go To Bookmark",
+  "Source": null
+ },
+ {
+  "ID": "Flow_Go_To_Bookmark",
+  "Name": "Go To Bookmark",
+  "FullName": "Go To Bookmark",
+  "ToolTip": "Go To Bookmark",
+  "Source": null
+ },
+ {
+  "ID": "Flow_Go_To_Bookmark",
+  "Name": "Go To Bookmark",
+  "FullName": "Go To Bookmark",
+  "ToolTip": "Go To Bookmark",
+  "Source": null
+ },
+ {
+  "ID": "Flow_Go_To_Bookmark",
+  "Name": "Go To Bookmark",
+  "FullName": "Go To Bookmark",
+  "ToolTip": "Go To Bookmark",
+  "Source": null
+ },
+ {
+  "ID": "Flow_Go_To_Bookmark",
+  "Name": "Go To Bookmark",
+  "FullName": "Go To Bookmark",
+  "ToolTip": "Go To Bookmark",
+  "Source": null
+ },
+ {
+  "ID": "Flow_Go_To_Bookmark",
+  "Name": "Go To Bookmark",
+  "FullName": "Go To Bookmark",
+  "ToolTip": "Go To Bookmark",
+  "Source": null
+ },
+ {
+  "ID": "Tool_ViewOn",
+  "Name": "View On",
+  "FullName": "View On 7",
+  "ToolTip": "View On 7",
+  "Source": null
+ },
+ {
+  "ID": "AddSetting",
+  "Name": "Reel 5",
+  "FullName": "Reel 5",
+  "ToolTip": "Reel 5",
+  "Source": null
+ },
+ {
+  "ID": "AddSetting",
+  "Name": "Reel 6",
+  "FullName": "Reel 6",
+  "ToolTip": "Reel 6",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_SubWnd",
+  "Name": "SubWnd",
+  "FullName": "Document Frame 2",
+  "ToolTip": "Document Frame 2",
+  "Source": null
+ },
+ {
+  "ID": "Tool_ViewOn",
+  "Name": "View On",
+  "FullName": "View On 1",
+  "ToolTip": "View On 1",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_SubWnd",
+  "Name": "SubWnd",
+  "FullName": "Document Frame 3",
+  "ToolTip": "Document Frame 3",
+  "Source": null
+ },
+ {
+  "ID": "AddSetting",
+  "Name": "Reels",
+  "FullName": "Reels",
+  "ToolTip": "Reels",
+  "Source": null
+ },
+ {
+  "ID": "Tool_ViewOn",
+  "Name": "View On",
+  "FullName": "View On 3",
+  "ToolTip": "View On 3",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_SubWnd",
+  "Name": "SubWnd",
+  "FullName": "Document Frame 4",
+  "ToolTip": "Document Frame 4",
+  "Source": null
+ },
+ {
+  "ID": "AddSetting",
+  "Name": "Reels - 2",
+  "FullName": "Reels - 2",
+  "ToolTip": "Reels - 2",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Activate",
+  "Name": "Activate Settings",
+  "FullName": "Settings Load 8",
+  "ToolTip": "Settings Load 8",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_SubWnd",
+  "Name": "SubWnd",
+  "FullName": "Document Frame 5",
+  "ToolTip": "Document Frame 5",
+  "Source": null
+ },
+ {
+  "ID": "AddSetting",
+  "Name": "Reels 3",
+  "FullName": "Reels 3",
+  "ToolTip": "Reels 3",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Activate",
+  "Name": "Activate Settings",
+  "FullName": "Settings Load 7",
+  "ToolTip": "Settings Load 7",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_SubWnd",
+  "Name": "SubWnd",
+  "FullName": "Document Frame 6",
+  "ToolTip": "Document Frame 6",
+  "Source": null
+ },
+ {
+  "ID": "AddSetting",
+  "Name": "Reels 4",
+  "FullName": "Reels 4",
+  "ToolTip": "Reels 4",
+  "Source": null
+ },
+ {
+  "ID": "Tool_ViewOn",
+  "Name": "View On",
+  "FullName": "View On 5",
+  "ToolTip": "View On 5",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_SubWnd",
+  "Name": "SubWnd",
+  "FullName": "Document Frame 7",
+  "ToolTip": "Document Frame 7",
+  "Source": null
+ },
+ {
+  "ID": "AddSetting",
+  "Name": "Reels2",
+  "FullName": "Reels2",
+  "ToolTip": "Reels2",
+  "Source": null
+ },
+ {
+  "ID": "Tool_ViewOn",
+  "Name": "View On",
+  "FullName": "View On 4",
+  "ToolTip": "View On 4",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_SubWnd",
+  "Name": "SubWnd",
+  "FullName": "Document Frame 8",
+  "ToolTip": "Document Frame 8",
+  "Source": null
+ },
+ {
+  "ID": "AddSetting",
+  "Name": "Skin details",
+  "FullName": "Skin details",
+  "ToolTip": "Skin details",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Activate",
+  "Name": "Activate Settings",
+  "FullName": "Settings Load 6",
+  "ToolTip": "Settings Load 6",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_SubWnd",
+  "Name": "SubWnd",
+  "FullName": "Document Frame 9",
+  "ToolTip": "Document Frame 9",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Activate",
+  "Name": "Activate Settings",
+  "FullName": "Settings Load 5",
+  "ToolTip": "Settings Load 5",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_SubWnd",
+  "Name": "SubWnd",
+  "FullName": "Document Frame 10",
+  "ToolTip": "Document Frame 10",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Activate",
+  "Name": "Activate Settings",
+  "FullName": "Settings Load 4",
+  "ToolTip": "Settings Load 4",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_Frame",
+  "Name": "Frame",
+  "FullName": "Floating Frame 1",
+  "ToolTip": "Floating Frame 1",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Store",
+  "Name": "Store Settings",
+  "FullName": "Settings Store 7",
+  "ToolTip": "Settings Store 7",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_Frame",
+  "Name": "Frame",
+  "FullName": "Floating Frame 2",
+  "ToolTip": "Floating Frame 2",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Activate",
+  "Name": "Activate Settings",
+  "FullName": "Settings Load 3",
+  "ToolTip": "Settings Load 3",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_Frame",
+  "Name": "Frame",
+  "FullName": "Floating Frame 3",
+  "ToolTip": "Floating Frame 3",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Store",
+  "Name": "Store Settings",
+  "FullName": "Settings Store 5",
+  "ToolTip": "Settings Store 5",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_Frame",
+  "Name": "Frame",
+  "FullName": "Floating Frame 4",
+  "ToolTip": "Floating Frame 4",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Activate",
+  "Name": "Activate Settings",
+  "FullName": "Settings Load 9",
+  "ToolTip": "Settings Load 9",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_Frame",
+  "Name": "Frame",
+  "FullName": "Floating Frame 5",
+  "ToolTip": "Floating Frame 5",
+  "Source": null
+ },
+ {
+  "ID": "Tool_ViewOn",
+  "Name": "View On",
+  "FullName": "View On 6",
+  "ToolTip": "View On 6",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_Frame",
+  "Name": "Frame",
+  "FullName": "Floating Frame 6",
+  "ToolTip": "Floating Frame 6",
+  "Source": null
+ },
+ {
+  "ID": "Playback_Mode",
+  "Name": "Play Mode",
+  "FullName": "Play Mode",
+  "ToolTip": "Play Mode",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_Frame",
+  "Name": "Frame",
+  "FullName": "Floating Frame 7",
+  "ToolTip": "Floating Frame 7",
+  "Source": null
+ },
+ {
+  "ID": "Tool_ViewOn",
+  "Name": "View On",
+  "FullName": "View On 2",
+  "ToolTip": "View On 2",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_Frame",
+  "Name": "Frame",
+  "FullName": "Floating Frame 8",
+  "ToolTip": "Floating Frame 8",
+  "Source": null
+ },
+ {
+  "ID": "Tool_ViewOn",
+  "Name": "View On",
+  "FullName": "View On 9",
+  "ToolTip": "View On 9",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_Frame",
+  "Name": "Frame",
+  "FullName": "Floating Frame 9",
+  "ToolTip": "Floating Frame 9",
+  "Source": null
+ },
+ {
+  "ID": "Tool_ViewOn",
+  "Name": "View On",
+  "FullName": "View On 8",
+  "ToolTip": "View On 8",
+  "Source": null
+ },
+ {
+  "ID": "Frame_Activate_Frame",
+  "Name": "Frame",
+  "FullName": "Floating Frame 10",
+  "ToolTip": "Floating Frame 10",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Store",
+  "Name": "Store Settings",
+  "FullName": "Settings Store 1",
+  "ToolTip": "Settings Store 1",
+  "Source": null
+ },
+ {
+  "ID": "Comp_Recent_Open",
+  "Name": "Open Recent",
+  "FullName": "Recent 1",
+  "ToolTip": "Recent 1",
+  "Source": null
+ },
+ {
+  "ID": "Comp_Recent_Open",
+  "Name": "Open Recent",
+  "FullName": "Recent 2",
+  "ToolTip": "Recent 2",
+  "Source": null
+ },
+ {
+  "ID": "Playback_Mode",
+  "Name": "Play Mode",
+  "FullName": "Play Mode",
+  "ToolTip": "Play Mode",
+  "Source": null
+ },
+ {
+  "ID": "Comp_Recent_Open",
+  "Name": "Open Recent",
+  "FullName": "Recent 3",
+  "ToolTip": "Recent 3",
+  "Source": null
+ },
+ {
+  "ID": "Playback_Mode",
+  "Name": "Play Mode",
+  "FullName": "Play Mode",
+  "ToolTip": "Play Mode",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Store",
+  "Name": "Store Settings",
+  "FullName": "Settings Store 10",
+  "ToolTip": "Settings Store 10",
+  "Source": null
+ },
+ {
+  "ID": "Comp_Recent_Open",
+  "Name": "Open Recent",
+  "FullName": "Recent 4",
+  "ToolTip": "Recent 4",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Activate",
+  "Name": "Activate Settings",
+  "FullName": "Settings Load 2",
+  "ToolTip": "Settings Load 2",
+  "Source": null
+ },
+ {
+  "ID": "Comp_Recent_Open",
+  "Name": "Open Recent",
+  "FullName": "Recent 5",
+  "ToolTip": "Recent 5",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Store",
+  "Name": "Store Settings",
+  "FullName": "Settings Store 8",
+  "ToolTip": "Settings Store 8",
+  "Source": null
+ },
+ {
+  "ID": "Comp_Recent_Open",
+  "Name": "Open Recent",
+  "FullName": "Recent 6",
+  "ToolTip": "Recent 6",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Store",
+  "Name": "Store Settings",
+  "FullName": "Settings Store 3",
+  "ToolTip": "Settings Store 3",
+  "Source": null
+ },
+ {
+  "ID": "Comp_Recent_Open",
+  "Name": "Open Recent",
+  "FullName": "Recent 7",
+  "ToolTip": "Recent 7",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Store",
+  "Name": "Store Settings",
+  "FullName": "Settings Store 4",
+  "ToolTip": "Settings Store 4",
+  "Source": null
+ },
+ {
+  "ID": "Comp_Recent_Open",
+  "Name": "Open Recent",
+  "FullName": "Recent 8",
+  "ToolTip": "Recent 8",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Store",
+  "Name": "Store Settings",
+  "FullName": "Settings Store 6",
+  "ToolTip": "Settings Store 6",
+  "Source": null
+ },
+ {
+  "ID": "Comp_Recent_Open",
+  "Name": "Open Recent",
+  "FullName": "Recent 9",
+  "ToolTip": "Recent 9",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Store",
+  "Name": "Store Settings",
+  "FullName": "Settings Store 2",
+  "ToolTip": "Settings Store 2",
+  "Source": null
+ },
+ {
+  "ID": "Comp_Recent_Open",
+  "Name": "Open Recent",
+  "FullName": "Recent 10",
+  "ToolTip": "Recent 10",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Activate",
+  "Name": "Activate Settings",
+  "FullName": "Settings Load 10",
+  "ToolTip": "Settings Load 10",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Activate",
+  "Name": "Activate Settings",
+  "FullName": "Settings Load 1",
+  "ToolTip": "Settings Load 1",
+  "Source": null
+ },
+ {
+  "ID": "Tool_Settings_Store",
+  "Name": "Store Settings",
+  "FullName": "Settings Store 9",
+  "ToolTip": "Settings Store 9",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Layer",
+  "Name": "Layer",
+  "FullName": "Layer",
+  "ToolTip": "Layer",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Layer_Change",
+  "Name": "View Prev/Next Layer",
+  "FullName": "View Prev/Next Layer",
+  "ToolTip": "View Prev/Next Layer",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Layer_Change",
+  "Name": "View Prev/Next Layer",
+  "FullName": "View Prev/Next Layer",
+  "ToolTip": "View Prev/Next Layer",
+  "Source": null
+ },
+ {
+  "ID": "Playback_Seek",
+  "Name": "Seek",
+  "FullName": "Seek -10",
+  "ToolTip": "Seek -10",
+  "Source": null
+ },
+ {
+  "ID": "Playback_Seek",
+  "Name": "Seek",
+  "FullName": "Seek +1",
+  "ToolTip": "Seek +1",
+  "Source": null
+ },
+ {
+  "ID": "Playback_Seek",
+  "Name": "Seek",
+  "FullName": "Seek -1",
+  "ToolTip": "Seek -1",
+  "Source": null
+ },
+ {
+  "ID": "Playback_Seek",
+  "Name": "Seek",
+  "FullName": "Seek +10",
+  "ToolTip": "Seek +10",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Buffer",
+  "Name": "Buffer",
+  "FullName": "Buffer A",
+  "ToolTip": "Buffer A",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Scale_Rel",
+  "Name": "Scale",
+  "FullName": "Scale by 70%",
+  "ToolTip": "Scale by 70%",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Reset",
+  "Name": "Reset",
+  "FullName": "Reset",
+  "ToolTip": "Reset",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Buffer",
+  "Name": "Buffer",
+  "FullName": "Buffer B",
+  "ToolTip": "Buffer B",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Scale_Rel",
+  "Name": "Scale",
+  "FullName": "Scale by 141%",
+  "ToolTip": "Scale by 141%",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Buffer",
+  "Name": "Buffer",
+  "FullName": "Buffer Split Wipe",
+  "ToolTip": "Buffer Split Wipe",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Scale_Abs",
+  "Name": "Scale",
+  "FullName": "Scale to Fit",
+  "ToolTip": "Scale to Fit",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Channel",
+  "Name": "Channel",
+  "FullName": "Alpha",
+  "ToolTip": "Alpha",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Channel",
+  "Name": "Channel",
+  "FullName": "Color",
+  "ToolTip": "Color",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Channel",
+  "Name": "Channel",
+  "FullName": "Red",
+  "ToolTip": "Red",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Channel",
+  "Name": "Channel",
+  "FullName": "Green",
+  "ToolTip": "Green",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Channel",
+  "Name": "Channel",
+  "FullName": "Z",
+  "ToolTip": "Z",
+  "Source": null
+ },
+ {
+  "ID": "Viewer_Channel",
+  "Name": "Channel",
+  "FullName": "Blue",
+  "ToolTip": "Blue",
+  "Source": null
+ },
+ {
+  "ID": "Fusion_View_Show",
+  "Name": "Show Toolbar",
+  "FullName": "Show Toolbar",
+  "ToolTip": "Show Toolbar",
+  "Source": null
+ },
+ {
+  "ID": "Prefs_Show",
+  "Name": "Fusion Settings\u2026",
+  "FullName": "Fusion Settings\u2026",
+  "ToolTip": "Fusion Settings\u2026",
+  "Source": null
+ },
+ {
+  "ID": "Utility_Show",
+  "Name": "Macro Editor\u2026",
+  "FullName": "Macro Editor\u2026",
+  "ToolTip": "Macro Editor\u2026",
+  "Source": null
+ },
+ {
+  "ID": "Utility_Show",
+  "Name": "Alembic Scene\u2026",
+  "FullName": "Alembic Scene\u2026",
+  "ToolTip": "Alembic Scene\u2026",
+  "Source": null
+ },
+ {
+  "ID": "Utility_Show",
+  "Name": "FBX Scene\u2026",
+  "FullName": "FBX Scene\u2026",
+  "ToolTip": "FBX Scene\u2026",
+  "Source": null
+ },
+ {
+  "ID": "Utility_Show",
+  "Name": "PSD\u2026",
+  "FullName": "PSD\u2026",
+  "ToolTip": "PSD\u2026",
+  "Source": null
+ },
+ {
+  "ID": "Utility_Show",
+  "Name": "Shapes\u2026",
+  "FullName": "Shapes\u2026",
+  "ToolTip": "Shapes\u2026",
+  "Source": null
+ },
+ {
+  "ID": "Utility_Show",
+  "Name": "SVG\u2026",
+  "FullName": "SVG\u2026",
+  "ToolTip": "SVG\u2026",
+  "Source": null
+ },
+ {
+  "ID": "Utility_Show",
+  "Name": "Tracks\u2026",
+  "FullName": "Tracks\u2026",
+  "ToolTip": "Tracks\u2026",
+  "Source": null
+ },
+ {
+  "ID": "Comp_StartRender",
+  "Name": "&Render All Savers",
+  "FullName": "Render All Savers",
+  "ToolTip": "Render All Savers",
+  "Source": null
+ },
+ {
+  "ID": "ACTION_SET_UI_LAYOUT",
+  "Name": "Default",
+  "FullName": "Default",
+  "ToolTip": "Default",
+  "Source": null
+ },
+ {
+  "ID": "ACTION_SET_UI_LAYOUT",
+  "Name": "Left Flow",
+  "FullName": "Left Flow",
+  "ToolTip": "Left Flow",
+  "Source": null
+ },
+ {
+  "ID": "ACTION_SET_UI_LAYOUT",
+  "Name": "Left Flow Vertical",
+  "FullName": "Left Flow Vertical",
+  "ToolTip": "Left Flow Vertical",
+  "Source": null
+ },
+ {
+  "ID": "ACTION_SET_UI_LAYOUT",
+  "Name": "Mid Flow",
+  "FullName": "Mid Flow",
+  "ToolTip": "Mid Flow",
+  "Source": null
+ },
+ {
+  "ID": "ACTION_SET_UI_LAYOUT",
+  "Name": "Mid Flow Vertical",
+  "FullName": "Mid Flow Vertical",
+  "ToolTip": "Mid Flow Vertical",
+  "Source": null
+ }
+]

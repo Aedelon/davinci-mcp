@@ -1,0 +1,157 @@
+{
+  "Resolve": {
+    "live_count": 34,
+    "documented_count": 32,
+    "undocumented": [
+      "Print",
+      "SetHighPriority"
+    ],
+    "documented_missing_live": []
+  },
+  "ProjectManager": {
+    "live_count": 30,
+    "documented_count": 28,
+    "undocumented": [
+      "GetProjectLastModifiedTime",
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "Project": {
+    "live_count": 49,
+    "documented_count": 49,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": [
+      "DeleteRenderJobByIndex"
+    ]
+  },
+  "MediaStorage": {
+    "live_count": 12,
+    "documented_count": 11,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "MediaPool": {
+    "live_count": 28,
+    "documented_count": 27,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "Folder": {
+    "live_count": 16,
+    "documented_count": 15,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "MediaPoolItem": {
+    "live_count": 44,
+    "documented_count": 43,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "Timeline": {
+    "live_count": 61,
+    "documented_count": 60,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "TimelineItem": {
+    "live_count": 88,
+    "documented_count": 87,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "Graph": {
+    "live_count": 12,
+    "documented_count": 11,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "FusionComposition": {
+    "live_count": 92,
+    "documented_count": 0,
+    "undocumented": null,
+    "documented_missing_live": []
+  },
+  "FusionTool": {
+    "live_count": 38,
+    "documented_count": 0,
+    "undocumented": null,
+    "documented_missing_live": []
+  },
+  "FusionInput": {
+    "live_count": 26,
+    "documented_count": 0,
+    "undocumented": null,
+    "documented_missing_live": []
+  },
+  "TimelineItem(audio)": {
+    "live_count": 88,
+    "documented_count": 87,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "GalleryStill": {
+    "live_count": 1,
+    "documented_count": 0,
+    "undocumented": null,
+    "documented_missing_live": []
+  },
+  "Graph(timeline)": {
+    "live_count": 12,
+    "documented_count": 11,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "Gallery": {
+    "live_count": 9,
+    "documented_count": 8,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "GalleryStillAlbum": {
+    "live_count": 7,
+    "documented_count": 6,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "ColorGroup": {
+    "live_count": 6,
+    "documented_count": 5,
+    "undocumented": [
+      "Print"
+    ],
+    "documented_missing_live": []
+  },
+  "Fusion": {
+    "live_count": 141,
+    "documented_count": 0,
+    "undocumented": null,
+    "documented_missing_live": []
+  },
+  "_classes_documented_not_reached": []
+}

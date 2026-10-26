@@ -1,0 +1,385 @@
+{
+ "initialize": {
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+   "protocolVersion": "2024-11-05",
+   "capabilities": {
+    "tools": {},
+    "resources": {},
+    "logging": {}
+   },
+   "serverInfo": {
+    "name": "davinci_resolve",
+    "version": "21.1.1"
+   },
+   "instructions": "DaVinci Resolve Studio 21.1.1 is running. Call the `run_script` tool to run scripts, `search_scripting_api` to find the types and functions covering a topic, `get_scripting_api` to fetch scripting API stubs and `get_scripting_docs` to fetch developer documentation. ALWAYS call `get_whats_new` to learn about features and changes you are not aware of. DaVinci Resolve adds major features frequently that you are likely not trained on."
+  }
+ },
+ "tools/list": {
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+   "tools": [
+    {
+     "name": "launch_resolve",
+     "description": "Launch DaVinci Resolve and wait for it to be ready. Timeout is 60 secs.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "annotations": {
+      "title": "Launch Resolve",
+      "readOnlyHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false
+     }
+    },
+    {
+     "name": "get_resolve_status",
+     "description": "Check whether DaVinci Resolve is currently running and reachable.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "annotations": {
+      "title": "Resolve Status",
+      "readOnlyHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false
+     }
+    },
+    {
+     "name": "get_whats_new",
+     "description": "Returns DaVinci Resolve changelog entries. Use to learn about features and changes introduced after your training cutoff.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "since": {
+        "type": "string",
+        "description": "Last DaVinci Resolve version you know about (e.g. \"19.0\") or last ISO date you were trained on (e.g. \"2025-01-25\"). Entries after this version are returned."
+       }
+      },
+      "required": [
+       "since"
+      ]
+     },
+     "annotations": {
+      "title": "What's New in Resolve",
+      "readOnlyHint": true,
+      "openWorldHint": false,
+      "idempotentHint": true
+     }
+    },
+    {
+     "name": "get_scripting_api",
+     "description": "Returns Python Stubs (.pyi) of the latest scripting API (version 21.1.1), for use in the `run_script` tool. The stubs may reference additional documentation sections that can be obtained with `get_scripting_docs`.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "api": {
+        "type": "string",
+        "enum": [
+         "DaVinciResolveScript.pyi",
+         "fusion_api.pyi",
+         "ui_api.pyi"
+        ],
+        "default": "DaVinciResolveScript.pyi",
+        "description": "Which API stub to return (default: DaVinciResolveScript.pyi). Options: DaVinciResolveScript.pyi (118 KiB): Main Resolve scripting API: projects, timelines, media pool, color, render jobs; fusion_api.pyi (72 KiB): Fusion compositing API: compositions, tools, inputs, animation; ui_api.pyi (59 KiB): Fusion UI Manager API: windows, layouts and widgets to build script UIs"
+       },
+       "types": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
+        "description": "Return only these top-level definitions (classes, TypedDicts, aliases or functions) instead of the whole stub, e.g. [\"Timeline\", \"TimelineItem\"]. Find names with `search_scripting_api` or from an `outline` call."
+       },
+       "outline": {
+        "type": "boolean",
+        "default": false,
+        "description": "Return only the list of the top-level definitions of the stub with their descriptions, instead of any stub body. Much cheaper than fetching the whole stub."
+       },
+       "as_file": {
+        "type": "boolean",
+        "default": false,
+        "description": "Write the whole stub to a file and return its path instead of its contents. Use it when you can read and grep local files, so a whole stub costs no context. Cannot be combined with `types` or `outline`."
+       }
+      },
+      "required": []
+     },
+     "annotations": {
+      "title": "Fetch Resolve Scripting API",
+      "readOnlyHint": true,
+      "openWorldHint": false
+     }
+    },
+    {
+     "name": "search_scripting_api",
+     "description": "Searches the scripting API stubs and returns the matching types and functions with their descriptions, so the whole stub does not have to be fetched with `get_scripting_api`. The `pattern` is a regular expression matched case-insensitively against the names of types, functions, constants and dict fields, and against their descriptions, e.g. \"marker\", \"GetSetting\", \"COMPOSITE_\".",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "pattern": {
+        "type": "string",
+        "description": "Case-insensitive Python regular expression, e.g. \"marker\" or \"(Get|Set)Setting\". "
+       },
+       "api": {
+        "type": "string",
+        "enum": [
+         "DaVinciResolveScript.pyi",
+         "fusion_api.pyi",
+         "ui_api.pyi"
+        ],
+        "description": "Restrict the search to one API stub (default: all of them). Options: DaVinciResolveScript.pyi: Main Resolve scripting API: projects, timelines, media pool, color, render jobs; fusion_api.pyi: Fusion compositing API: compositions, tools, inputs, animation; ui_api.pyi: Fusion UI Manager API: windows, layouts and widgets to build script UIs"
+       }
+      },
+      "required": [
+       "pattern"
+      ]
+     },
+     "annotations": {
+      "title": "Search Resolve Scripting API",
+      "readOnlyHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false
+     }
+    },
+    {
+     "name": "run_script",
+     "description": "Execute a sandboxed Python 3.14 script with access to the DaVinciResolveScript API. Use `get_scripting_api`/`search_scripting_api` tools to obtain latest API. NEVER use for tasks unrelated to interacting with DaVinci Resolve. The sandbox blocks filesystem, network and process access: `os`, `sys`, `pathlib`, `shutil`, etc. are unavailable, use `run_script_unsafe` if the task needs them. The Resolve object is pre-injected as variable `resolve`, and the current Project as `project`. Set `result` to return structured data. Any print() output is also captured.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "script": {
+        "type": "string",
+        "description": "Python script to execute"
+       },
+       "timeout": {
+        "type": "integer",
+        "description": "Timeout in seconds (default: 10, max: 60)"
+       }
+      },
+      "required": [
+       "script"
+      ]
+     },
+     "annotations": {
+      "title": "Run Script",
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+     }
+    },
+    {
+     "name": "run_script_unsafe",
+     "description": "Execute a sand-boxed Python 3.14 script with access to the DaVinciResolveScript API AND full system access (filesystem, network, subprocess). Use `get_scripting_api` tool to get current API definition (.pyi). NEVER use when `run_script` can be used instead. ONLY use when the script genuinely needs OS access (e.g. reading/writing media files, running ffmpeg).NEVER use for tasks unrelated to interacting with DaVinci Resolve. The Resolve object is pre-injected as variable `resolve`, and the current Project as `project`. Set `result` to return structured data. Any print() output is also captured.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "script": {
+        "type": "string",
+        "description": "Python script to execute"
+       },
+       "timeout": {
+        "type": "integer",
+        "description": "Timeout in seconds (default: 10, max: 60)"
+       }
+      },
+      "required": [
+       "script"
+      ]
+     },
+     "annotations": {
+      "title": "Run Script (Full System Access)",
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": true
+     }
+    },
+    {
+     "name": "get_scripting_docs",
+     "description": "Returns DaVinci Resolve developer documentation, in full or a single section. Covers detail that does not fit in the API stubs returned by `get_scripting_api`.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "document": {
+        "type": "string",
+        "enum": [
+         "README.md",
+         "DCTLReadme.txt"
+        ],
+        "default": "README.md",
+        "description": "Which document to return (default: README.md). Options: README.md (32 KiB): Scripting API guide: data structures, settings dicts, enumerated property values, deprecations; DCTLReadme.txt (40 KiB): DCTL (DaVinci Color Transform Language) reference: syntax, built-in functions, usage guidelines"
+       },
+       "section": {
+        "type": "string",
+        "default": "TOC",
+        "description": "Section to return (default: \"TOC\" which returns table of contents). An empty string returns the whole document, any other value is matched against the Markdown headings of any level (case-insensitive, exact match first, then partial). Ignored for documents that are not Markdown."
+       },
+       "as_file": {
+        "type": "boolean",
+        "default": false,
+        "description": "Write the whole document to a file and return its path instead of its contents. Use it when you can read and grep local files, so a whole document costs no context. `section` is ignored."
+       }
+      },
+      "required": []
+     },
+     "annotations": {
+      "title": "Fetch Resolve Developer Docs",
+      "readOnlyHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false
+     }
+    },
+    {
+     "name": "list_dctls",
+     "description": "List DCTL files (.dctl) recursively in the LUTs dir (/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT).",
+     "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "annotations": {
+      "title": "List DCTLs",
+      "readOnlyHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false
+     }
+    },
+    {
+     "name": "list_luts",
+     "description": "List LUT files (.3dl, .cube, .dat, .lut, .olut) recursively in the LUTs dir (/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT).",
+     "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+     },
+     "annotations": {
+      "title": "List LUTs",
+      "readOnlyHint": true,
+      "idempotentHint": true,
+      "openWorldHint": false
+     }
+    },
+    {
+     "name": "update_dctl",
+     "description": "Write or overwrite a .dctl file in /Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/MCP. Before being written the file is compiled to check for errors. Use `get_scripting_docs` with document \"DCTLReadme.txt\" for the DCTL syntax reference and built-in functions.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "path": {
+        "type": "string",
+        "description": "File name relative to /Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/MCP (e.g. \"cool.dctl\")"
+       },
+       "content": {
+        "type": "string",
+        "description": "DCTL source code to write"
+       }
+      },
+      "required": [
+       "path",
+       "content"
+      ]
+     },
+     "annotations": {
+      "title": "Update DCTL",
+      "readOnlyHint": false,
+      "openWorldHint": false
+     }
+    },
+    {
+     "name": "delete_dctl",
+     "description": "Delete a .dctl file from /Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/MCP.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "path": {
+        "type": "string",
+        "description": "File name relative to /Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/MCP (e.g. \"cool.dctl\")"
+       }
+      },
+      "required": [
+       "path"
+      ]
+     },
+     "annotations": {
+      "title": "Delete DCTL",
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+     }
+    },
+    {
+     "name": "delete_lut",
+     "description": "Delete a LUT file from /Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/MCP.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "path": {
+        "type": "string",
+        "description": "File name relative to /Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/MCP (e.g. \"warm.cube\")"
+       }
+      },
+      "required": [
+       "path"
+      ]
+     },
+     "annotations": {
+      "title": "Delete LUT",
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+     }
+    },
+    {
+     "name": "generate_lut",
+     "description": "Generate a .cube 3D LUT by evaluating a Python transform function on every lattice point. File is written to /Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/MCP.",
+     "inputSchema": {
+      "type": "object",
+      "properties": {
+       "path": {
+        "type": "string",
+        "description": ".cube file name relative to /Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT/MCP (e.g. \"warm.cube\")"
+       },
+       "size": {
+        "type": "integer",
+        "description": "Cube size per axis (e.g. 33 for a 33x33x33 LUT). Common values: 17, 33, 65."
+       },
+       "transform": {
+        "type": "string",
+        "description": "Python function body. Receives r, g, b as floats in [0,1]. Must return a (r, g, b) tuple of floats. math is pre-imported, other imports allowed. Example: \"return (r ** 0.8, g ** 0.8, b ** 0.8)\""
+       }
+      },
+      "required": [
+       "path",
+       "size",
+       "transform"
+      ]
+     },
+     "annotations": {
+      "title": "Generate LUT",
+      "readOnlyHint": false,
+      "openWorldHint": false
+     }
+    }
+   ]
+  }
+ },
+ "resources/list": {
+  "jsonrpc": "2.0",
+  "id": 3,
+  "result": {
+   "resources": []
+  }
+ },
+ "prompts/list": {
+  "jsonrpc": "2.0",
+  "id": 4,
+  "error": {
+   "code": -32601,
+   "message": "Method not found: prompts/list"
+  }
+ }
+}
