@@ -102,7 +102,8 @@ def test_find_process_windows(monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 @pytest.mark.parametrize(
-    ("platform", "headless", "first"), [("darwin", True, "open"), ("linux", False, "/app")]
+    ("platform", "headless", "first"),
+    [("darwin", True, "open"), ("linux", False, str(Path("/app")))],
 )
 def test_launch_resolve(
     monkeypatch: pytest.MonkeyPatch, platform: str, headless: bool, first: str
@@ -121,7 +122,7 @@ def test_launch_resolve_darwin_gui(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(sys, "platform", "darwin")
     monkeypatch.setattr(subprocess, "Popen", lambda cmd, **_k: captured.append(cmd))
     launch_resolve(ResolvePaths(Path("/api"), Path("/lib"), Path("/app")), headless=False)
-    assert captured[0] == ["open", "-a", "/app"]
+    assert captured[0] == ["open", "-a", str(Path("/app"))]
 
 
 def test_backend_missing_lib(tmp_path: Path) -> None:

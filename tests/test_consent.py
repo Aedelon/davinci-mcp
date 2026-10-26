@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import stat
+import sys
 from pathlib import Path
 
 import pytest
@@ -78,5 +79,6 @@ def test_from_state_dir_secret_persisted(tmp_path: Path) -> None:
     token = m1.issue("a", {}, "f", "s", [], []).token
     m2.verify(token, "a", {}, "f")
     key = tmp_path / "state" / "consent.key"
-    assert stat.S_IMODE(key.stat().st_mode) == 0o600
+    if sys.platform != "win32":  # Windows uses ACLs; chmod only toggles read-only
+        assert stat.S_IMODE(key.stat().st_mode) == 0o600
     assert key.stat().st_size == 32
