@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import json
 import socket
+import sys
 import threading
 import time
 from collections.abc import Iterator
@@ -144,7 +145,8 @@ def test_pairing_file(harness: Harness) -> None:
     assert data["port"] == harness.server.port
     assert data["channel"] == "bridge-python"
     assert len(data["secret"]) == 64
-    assert harness.config.stat().st_mode & 0o777 == 0o600
+    if sys.platform != "win32":  # Windows uses ACLs; chmod only toggles read-only
+        assert harness.config.stat().st_mode & 0o777 == 0o600
 
 
 def test_root_nested_and_types(harness: Harness) -> None:

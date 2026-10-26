@@ -173,7 +173,12 @@ def _safe_xml(text: str) -> ET.Element:
 
 
 def _file_url(path: str) -> str:
-    return path if "://" in path else Path(path).expanduser().absolute().as_uri()
+    if "://" in path:
+        return path
+    if path.startswith("/"):
+        # POSIX path (media may live on another machine): never prepend a local drive.
+        return "file://" + quote(path)
+    return Path(path).expanduser().absolute().as_uri()
 
 
 def _url_to_path(url: str) -> str:

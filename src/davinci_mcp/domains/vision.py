@@ -47,6 +47,8 @@ FONT_CANDIDATES = (
     "/System/Library/Fonts/Helvetica.ttc",
     "/Library/Fonts/Arial.ttf",
     "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    "C:/Windows/Fonts/arial.ttf",
+    "C:/Windows/Fonts/segoeui.ttf",
 )
 RESOLVE_APP = "DaVinci Resolve"
 _WINDOW_ID_JXA = """
@@ -382,7 +384,9 @@ def _tile_command(
     if labels is not None and font is not None:
         for i, label in enumerate(labels):
             filters.append(
-                f"drawtext=fontfile='{font}':text='{label}':x=6:y=h-th-6:fontsize=18:"
+                # ffmpeg filter syntax: a drive letter colon must be escaped ("C\\:/...").
+                f"drawtext=fontfile='{font.replace(':', chr(92) + ':')}':text='{label}':"
+                "x=6:y=h-th-6:fontsize=18:"
                 f"fontcolor=white:box=1:boxcolor=black@0.6:boxborderw=4:enable='eq(n,{i})'"
             )
     filters.append(f"tile={cols}x{rows}:padding=4:margin=4:color=black")

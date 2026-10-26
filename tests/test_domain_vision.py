@@ -197,7 +197,8 @@ async def test_old_temp_files_are_pruned(settings, runner) -> None:
 # -- contact_sheet ------------------------------------------------------------------
 
 
-async def test_contact_sheet_even_sampling_and_labels(settings, runner) -> None:
+async def test_contact_sheet_even_sampling_and_labels(settings, runner, monkeypatch) -> None:
+    monkeypatch.setattr(vision, "_font", lambda: "/fonts/Test.ttf")  # host-independent
     resolve = make_resolve()
     head = Playhead(resolve)
     result = await _raw(settings, resolve, "vision_read", {"action": "contact_sheet", "count": 4})
