@@ -1,5 +1,5 @@
 # Copyright Delanoe Pirard / Aedelon. Apache 2.0.
-"""Scale check: a project with 150 clips and 4 timelines of 40 items.
+"""Scale check: a project with 160 clips and 4 timelines of 40 items.
 
 Measures whether a server stays usable (and its replies small) when listing everything
 is no longer an option. Run with ``run_eval.py --suite scale``.
@@ -13,7 +13,7 @@ from typing import Any
 
 from scenarios import Check, Resolve, Scenario, _clip, _timeline
 
-CLIPS = 150
+CLIPS = 160
 PER_TIMELINE = 40
 
 
@@ -42,7 +42,7 @@ def _setup(_r: Resolve, project: Any, work: Path) -> None:
 
 def _prompt(_work: Path) -> str:
     return (
-        "The open DaVinci Resolve project has 150 clips and four timelines, Edit_01 to "
+        "The open DaVinci Resolve project has 160 clips and four timelines, Edit_01 to "
         "Edit_04. In timeline 'Edit_03' only, set the clip color of every timeline item whose "
         "name starts with 'broll_' to Orange, and leave every other item unchanged. Then, in "
         "timeline 'Edit_02', add a Red timeline marker named 'Check' at the start of the item "
@@ -79,5 +79,5 @@ def _check(_r: Resolve, project: Any, _work: Path) -> Check:
 
 
 SCENARIOS: tuple[Scenario, ...] = (
-    Scenario("big_project", "Gros projet : 150 clips, 4 timelines", _setup, _prompt, _check),
+    Scenario("big_project", "Gros projet : 160 clips, 4 timelines", _setup, _prompt, _check),
 )

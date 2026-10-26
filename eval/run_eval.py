@@ -334,7 +334,7 @@ def main() -> int:
         "--suite",
         choices=["v1", "v2", "scale"],
         default="v1",
-        help="v2: scenarios written blind; scale: 150-clip project",
+        help="v2: scenarios written blind; scale: 160-clip project",
     )
     parser.add_argument("--scenarios", nargs="+", default=None)
     parser.add_argument("--model", default="sonnet")
