@@ -5,6 +5,9 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from pathlib import Path
+from typing import Annotated
+
+from pydantic import Field
 
 from davinci_mcp.errors import DavinciError, ErrorCode
 
@@ -31,3 +34,12 @@ def check_path(path: str | Path, roots: Sequence[Path], *, must_exist: bool = Fa
     if must_exist and not resolved.exists():
         raise DavinciError(ErrorCode.NOT_FOUND, f"Path does not exist: {resolved}")
     return resolved
+
+
+SAFE_NAME_PATTERN = r"^[A-Za-z0-9][A-Za-z0-9 _.\-]{0,127}$"
+
+# A bare file name or prefix: no separators, cannot start with '.', so no traversal.
+type SafeFileName = Annotated[
+    str,
+    Field(pattern=SAFE_NAME_PATTERN, description="Plain file name (no path separators)."),
+]

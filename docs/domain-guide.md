@@ -57,6 +57,7 @@ def list_clips(s: ResolveSession, p: ListClipsParams) -> ClipList:
 from tests.fakes.fake_resolve import make_resolve
 from tests.helpers import call, confirm, mcp_client
 
+
 async def test_list(settings):
     resolve = make_resolve(timelines=2)
     async with mcp_client(resolve, settings, ACTIONS) as client:

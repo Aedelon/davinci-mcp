@@ -39,7 +39,10 @@ from davinci_mcp.safety.snapshots import SnapshotInfo, SnapshotManager
 INSTRUCTIONS = """\
 davinci-mcp controls DaVinci Resolve (Studio, or the free edition through the in-app bridge).
 Start with resolve_status. Domain tools are named <domain>_read, <domain>_write and
-<domain>_delete; pass {"op": {"action": ..., ...}}. Read tools are side-effect free.
+<domain>_delete; pass {"op": {"action": ..., ...params}}. Each tool description lists its
+actions with parameter names (* = required); call describe_action(tool, action) for the full
+schema before using an unfamiliar action. Most actions also take an optional `timeline`
+selector (default: the current timeline). Read tools are side-effect free.
 Write tools return a receipt with verified=true|false from a read-back: treat
 verified=false as a failure. Use dry_run=true to preview any write. <domain>_delete tools
 first return a plan with a confirm_token; repeat the identical call with confirm_token
@@ -132,6 +135,20 @@ class StatusOutput(BaseModel):
     error: ErrorPayload | None = None
 
 
+class ActionInfo(BaseModel):
+    tool: str
+    action: str
+    summary: str
+    kind: str
+    params_schema: dict[str, Any]
+    result_schema: dict[str, Any]
+    since: str | None = None
+    studio_only: bool = False
+    long_running: bool = False
+    page: str | None = None
+    snapshot: str | None = None
+
+
 class SearchOutput(BaseModel):
     hits: list[SearchHit]
 
@@ -185,8 +202,48 @@ def build_server(
         "davinci-mcp", version=__version__, instructions=INSTRUCTIONS, lifespan=lifespan, auth=auth
     )
 
-    for definition in build_registry(actions).tool_definitions():
+    definitions = build_registry(actions).tool_definitions(
+        compact=settings.server.schema_mode == "compact"
+    )
+    by_name = {d.name: d for d in definitions}
+    for definition in definitions:
         mcp.add_tool(RegistryTool.create(definition, services.pipeline))
+
+    @mcp.tool(
+        annotations=_READ_ONLY, meta=ALWAYS_LOAD, output_schema=ActionInfo.model_json_schema()
+    )
+    async def describe_action(
+        tool: str = Field(description="Tool name, e.g. 'timeline_write'."),
+        action: str = Field(description="op.action value, e.g. 'append_clips'."),
+    ) -> ToolResult:
+        """Full parameter and result schema of one action, with its flags."""
+        definition = by_name.get(tool)
+        if definition is None or action not in definition.actions:
+            known = sorted(definition.actions) if definition else sorted(by_name)
+            return error_result(
+                DavinciError(
+                    ErrorCode.NOT_FOUND,
+                    f"Unknown {'action' if definition else 'tool'}: {tool}.{action}.",
+                    hint=f"Known: {', '.join(known)}",
+                    retryable=False,
+                )
+            )
+        spec = definition.actions[action]
+        return _ok(
+            ActionInfo(
+                tool=tool,
+                action=action,
+                summary=spec.summary,
+                kind=spec.kind.value,
+                params_schema=definition.action_schema(action),
+                result_schema=spec.result.model_json_schema(),
+                since=".".join(map(str, spec.since)) if spec.since else None,
+                studio_only=spec.studio_only,
+                long_running=spec.long_running,
+                page=spec.page,
+                snapshot=spec.snapshot,
+            )
+        )
 
     @mcp.tool(
         annotations=_READ_ONLY,
@@ -222,6 +279,11 @@ def build_server(
         """Search the Resolve scripting API (official 21.1 stub) by name or description."""
         return _ok(SearchOutput(hits=search(surface, pattern, limit)))
 
+    _add_job_and_snapshot_tools(mcp, services)
+    return mcp
+
+
+def _add_job_and_snapshot_tools(mcp: FastMCP, services: Services) -> None:
     @mcp.tool(annotations=_READ_ONLY, output_schema=JobInfo.model_json_schema())
     async def job_status(job_id: str) -> ToolResult:
         """Current state and progress of a long-running job."""
@@ -260,8 +322,6 @@ def build_server(
     async def snapshot_list(project: str | None = None) -> ToolResult:
         """Safety snapshots taken by this server (optionally for one project)."""
         return _ok(SnapshotListOutput(snapshots=services.snapshots.list(project)))
-
-    return mcp
 
 
 def check_http_exposure(settings: Settings) -> None:

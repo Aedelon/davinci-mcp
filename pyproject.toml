@@ -58,6 +58,10 @@ reportUnknownParameterType = false
 reportUnknownLambdaType = false
 reportMissingParameterType = false
 reportMissingTypeArgument = false
+# Fakes are patched dynamically (setattr, Optional fixtures).
+reportAttributeAccessIssue = false
+reportOptionalMemberAccess = false
+reportUnnecessaryIsInstance = false
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
