@@ -10,7 +10,8 @@ from tests.fakes.fake_resolve import make_resolve
 from tests.helpers import call, mcp_client
 
 # ~4 chars per token. Raise deliberately (and say why in the commit) when domains grow.
-MAX_INPUT_CHARS = 60_000
+# 72k: workflow_write ships its full schema (always loaded) and base tools list shortcuts.
+MAX_INPUT_CHARS = 72_000
 MAX_OUTPUT_CHARS = 20_000
 
 
@@ -53,3 +54,14 @@ async def test_full_mode_exposes_discriminated_unions(settings: Settings) -> Non
         tools = {t.name: t for t in await client.list_tools()}
         op = tools["timeline_write"].input_schema["properties"]["op"]
         assert "oneOf" in op or "discriminator" in op or "$ref" in op
+
+
+async def test_composites_are_featured_and_advertised(settings: Settings) -> None:
+    async with mcp_client(make_resolve(), settings) as client:
+        tools = {t.name: t for t in await client.list_tools()}
+    workflow = tools["workflow_write"]
+    assert (workflow.meta or {}).get("anthropic/alwaysLoad") is True
+    assert "oneOf" in json.dumps(workflow.input_schema)  # full schema, no describe_action needed
+    assert not (tools["render_write"].meta or {}).get("anthropic/alwaysLoad")
+    assert "workflow_write.deliver" in (tools["render_write"].description or "")
+    assert "workflow_write.conform_from_edl" in (tools["media_write"].description or "")

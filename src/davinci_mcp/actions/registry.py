@@ -53,6 +53,8 @@ class ToolDefinition:
     input_schema: dict[str, Any]
     output_schema: dict[str, Any]
     op_models: dict[str, type[BaseModel]]
+    # Tools of composite actions: full schema, and clients load them up front.
+    featured: bool = False
 
     def action_schema(self, action: str) -> dict[str, Any]:
         """Full JSON schema of one action's ``op`` object (used by describe_action)."""
@@ -96,7 +98,24 @@ class ActionRegistry:
         groups: dict[str, list[ActionSpec]] = defaultdict(list)
         for spec in self.specs:
             groups[spec.tool_name].append(spec)
-        return [_build_tool(name, groups[name], compact=compact) for name in sorted(groups)]
+        shortcuts = _shortcuts(self.specs)
+        return [
+            _build_tool(name, groups[name], compact=compact, shortcuts=shortcuts.get(name, []))
+            for name in sorted(groups)
+        ]
+
+
+def _shortcuts(specs: list[ActionSpec]) -> dict[str, list[str]]:
+    """Per tool, one line per composite action that replaces several of its steps."""
+    lines: dict[str, list[str]] = defaultdict(list)
+    for spec in specs:
+        for tool in dict.fromkeys(ref.split(".")[0] for ref in spec.shortcut_for):
+            replaced = [r.split(".")[1] for r in spec.shortcut_for if r.startswith(f"{tool}.")]
+            lines[tool].append(
+                f"- {spec.tool_name}.{spec.name}: {spec.summary} "
+                f"One call instead of {', '.join(replaced)}."
+            )
+    return lines
 
 
 def _op_model(spec: ActionSpec) -> type[BaseModel]:
@@ -169,9 +188,18 @@ _COMPACT_READ_OUTPUT: dict[str, Any] = {
 }
 
 
-def _build_tool(name: str, specs: list[ActionSpec], *, compact: bool = True) -> ToolDefinition:
+def _build_tool(
+    name: str,
+    specs: list[ActionSpec],
+    *,
+    compact: bool = True,
+    shortcuts: list[str] | None = None,
+) -> ToolDefinition:
     kind = specs[0].kind
     domain = specs[0].domain
+    featured = any(s.shortcut_for for s in specs)
+    # Featured tools show their full input schema; outputs stay compact.
+    compact_input = compact and not featured
     ops = [_op_model(s) for s in specs]
     op_type: Any = (
         ops[0] if len(ops) == 1 else Annotated[Union[tuple(ops)], Field(discriminator="action")]  # noqa: UP007
@@ -209,7 +237,7 @@ def _build_tool(name: str, specs: list[ActionSpec], *, compact: bool = True) -> 
     op_by_name = {s.name: op for s, op in zip(specs, ops, strict=True)}
     lines = [f"{_camel(domain)} {kind.value}. op.action, (params; * = required):"]
     lines += [
-        f"- {s.name}{signature(op_by_name[s.name]) if compact else ''}: {s.summary}"
+        f"- {s.name}{signature(op_by_name[s.name]) if compact_input else ''}: {s.summary}"
         + (" [job]" if s.long_running else "")
         for s in specs
     ]
@@ -217,6 +245,8 @@ def _build_tool(name: str, specs: list[ActionSpec], *, compact: bool = True) -> 
         lines.append(
             "First call returns a plan + confirm_token; repeat it with confirm_token to apply."
         )
+    if shortcuts:
+        lines += ["Shortcuts (prefer them for whole tasks):", *shortcuts]
     return ToolDefinition(
         name=name,
         domain=domain,
@@ -224,7 +254,9 @@ def _build_tool(name: str, specs: list[ActionSpec], *, compact: bool = True) -> 
         description="\n".join(lines),
         actions={s.name: s for s in specs},
         call_adapter=adapter,
-        input_schema=_compact_input_schema(kind, specs) if compact else adapter.json_schema(),
+        input_schema=(
+            _compact_input_schema(kind, specs) if compact_input else adapter.json_schema()
+        ),
         output_schema=(
             output_model.model_json_schema()
             if not compact
@@ -233,4 +265,5 @@ def _build_tool(name: str, specs: list[ActionSpec], *, compact: bool = True) -> 
             else _COMPACT_WRITE_OUTPUT
         ),
         op_models=op_by_name,
+        featured=featured,
     )

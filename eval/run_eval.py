@@ -296,10 +296,19 @@ def main() -> int:
     )
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--summarize-only", action="store_true")
-    parser.add_argument("--scenarios", nargs="+", default=[s.key for s in SCENARIOS])
+    parser.add_argument(
+        "--suite", choices=["v1", "v2"], default="v1", help="v2: scenarios written blind"
+    )
+    parser.add_argument("--scenarios", nargs="+", default=None)
     parser.add_argument("--model", default="sonnet")
     parser.add_argument("--timeout", type=int, default=1500)
     args = parser.parse_args()
+    suite: tuple[Scenario, ...] = SCENARIOS
+    if args.suite == "v2":
+        from scenarios_v2 import SCENARIOS as V2  # noqa: PLC0415 - optional suite
+
+        suite = V2
+    args.scenarios = args.scenarios or [s.key for s in suite]
     args.work = args.work.resolve()
     args.work.mkdir(parents=True, exist_ok=True)
     results_path = args.work / "results.json"
@@ -319,7 +328,7 @@ def main() -> int:
     done = {(x.get("run", 0), x["server"], x["scenario"]) for x in results}
     try:
         for run in range(args.runs):
-            for sc in [s for s in SCENARIOS if s.key in args.scenarios]:
+            for sc in [s for s in suite if s.key in args.scenarios]:
                 for server in args.servers:
                     if (run, server, sc.key) in done:
                         continue

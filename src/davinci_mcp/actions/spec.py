@@ -94,6 +94,8 @@ class ActionSpec:
     timeout_s: float | None = None
     long_running: bool = False
     tags: frozenset[str] = field(default_factory=frozenset[str])
+    # Composite actions: the "<tool>.<action>" steps they replace, advertised on those tools.
+    shortcut_for: tuple[str, ...] = ()
 
     @property
     def qualified_name(self) -> str:
@@ -121,6 +123,8 @@ class ActionSpec:
             raise ValueError(f"{self.qualified_name}: read actions cannot snapshot or plan")
         if not self.name.isidentifier() or not self.domain.isidentifier():
             raise ValueError(f"{self.qualified_name}: names must be identifiers")
+        if any(ref.count(".") != 1 for ref in self.shortcut_for):
+            raise ValueError(f"{self.qualified_name}: shortcut_for entries are '<tool>.<action>'")
 
 
 def _job_result() -> type[BaseModel]:
@@ -149,6 +153,7 @@ def action(
     timeout_s: float | None = None,
     long_running: bool = False,
     tags: frozenset[str] = frozenset(),
+    shortcut_for: tuple[str, ...] = (),
 ) -> Callable[[Handler], ActionSpec]:
     """Turn a handler into an ``ActionSpec``. Register it with ``ActionRegistry.add``."""
 
@@ -175,6 +180,7 @@ def action(
             timeout_s=timeout_s,
             long_running=long_running,
             tags=tags,
+            shortcut_for=shortcut_for,
         )
         spec.validate_spec()
         return spec

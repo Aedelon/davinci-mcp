@@ -54,6 +54,11 @@ keep a safety copy of the timeline first (destructive actions take one automatic
 with confirm_token to apply. Timelines, items and clips are addressed by id (preferred),
 exact name or 1-based index. Long operations return a job id: poll with job_status or
 job_wait. search_api finds Resolve scripting API methods when you need the exact name.
+Prefer the one-call composites of workflow_write over chaining base actions (they
+validate, verify and report like any write): conform_from_edl (media + EDL → timeline,
+offline fix), deliver (one or more renders, files checked), build_vertical_reel (vertical
+timeline, subtitles, render), apply_look (LUT on every clip, color group, still),
+title_overlay (animated Text+ over a clip). recipe_list / recipe_run chain more steps.
 """
 
 ALWAYS_LOAD = {"anthropic/alwaysLoad": True}
@@ -124,6 +129,7 @@ class RegistryTool(Tool):
             parameters=definition.input_schema,
             output_schema=definition.output_schema,
             annotations=ToolAnnotations.model_validate(definition.annotations),
+            meta=ALWAYS_LOAD if definition.featured else None,
         )
         tool._definition = definition
         tool._pipeline = pipeline
