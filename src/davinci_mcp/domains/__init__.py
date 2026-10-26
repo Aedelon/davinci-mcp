@@ -5,12 +5,46 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from davinci_mcp.domains import snapshots, timeline
+from davinci_mcp.domains import (
+    ai,
+    app,
+    audio,
+    code,
+    color,
+    fusion,
+    gallery,
+    interchange,
+    item,
+    media,
+    project,
+    render,
+    snapshots,
+    timeline,
+    ui,
+    vision,
+)
 
 if TYPE_CHECKING:
     from davinci_mcp.actions.spec import ActionSpec
 
-DOMAIN_MODULES = (snapshots, timeline)
+DOMAIN_MODULES = (
+    ai,
+    app,
+    audio,
+    code,
+    color,
+    fusion,
+    gallery,
+    interchange,
+    item,
+    media,
+    project,
+    render,
+    snapshots,
+    timeline,
+    ui,
+    vision,
+)
 
 
 def all_actions() -> list[ActionSpec]:

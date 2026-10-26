@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 import tomllib
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -61,6 +61,14 @@ class HttpSettings(_Section):
     token_env: str = "DAVINCI_MCP_TOKEN"  # noqa: S105 - env var name, not a secret
 
 
+class ServerSettings(_Section):
+    schema_mode: Literal["compact", "full"] = Field(
+        default="compact",
+        description="compact: action enum + one-line signatures, details via describe_action. "
+        "full: complete per-action JSON schemas in tools/list (much larger).",
+    )
+
+
 class TelemetrySettings(_Section):
     otlp_endpoint: str = ""
 
@@ -69,6 +77,7 @@ class Settings(_Section):
     connection: ConnectionSettings = Field(default_factory=ConnectionSettings)
     safety: SafetySettings = Field(default_factory=SafetySettings)
     http: HttpSettings = Field(default_factory=HttpSettings)
+    server: ServerSettings = Field(default_factory=ServerSettings)
     telemetry: TelemetrySettings = Field(default_factory=TelemetrySettings)
     state_dir: Path = Field(default_factory=_state_home)
 

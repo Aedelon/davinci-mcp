@@ -278,6 +278,10 @@ class FakeProject(FakeObject):
         return self._name
 
     @recorded
+    def GetUniqueId(self) -> str:
+        return f"project-{self._name}"
+
+    @recorded
     def GetMediaPool(self) -> FakeMediaPool:
         return self.media_pool
 

@@ -46,6 +46,11 @@ class ToolDefinition:
     call_adapter: TypeAdapter[Any]
     input_schema: dict[str, Any]
     output_schema: dict[str, Any]
+    op_models: dict[str, type[BaseModel]]
+
+    def action_schema(self, action: str) -> dict[str, Any]:
+        """Full JSON schema of one action's ``op`` object (used by describe_action)."""
+        return self.op_models[action].model_json_schema()
 
     @property
     def annotations(self) -> dict[str, Any]:
@@ -80,12 +85,12 @@ class ActionRegistry:
     def specs(self) -> list[ActionSpec]:
         return sorted(self._specs.values(), key=lambda s: s.qualified_name)
 
-    def tool_definitions(self) -> list[ToolDefinition]:
+    def tool_definitions(self, *, compact: bool = True) -> list[ToolDefinition]:
         """Deterministic order: tools sorted by name, actions sorted inside each tool."""
         groups: dict[str, list[ActionSpec]] = defaultdict(list)
         for spec in self.specs:
             groups[spec.tool_name].append(spec)
-        return [_build_tool(name, groups[name]) for name in sorted(groups)]
+        return [_build_tool(name, groups[name], compact=compact) for name in sorted(groups)]
 
 
 def _op_model(spec: ActionSpec) -> type[BaseModel]:
@@ -97,7 +102,67 @@ def _op_model(spec: ActionSpec) -> type[BaseModel]:
     )
 
 
-def _build_tool(name: str, specs: list[ActionSpec]) -> ToolDefinition:
+# Discriminator, and the optional "current object" selectors explained in the server
+# instructions: listing them on every action would only cost tokens.
+_IMPLICIT_PARAMS = frozenset({"action", "timeline"})
+
+
+def signature(model: type[BaseModel], limit: int = 8) -> str:
+    """Compact parameter list: required names marked '*', extra optional ones elided."""
+    names = [
+        n + ("*" if f.is_required() else "")
+        for n, f in model.model_fields.items()
+        if n not in _IMPLICIT_PARAMS
+    ]
+    if len(names) > limit:
+        required = [n for n in names if n.endswith("*")]
+        optional = [n for n in names if not n.endswith("*")]
+        keep = optional[: max(0, limit - len(required))]
+        names = [*required, *keep, f"+{len(optional) - len(keep)} more"]
+    return f"({', '.join(names)})"
+
+
+def _compact_input_schema(kind: Kind, specs: list[ActionSpec]) -> dict[str, Any]:
+    props: dict[str, Any] = {
+        "op": {
+            "type": "object",
+            "description": "{action, ...params}. Parameters per action: see the description "
+            "or describe_action.",
+            "properties": {"action": {"type": "string", "enum": [s.name for s in specs]}},
+            "required": ["action"],
+            "additionalProperties": True,
+        }
+    }
+    if kind is not Kind.READ:
+        props["dry_run"] = {"type": "boolean", "default": False}
+    if kind is Kind.DESTRUCTIVE:
+        props["confirm_token"] = {"type": ["string", "null"], "default": None}
+    return {"type": "object", "properties": props, "required": ["op"]}
+
+
+_COMPACT_WRITE_OUTPUT: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "status": {"type": "string", "enum": ["applied", "planned", "started"]},
+        "receipt": {"type": ["object", "null"]},
+        "plan": {"type": ["object", "null"]},
+        "job": {"type": ["object", "null"]},
+    },
+    "required": ["status"],
+}
+
+_COMPACT_READ_OUTPUT: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "action": {"type": "string"},
+        "result": {"type": "object"},
+        "channel": {"type": "string"},
+    },
+    "required": ["action", "result", "channel"],
+}
+
+
+def _build_tool(name: str, specs: list[ActionSpec], *, compact: bool = True) -> ToolDefinition:
     kind = specs[0].kind
     domain = specs[0].domain
     ops = [_op_model(s) for s in specs]
@@ -130,14 +195,16 @@ def _build_tool(name: str, specs: list[ActionSpec]) -> ToolDefinition:
     else:
         output_model = WriteOutput
 
-    lines = [f"{_camel(domain)} — {kind.value} actions. Set op.action to one of:"]
+    op_by_name = {s.name: op for s, op in zip(specs, ops, strict=True)}
+    lines = [f"{_camel(domain)} {kind.value}. op.action, (params; * = required):"]
     lines += [
-        f"- {s.name}: {s.summary}" + (" [starts a job]" if s.long_running else "") for s in specs
+        f"- {s.name}{signature(op_by_name[s.name]) if compact else ''}: {s.summary}"
+        + (" [job]" if s.long_running else "")
+        for s in specs
     ]
     if kind is Kind.DESTRUCTIVE:
         lines.append(
-            "Destructive: the first call returns a plan and a confirm_token; "
-            "repeat the same call with confirm_token to apply."
+            "First call returns a plan + confirm_token; repeat it with confirm_token to apply."
         )
     return ToolDefinition(
         name=name,
@@ -146,6 +213,13 @@ def _build_tool(name: str, specs: list[ActionSpec]) -> ToolDefinition:
         description="\n".join(lines),
         actions={s.name: s for s in specs},
         call_adapter=adapter,
-        input_schema=adapter.json_schema(),
-        output_schema=output_model.model_json_schema(),
+        input_schema=_compact_input_schema(kind, specs) if compact else adapter.json_schema(),
+        output_schema=(
+            output_model.model_json_schema()
+            if not compact
+            else _COMPACT_READ_OUTPUT
+            if kind is Kind.READ
+            else _COMPACT_WRITE_OUTPUT
+        ),
+        op_models=op_by_name,
     )

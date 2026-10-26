@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING, Any, cast
 from mcp.types import ContentBlock, TextContent
 from pydantic import BaseModel, ValidationError
 
-from davinci_mcp.actions.registry import WriteOutput
+from davinci_mcp.actions.registry import WriteOutput, signature
 from davinci_mcp.actions.spec import JobRequest, Kind, PlanDraft
 from davinci_mcp.errors import DavinciError, ErrorCode
 from davinci_mcp.images import image_blocks
@@ -90,12 +90,24 @@ class Pipeline:
         try:
             call = tool.call_adapter.validate_python(arguments)
         except ValidationError as exc:
+            raw_op: object = arguments.get("op")
+            name = (
+                cast("dict[str, object]", raw_op).get("action")
+                if isinstance(raw_op, dict)
+                else None
+            )
+            details: dict[str, Any] = {"errors": json.loads(exc.json(include_url=False))}
+            if isinstance(name, str) and name in tool.actions:
+                details["schema"] = tool.action_schema(name)
+                hint = f"{name}{signature(tool.op_models[name])}; full schema in details.schema."
+            else:
+                hint = f"op.action must be one of: {', '.join(tool.actions)}."
             raise DavinciError(
                 ErrorCode.INVALID_PARAMS,
                 f"Invalid arguments for {tool.name}.",
-                hint=f"op.action must be one of: {', '.join(tool.actions)}.",
+                hint=hint,
                 retryable=False,
-                details={"errors": json.loads(exc.json(include_url=False))},
+                details=details,
             ) from None
         op = call.op
         spec = tool.actions[op.action]
