@@ -331,7 +331,10 @@ def main() -> int:
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--summarize-only", action="store_true")
     parser.add_argument(
-        "--suite", choices=["v1", "v2"], default="v1", help="v2: scenarios written blind"
+        "--suite",
+        choices=["v1", "v2", "scale"],
+        default="v1",
+        help="v2: scenarios written blind; scale: 150-clip project",
     )
     parser.add_argument("--scenarios", nargs="+", default=None)
     parser.add_argument("--model", default="sonnet")
@@ -342,6 +345,10 @@ def main() -> int:
         from scenarios_v2 import SCENARIOS as V2  # noqa: PLC0415 - optional suite
 
         suite = V2
+    elif args.suite == "scale":
+        from scenarios_scale import SCENARIOS as SCALE  # noqa: PLC0415 - optional suite
+
+        suite = SCALE
     args.scenarios = args.scenarios or [s.key for s in suite]
     args.work = args.work.resolve()
     args.work.mkdir(parents=True, exist_ok=True)
