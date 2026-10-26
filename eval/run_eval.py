@@ -199,6 +199,9 @@ def run_one(
     r = resolve_handle()
     pm = r.GetProjectManager()
     project = pm.GetCurrentProject()
+    # Another Resolve driver (an app or a test suite) switching projects mid-run makes
+    # the run meaningless: flag it so main() retries it.
+    interference = project is None or not project.GetName().startswith("zz_eval_")
     if project is None or project.GetName() != f"zz_eval_{sc.key}":
         project = pm.LoadProject(f"zz_eval_{sc.key}")
     checks = sc.check(r, project, work) if project is not None else {"project_lost": False}
@@ -212,6 +215,7 @@ def run_one(
         "score": sum(checks.values()) / max(1, len(checks)),
         "other_projects_changed": sorted((before ^ after) - {f"zz_eval_{sc.key}"}),
         "eval_project_deleted": deleted,
+        "interference": interference,
         **metrics,
     }
 
@@ -228,6 +232,8 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
     """Per (scenario, server): success rate, median score and median metrics."""
     cells: dict[tuple[str, str], list[dict[str, Any]]] = {}
     for row in results:
+        if row.get("interference"):
+            continue  # another Resolve driver switched projects: not a measurement
         cells.setdefault((row["scenario"], row["server"]), []).append(row)
     out: dict[str, Any] = {"cells": [], "servers": {}}
     for (scenario, server), rows in sorted(cells.items()):
@@ -314,6 +320,9 @@ def main() -> int:
                         continue
                     print(f"== run {run} / {server} / {sc.key}", flush=True)
                     res = run_one(resolve_handle(), server, configs[server], sc, args, run)
+                    if res["interference"]:
+                        print("   interference detected (project switched): retrying once")
+                        res = run_one(resolve_handle(), server, configs[server], sc, args, run)
                     results.append(res)
                     results_path.write_text(json.dumps(results, indent=2))
                     print(
