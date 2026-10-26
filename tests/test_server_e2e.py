@@ -63,7 +63,7 @@ async def test_tool_list_is_deterministic_and_annotated(client: Client) -> None:
         schema = tool.input_schema
         assert schema["type"] == "object"
         assert "oneOf" not in schema and "anyOf" not in schema  # Claude rejects top-level unions
-    assert (tools["resolve_status"].meta or {}).get("anthropic/alwaysLoad") is True
+    assert not (tools["resolve_status"].meta or {}).get("anthropic/alwaysLoad")
 
 
 async def test_status_and_list(client: Client, resolve: FakeResolve) -> None:

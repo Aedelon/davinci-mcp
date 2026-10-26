@@ -38,6 +38,22 @@ if TYPE_CHECKING:
 DEFAULT_JOB_WAIT_S = 1800.0
 
 
+def compact_output(data: dict[str, Any] | None) -> dict[str, Any] | None:
+    """What an agent needs from a step: status, verified, result, plus warnings/notes/job."""
+    if not data:
+        return data
+    out: dict[str, Any] = {k: data[k] for k in ("status", "notes", "job", "plan") if data.get(k)}
+    receipt = data.get("receipt")
+    if isinstance(receipt, dict):
+        r = cast("dict[str, Any]", receipt)
+        out["verified"] = r.get("verified")
+        out["result"] = r.get("result")
+        out.update({k: r[k] for k in ("warnings", "snapshot_id") if r.get(k)})
+    elif "result" in data:
+        out["result"] = data["result"]
+    return out
+
+
 class RecipeStepError(Exception):
     def __init__(self, outcome: StepOutcome) -> None:
         super().__init__(outcome.error)
@@ -148,8 +164,9 @@ class RecipeEngine:
         *,
         dry_run: bool = False,
         confirm_token: str | None = None,
+        verbose: bool = False,
     ) -> RecipeRun:
-        return await self._run(self._get(name), params, dry_run, confirm_token)
+        return await self._run(self._get(name), params, dry_run, confirm_token, verbose=verbose)
 
     async def run_batch(
         self,
@@ -157,6 +174,7 @@ class RecipeEngine:
         *,
         dry_run: bool = False,
         confirm_token: str | None = None,
+        verbose: bool = False,
     ) -> RecipeRun:
         """Run ad-hoc steps like an inline recipe (same validation, consent and reports)."""
         recipe = YamlRecipe(
@@ -164,7 +182,7 @@ class RecipeEngine:
             description=f"Batch of {len(steps)} steps.",
             steps=steps,
         )
-        return await self._run(recipe, {}, dry_run, confirm_token)
+        return await self._run(recipe, {}, dry_run, confirm_token, verbose=verbose)
 
     async def _run(
         self,
@@ -172,6 +190,8 @@ class RecipeEngine:
         params: dict[str, Any],
         dry_run: bool,
         confirm_token: str | None,
+        *,
+        verbose: bool,
     ) -> RecipeRun:
         name = recipe.name
         model = recipe.params_model() if isinstance(recipe, YamlRecipe) else recipe.params
@@ -237,6 +257,12 @@ class RecipeEngine:
                     error=err.to_payload().model_dump(mode="json"),
                 )
             )
+        if not verbose:
+            # Each step already carries its result: drop full receipts and the YAML copy
+            # of every step output (they doubled the reply and cost tokens on every turn).
+            outcomes = [o.model_copy(update={"output": compact_output(o.output)}) for o in outcomes]
+            if isinstance(recipe, YamlRecipe):
+                outputs = {}
         return RecipeRun(
             recipe=name,
             status="completed" if status == "completed" else "failed",

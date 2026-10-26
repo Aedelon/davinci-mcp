@@ -25,6 +25,9 @@ async def test_batch_chains_steps_with_templates(settings: Settings) -> None:
         err, out = await call(client, "batch_run", {"steps": steps})
     assert not err and out["status"] == "completed"
     assert [s["id"] for s in out["steps"]] == ["a", "s2"]
+    step = out["steps"][0]["output"]  # compact: no full receipt, no duplicated outputs
+    assert "receipt" not in step and step["verified"] is True and step["result"]["id"] == "id-x"
+    assert out["outputs"] == {}
     assert STORE == ["x", "id-x"]
 
 
