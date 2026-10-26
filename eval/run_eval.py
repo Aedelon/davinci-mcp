@@ -147,6 +147,10 @@ def run_agent(
         "default",
         "--permission-prompts",
         "none",
+        # Default mode still auto-approves read-only shell commands (ls...). Denying Bash
+        # alone keeps tool deferral (measured); the full disallow list did not.
+        "--disallowedTools",
+        "Bash",
         "--append-system-prompt",
         SYSTEM_RULES,
         "--output-format",
