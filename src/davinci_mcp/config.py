@@ -16,11 +16,11 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 ENV_PREFIX = "DAVINCI_MCP_"
 
 
-def _config_home() -> Path:
+def config_home() -> Path:
     return Path(os.environ.get("XDG_CONFIG_HOME", "~/.config")).expanduser() / "davinci-mcp"
 
 
-def _state_home() -> Path:
+def state_home() -> Path:
     return Path(os.environ.get("XDG_STATE_HOME", "~/.local/state")).expanduser() / "davinci-mcp"
 
 
@@ -39,7 +39,7 @@ class ConnectionSettings(_Section):
 
 class SafetySettings(_Section):
     allowed_roots: list[Path] = Field(default_factory=lambda: [Path.home()])
-    snapshot_dir: Path = Field(default_factory=lambda: _state_home() / "snapshots")
+    snapshot_dir: Path = Field(default_factory=lambda: state_home() / "snapshots")
     snapshot_retention: int = Field(default=20, ge=0)
     consent_ttl_s: float = Field(default=300.0, gt=0)
     enable_code_execution: bool = False
@@ -75,6 +75,14 @@ class ServerSettings(_Section):
     )
 
 
+class RecipeSettings(_Section):
+    dirs: list[Path] = Field(default_factory=lambda: [config_home() / "recipes"])
+    allow_python: bool = Field(
+        default=False,
+        description="Load *.py recipes from the recipe dirs (arbitrary code: off by default).",
+    )
+
+
 class TelemetrySettings(_Section):
     otlp_endpoint: str = ""
 
@@ -84,8 +92,9 @@ class Settings(_Section):
     safety: SafetySettings = Field(default_factory=SafetySettings)
     http: HttpSettings = Field(default_factory=HttpSettings)
     server: ServerSettings = Field(default_factory=ServerSettings)
+    recipes: RecipeSettings = Field(default_factory=RecipeSettings)
     telemetry: TelemetrySettings = Field(default_factory=TelemetrySettings)
-    state_dir: Path = Field(default_factory=_state_home)
+    state_dir: Path = Field(default_factory=state_home)
 
 
 def _env_overrides(environ: dict[str, str]) -> dict[str, dict[str, str]]:
@@ -112,7 +121,7 @@ def _parse_env_value(raw: str) -> bool | str | list[str]:
 def load_settings(path: Path | None = None, environ: dict[str, str] | None = None) -> Settings:
     """Load settings: defaults < TOML file < environment."""
     env = dict(os.environ if environ is None else environ)
-    config_path = path or Path(env.get(f"{ENV_PREFIX}CONFIG", _config_home() / "config.toml"))
+    config_path = path or Path(env.get(f"{ENV_PREFIX}CONFIG", config_home() / "config.toml"))
     data: dict[str, Any] = {}
     if config_path.exists():
         data = tomllib.loads(config_path.read_text(encoding="utf-8"))

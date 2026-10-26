@@ -7,7 +7,7 @@ import os
 from collections.abc import AsyncGenerator, Sequence
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
-from typing import Any
+from typing import Annotated, Any
 
 from fastmcp import FastMCP
 from fastmcp.tools import Tool, ToolResult
@@ -33,6 +33,9 @@ from davinci_mcp.domains._runtime import bind as bind_runtime
 from davinci_mcp.errors import DavinciError, ErrorCode, ErrorPayload
 from davinci_mcp.executor import ResolveExecutor
 from davinci_mcp.jobs import JobInfo, JobManager
+from davinci_mcp.recipes.engine import RecipeEngine
+from davinci_mcp.recipes.loader import load_recipes
+from davinci_mcp.recipes.model import RecipeInfo, RecipeRun
 from davinci_mcp.safety.consent import ConsentManager
 from davinci_mcp.safety.snapshots import SnapshotInfo, SnapshotManager
 
@@ -283,7 +286,55 @@ def build_server(
         return _ok(SearchOutput(hits=search(surface, pattern, limit)))
 
     _add_job_and_snapshot_tools(mcp, services)
+    _add_recipe_tools(mcp, services, settings, by_name)
     return mcp
+
+
+class RecipeListOutput(BaseModel):
+    recipes: list[RecipeInfo]
+    load_errors: list[str]
+
+
+def _add_recipe_tools(
+    mcp: FastMCP, services: Services, settings: Settings, tools: dict[str, ToolDefinition]
+) -> None:
+    loaded = load_recipes(settings.recipes.dirs, allow_python=settings.recipes.allow_python)
+    engine = RecipeEngine(
+        services.pipeline,
+        tools=tools,
+        consent=services.consent,
+        jobs=services.jobs,
+        recipes=loaded.recipes,
+        sources=loaded.sources,
+    )
+
+    @mcp.tool(annotations=_READ_ONLY, output_schema=RecipeListOutput.model_json_schema())
+    async def recipe_list() -> ToolResult:
+        """Workflows that run several actions in one call (built-in and user recipes)."""
+        return _ok(RecipeListOutput(recipes=engine.infos(), load_errors=loaded.errors))
+
+    @mcp.tool(
+        annotations=ToolAnnotations(destructive_hint=True, open_world_hint=False),
+        output_schema=RecipeRun.model_json_schema(),
+    )
+    async def recipe_run(
+        name: str = Field(description="Recipe name from recipe_list."),
+        params: Annotated[dict[str, Any] | None, Field(description="Recipe parameters.")] = None,
+        dry_run: bool = Field(default=False, description="Plan only."),
+        confirm_token: str | None = Field(
+            default=None, description="For destructive recipes: token from the planned call."
+        ),
+    ) -> ToolResult:
+        """Run a recipe server-side: every step is validated, verified and audited.
+
+        Stops at the first failed or unverified step and reports each step's outcome.
+        Destructive recipes first return a plan with a confirm_token.
+        """
+        try:
+            run = await engine.run(name, params or {}, dry_run=dry_run, confirm_token=confirm_token)
+        except DavinciError as err:
+            return error_result(err)
+        return _ok(run)
 
 
 def _add_job_and_snapshot_tools(mcp: FastMCP, services: Services) -> None:

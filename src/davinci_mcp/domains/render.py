@@ -205,15 +205,30 @@ def _find_format(formats: list[RenderFormat], value: str) -> RenderFormat:
     )
 
 
+def _norm(text: str) -> str:
+    """'Apple ProRes 422 HQ' == 'ProRes422HQ' == 'prores 422 hq'; 'H.264' == 'H264'."""
+    lowered = text.lower().removeprefix("apple ")
+    return re.sub(r"[^a-z0-9]", "", lowered)
+
+
 def _find_codec(fmt: RenderFormat, value: str) -> RenderCodec:
     wanted = value.strip().lower()
     for codec in fmt.codecs:
         if wanted in (codec.id.lower(), codec.description.lower()):
             return codec
+    # Agents write codec names the way humans do; match ignoring case, spaces and dots,
+    # and accept a unique partial match (exact normalized match wins first).
+    key = _norm(value)
+    exact = [c for c in fmt.codecs if key in (_norm(c.id), _norm(c.description))]
+    if len(exact) == 1:
+        return exact[0]
+    partial = [c for c in fmt.codecs if key and (key in _norm(c.id) or key in _norm(c.description))]
+    if len(partial) == 1:
+        return partial[0]
     raise DavinciError(
         ErrorCode.NOT_FOUND,
         f"Format {fmt.format!r} has no codec {value!r}.",
-        hint="Accepts a codec id or its description.",
+        hint="Accepts a codec id or its description (case, spaces and dots are ignored).",
         retryable=False,
         details={"available": [c.id for c in fmt.codecs]},
     )

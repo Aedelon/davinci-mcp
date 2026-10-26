@@ -1,0 +1,27 @@
+# Copyright Delanoe Pirard / Aedelon. Apache 2.0.
+name: conform_and_deliver
+description: Conform an EDL against media files, then render the timeline to several outputs.
+params:
+  media: {type: array, required: true, description: Media files or folders referenced by the EDL.}
+  edl: {type: string, required: true, description: CMX3600 EDL file.}
+  timeline_name: {type: string, default: Conform}
+  target_dir: {type: string, required: true, description: Existing output folder.}
+  outputs:
+    type: array
+    required: true
+    description: "Deliverables: [{name, preset?, format?, codec?, width?, height?}]."
+steps:
+  - id: conform
+    tool: workflow_write
+    op:
+      action: conform_from_edl
+      media: "{{ params.media }}"
+      edl: "{{ params.edl }}"
+      timeline_name: "{{ params.timeline_name }}"
+  - id: deliver
+    tool: workflow_write
+    op:
+      action: deliver
+      timeline: {id: "{{ steps.conform.receipt.result.timeline_id }}"}
+      target_dir: "{{ params.target_dir }}"
+      outputs: "{{ params.outputs }}"

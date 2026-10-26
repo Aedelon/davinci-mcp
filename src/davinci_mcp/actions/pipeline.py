@@ -80,9 +80,12 @@ class Pipeline:
     jobs: JobManager | None = None
     auto_snapshot: Literal["destructive", "off", "all"] = "destructive"
 
-    async def execute(self, tool: ToolDefinition, arguments: dict[str, Any]) -> ToolResult:
+    async def execute(
+        self, tool: ToolDefinition, arguments: dict[str, Any], *, preauthorized: bool = False
+    ) -> ToolResult:
+        """Run one call. ``preauthorized``: consent was already given (a confirmed recipe)."""
         try:
-            return await self._execute(tool, arguments)
+            return await self._execute(tool, arguments, preauthorized=preauthorized)
         except DavinciError as err:
             return error_result(err)
 
@@ -116,7 +119,9 @@ class Pipeline:
         params = spec.params.model_validate(op.model_dump(exclude={"action"}, by_alias=False))
         return spec, call, params
 
-    async def _execute(self, tool: ToolDefinition, arguments: dict[str, Any]) -> ToolResult:
+    async def _execute(
+        self, tool: ToolDefinition, arguments: dict[str, Any], *, preauthorized: bool
+    ) -> ToolResult:
         spec, call, params = self._parse(tool, arguments)
         session = await self.connection.session()
         self._gate(spec, session)
@@ -133,7 +138,7 @@ class Pipeline:
 
         dry_run: bool = call.dry_run
         params_json = params.model_dump(mode="json")
-        if dry_run or spec.kind is Kind.DESTRUCTIVE:
+        if dry_run or (spec.kind is Kind.DESTRUCTIVE and not preauthorized):
             draft = await self._plan(spec, params)
             token: str | None = getattr(call, "confirm_token", None)
             if dry_run or token is None:
