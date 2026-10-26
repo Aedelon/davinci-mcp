@@ -43,6 +43,12 @@ class SafetySettings(_Section):
     snapshot_retention: int = Field(default=20, ge=0)
     consent_ttl_s: float = Field(default=300.0, gt=0)
     enable_code_execution: bool = False
+    auto_snapshot: Literal["destructive", "off", "all"] = Field(
+        default="destructive",
+        description="When actions that declare a snapshot take it without being asked: "
+        "destructive (default) = only destructive actions; all; off. "
+        "A call can always force it with snapshot=true/false.",
+    )
 
     @field_validator("allowed_roots", mode="after")
     @classmethod

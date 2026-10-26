@@ -44,11 +44,12 @@ actions with parameter names (* = required); call describe_action(tool, action) 
 schema before using an unfamiliar action. Most actions also take an optional `timeline`
 selector (default: the current timeline). Read tools are side-effect free.
 Write tools return a receipt with verified=true|false from a read-back: treat
-verified=false as a failure. Use dry_run=true to preview any write. <domain>_delete tools
-first return a plan with a confirm_token; repeat the identical call with confirm_token
-to apply. Timelines, items and clips are addressed by id (preferred), exact name or
-1-based index. Long operations return a job id: poll with job_status / job_wait.
-search_api finds Resolve scripting API methods when you need the exact name.
+verified=false as a failure. Use dry_run=true to preview any write, and snapshot=true to
+keep a safety copy of the timeline first (destructive actions take one automatically).
+<domain>_delete tools first return a plan with a confirm_token; repeat the identical call
+with confirm_token to apply. Timelines, items and clips are addressed by id (preferred),
+exact name or 1-based index. Long operations return a job id: poll with job_status or
+job_wait. search_api finds Resolve scripting API methods when you need the exact name.
 """
 
 ALWAYS_LOAD = {"anthropic/alwaysLoad": True}
@@ -95,7 +96,9 @@ class Services:
         audit = AuditLog(state / "audit.jsonl")
         cache = ReadCache()
         jobs = JobManager(connection, state / "jobs.json")
-        pipeline = Pipeline(connection, consent, snapshots, audit, cache, jobs)
+        pipeline = Pipeline(
+            connection, consent, snapshots, audit, cache, jobs, settings.safety.auto_snapshot
+        )
         return cls(settings, executor, connection, consent, snapshots, audit, cache, jobs, pipeline)
 
     async def aclose(self) -> None:

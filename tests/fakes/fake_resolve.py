@@ -128,6 +128,24 @@ class FakeMediaPool(FakeObject):
         self._current = folder
         return True
 
+    @recorded
+    def AddSubFolder(self, parent: Any, name: str) -> Any:
+        folder = FakeFolder(self._root, name)
+        parent.subfolders.append(folder)
+        self._current = folder  # like Resolve, creating a bin selects it
+        return folder
+
+    @recorded
+    def MoveClips(self, clips: list[Any], target: Any) -> bool:
+        def detach(folder: FakeFolder) -> None:
+            folder.clips = [c for c in folder.clips if c not in clips]
+            for sub in folder.subfolders:
+                detach(sub)
+
+        detach(self.root_folder)
+        target.clips.extend(clips)
+        return True
+
 
 class FakeTimelineItem(FakeObject):
     def __init__(self, root: FakeResolve, name: str, start: int, end: int) -> None:
@@ -249,7 +267,10 @@ class FakeTimeline(FakeObject):
         copy_name = name or f"{self._name} copy"
         new = FakeTimeline(self._root, copy_name, len(self.tracks), 0)
         new.tracks = [list(t) for t in self.tracks]
-        self._root.project_of_timeline(self).timelines.append(new)
+        project = self._root.project_of_timeline(self)
+        project.timelines.append(new)
+        # Resolve also adds a Media Pool entry for the new timeline in the current bin.
+        project.media_pool.GetCurrentFolder().clips.append(FakeMediaPoolItem(self._root, copy_name))
         return new
 
     @recorded

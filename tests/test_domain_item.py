@@ -91,7 +91,7 @@ async def test_set_properties_rejects_unknown_key_and_empty(settings: Settings) 
         assert err
 
 
-async def test_copy_properties_snapshots_timeline(settings: Settings) -> None:
+async def test_copy_properties_takes_no_auto_snapshot(settings: Settings) -> None:
     resolve = make_item_resolve()
     first_items(resolve)[0]._props["Opacity"] = 33.0
     op = {"action": "copy_properties", "source": POS1, "targets": [POS2], "keys": ["Opacity"]}
@@ -99,7 +99,7 @@ async def test_copy_properties_snapshots_timeline(settings: Settings) -> None:
     assert not err
     assert _verified(out) is True
     assert first_items(resolve)[1]._props["Opacity"] == 33.0
-    assert out["receipt"]["snapshot_id"]
+    assert "snapshot_id" not in out["receipt"]  # writes take no auto snapshot by default
     bad = {**op, "keys": ["Nope"]}
     err, _ = await _op(settings, resolve, "item_write", bad)
     assert err
@@ -362,7 +362,7 @@ async def test_multicam(settings: Settings) -> None:
         "flatten",
         resolve.FLATTEN_MULTICAM_RETAIN_GRADE_FROM_ANGLE,
     )
-    assert out["receipt"]["snapshot_id"]
+    assert "snapshot_id" not in out["receipt"]  # writes take no auto snapshot by default
     err, _ = await _op(
         settings,
         resolve,
