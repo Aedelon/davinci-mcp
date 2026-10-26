@@ -192,3 +192,9 @@ async def test_long_running_action_starts_a_job(resolve: FakeResolve, settings: 
         job_id = out["job"]["id"]
         err, waited = await call(client, "job_wait", {"job_id": job_id, "timeout_s": 10})
         assert not err and waited["state"] == "succeeded"
+
+
+async def test_status_resource(settings: Settings) -> None:
+    async with mcp_client(make_resolve(), settings) as client:
+        contents = await client.read_resource("davinci://status")
+    assert '"connected":true' in contents[0].text  # type: ignore[union-attr]

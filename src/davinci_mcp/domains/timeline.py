@@ -581,6 +581,7 @@ def list_tracks(s: ResolveSession, p: _TimelineParams) -> TrackList:
 
 class ListItemsParams(_TimelineParams):
     track: TrackSel | None = Field(default=None, description="Only this track (default: all).")
+    name_contains: str | None = Field(default=None, description="Case-insensitive substring.")
     limit: int = Field(default=100, ge=1, le=1000)
     offset: int = Field(default=0, ge=0)
 
@@ -597,6 +598,9 @@ def list_items(s: ResolveSession, p: ListItemsParams) -> ItemPage:
         ]
     else:
         rows = [summarize_item(it, t, i, pos) for t, i, pos, it in iter_items(tl)]
+    if p.name_contains:
+        needle = p.name_contains.lower()
+        rows = [r for r in rows if needle in r.name.lower()]
     return ItemPage(
         timeline_id=tl.GetUniqueId(),
         total=len(rows),

@@ -54,6 +54,9 @@ async def test_info_tracks_items(settings: Settings) -> None:
         settings, resolve, {"action": "list_items", "track": {"type": "video", "index": 1}}
     )
     assert one["total"] == 3
+    first = page["items"][0]["name"]
+    found = await _read(settings, resolve, {"action": "list_items", "name_contains": first.upper()})
+    assert found["total"] >= 1 and all(first.lower() in i["name"].lower() for i in found["items"])
 
 
 async def test_misc_reads(settings: Settings) -> None:

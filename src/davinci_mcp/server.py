@@ -63,6 +63,8 @@ title_overlay (animated Text+ over a clip). recipe_list / recipe_run chain more 
 To save round trips: load every tool you will need (domain tools, describe_action,
 batch_run) in one tool search; ask describe_action for several actions at once; and send
 known sequences of calls (e.g. the same change on several clips) as ONE batch_run.
+Independent reads can go out together in one turn. Lists are paginated (limit/offset)
+and filterable (name_contains): ask only for what you need.
 """
 
 # No tool is marked "anthropic/alwaysLoad": Claude Code then loads every tool of the
@@ -310,12 +312,7 @@ def build_server(
             )
         return _ok(DescribeOutput(actions=infos), exclude_none=True)
 
-    @mcp.tool(
-        annotations=_READ_ONLY,
-        output_schema=StatusOutput.model_json_schema(),
-    )
-    async def resolve_status() -> ToolResult:
-        """Connection state, Resolve version/edition/channel, current project, timeline and page."""
+    async def status() -> StatusOutput:
         try:
 
             def read(s: ResolveSession) -> StatusOutput:
@@ -329,9 +326,26 @@ def build_server(
                     page=s.resolve.GetCurrentPage(),
                 )
 
-            return _ok(await services.connection.call(read, retry_safe=True))
+            return await services.connection.call(read, retry_safe=True)
         except DavinciError as err:
-            return _ok(StatusOutput(connected=False, error=err.to_payload()))
+            return StatusOutput(connected=False, error=err.to_payload())
+
+    @mcp.tool(
+        annotations=_READ_ONLY,
+        output_schema=StatusOutput.model_json_schema(),
+    )
+    async def resolve_status() -> ToolResult:
+        """Connection state, Resolve version/edition/channel, current project, timeline and page."""
+        return _ok(await status())
+
+    @mcp.resource(
+        "davinci://status",
+        name="resolve_status",
+        description="Same as the resolve_status tool, readable without a tool call.",
+        mime_type="application/json",
+    )
+    async def status_resource() -> str:
+        return (await status()).model_dump_json(exclude_none=True)
 
     @mcp.tool(annotations=_READ_ONLY, output_schema=SearchOutput.model_json_schema())
     async def search_api(
