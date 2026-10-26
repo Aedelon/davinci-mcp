@@ -227,6 +227,10 @@ def set_node_lut(s: ResolveSession, p: SetNodeLutParams) -> NodeChange:
     return NodeChange(node=p.node, value=path)
 
 
+LUT_EXTENSIONS = frozenset({".cube", ".3dl", ".dat", ".ilut", ".olut", ".mga", ".m3d"})
+MAX_LUT_BYTES = 64 * 1024 * 1024
+
+
 def lut_root() -> Path:
     """Resolve's master LUT folder (SetLUT resolves relative paths against it)."""
     if sys.platform == "darwin":
@@ -258,6 +262,17 @@ def _lut_reference(s: ResolveSession, lut_path: str) -> str:
     if candidate.resolve().is_relative_to(root):
         return str(candidate.resolve().relative_to(root))
     source = check_path(lut_path, runtime().allowed_roots, must_exist=True)
+    if source.suffix.lower() not in LUT_EXTENSIONS:
+        # DCTL/Fuse files are code: they go through the code-execution gated actions.
+        raise DavinciError(
+            ErrorCode.INVALID_PARAMS,
+            f"Only LUT files can be installed ({', '.join(sorted(LUT_EXTENSIONS))}).",
+            retryable=False,
+        )
+    if source.stat().st_size > MAX_LUT_BYTES:
+        raise DavinciError(
+            ErrorCode.INVALID_PARAMS, "LUT file is larger than 64 MiB.", retryable=False
+        )
     data = source.read_bytes()
     target = root / "MCP" / source.name
     if target.exists() and target.read_bytes() != data:
