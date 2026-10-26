@@ -335,6 +335,11 @@ async def test_script_content_is_gated(settings: Settings) -> None:
             "load(x)()",
             "os.execute",
             "Background1[1]",
+            "Background1.Comp.Execute(1)",
+            "Background1.TopLeftRed(1)",
+            "Background1.TopLeftRed.Foo",
+            "Background1.NoSuchInput",
+            "time(1)",
         ):
             err, out = await call(
                 client,
@@ -368,3 +373,14 @@ async def test_safe_expressions_are_allowed(settings: Settings) -> None:
                 ),
             )
             assert not err, (expression, out)
+
+
+async def test_reserved_tool_names_are_refused(settings: Settings) -> None:
+    resolve, comps = _setup()
+    comps[0].make_tool("Background")
+    async with mcp_client(resolve, settings, ACTIONS) as client:
+        for name in ("os", "comp", "_G", "bad name"):
+            err, out = await call(
+                client, "fusion_write", _op("rename_tool", tool="Background1", new_name=name)
+            )
+            assert err and out["code"] == "INVALID_PARAMS", name
