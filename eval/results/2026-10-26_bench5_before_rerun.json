@@ -617,7 +617,7 @@
     "cost_usd": 0.26889310000000005,
     "input_tokens": 1024711,
     "output_tokens": 2318,
-    "final": "La timeline verticale \u00ab Reel \u00bb (1080\u00d71920) contient reel_1, reel_2 et reel_3 dans l'ordre sur la piste vid\u00e9o 1. Les sous-titres sont g\u00e9n\u00e9r\u00e9s (4 sous-titres sur la piste Subtitle 1). Le rendu H.264 MP4 est termin\u00e9, et Resolve confirme que le fichier existe : `/private/tmp/claude-501/-Users-aedelon--c"
+    "final": "La timeline verticale \u00ab Reel \u00bb (1080\u00d71920) contient reel_1, reel_2 et reel_3 dans l'ordre sur la piste vid\u00e9o 1. Les sous-titres sont g\u00e9n\u00e9r\u00e9s (4 sous-titres sur la piste Subtitle 1). Le rendu H.264 MP4 est termin\u00e9, et Resolve confirme que le fichier existe : `<work>"
   },
   {
     "run": 2,
@@ -961,7 +961,7 @@
     "cost_usd": 0.1959564,
     "input_tokens": 503876,
     "output_tokens": 2231,
-    "final": "La timeline verticale \u00ab Reel \u00bb (1080\u00d71920) contient reel_1, reel_2 et reel_3 dans cet ordre sur V1. Les sous-titres sont g\u00e9n\u00e9r\u00e9s depuis l'audio (4 sous-titres). Le rendu H.264 est termin\u00e9 : `/private/tmp/claude-501/-Users-aedelon--claude-spares-spare-prnMB0/5006c017-9fb3-4362-8eac-b14b0b6b8b80/scrat"
+    "final": "La timeline verticale \u00ab Reel \u00bb (1080\u00d71920) contient reel_1, reel_2 et reel_3 dans cet ordre sur V1. Les sous-titres sont g\u00e9n\u00e9r\u00e9s depuis l'audio (4 sous-titres). Le rendu H.264 est termin\u00e9 : `<work>"
   },
   {
     "run": 3,
@@ -1253,7 +1253,7 @@
     "cost_usd": 0.1875212,
     "input_tokens": 494663,
     "output_tokens": 2338,
-    "final": "La timeline verticale \u00ab Reel \u00bb (1080\u00d71920) contient reel_1, reel_2 et reel_3 dans cet ordre sur la piste vid\u00e9o 1. Les sous-titres ont \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9s depuis l'audio (4 sous-titres), et le rendu H.264 MP4 est termin\u00e9 (statut Complete, 100 %). Le fichier est `/private/tmp/claude-501/-Users-aedelon--claude"
+    "final": "La timeline verticale \u00ab Reel \u00bb (1080\u00d71920) contient reel_1, reel_2 et reel_3 dans cet ordre sur la piste vid\u00e9o 1. Les sous-titres ont \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9s depuis l'audio (4 sous-titres), et le rendu H.264 MP4 est termin\u00e9 (statut Complete, 100 %). Le fichier est `<work>"
   },
   {
     "run": 4,
