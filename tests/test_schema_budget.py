@@ -10,8 +10,9 @@ from tests.fakes.fake_resolve import make_resolve
 from tests.helpers import call, mcp_client
 
 # ~4 chars per token. Raise deliberately (and say why in the commit) when domains grow.
-# 72k: workflow_write ships its full schema and base tools list shortcuts.
-MAX_INPUT_CHARS = 72_000
+# 76k: workflow_write ships its full schema; base tools list shortcuts and the batch_run
+# hint. Tools are deferred by clients, so this is paid per loaded tool, not per turn.
+MAX_INPUT_CHARS = 76_000
 # 22k: batch_run returns the RecipeRun schema (per-step outcomes).
 MAX_OUTPUT_CHARS = 22_000
 
@@ -39,6 +40,10 @@ async def test_describe_action_returns_full_schemas(settings: Settings) -> None:
             {"actions": ["timeline_write.add_marker", "color_write.set_cdl"]},
         )
         assert not err and [a["action"] for a in out["actions"]] == ["add_marker", "set_cdl"]
+        text = json.dumps(out)
+        assert '"title"' not in text and "$defs" not in text and "result_schema" not in text
+        err, out = await call(client, "describe_action", {"tool": "gallery_write"})
+        assert not err and any(a.startswith("grab_still(") for a in out["actions"])
         err, out = await call(client, "describe_action", {"tool": "timeline_write", "action": "x"})
         assert err and out["code"] == "NOT_FOUND"
         err, out = await call(client, "describe_action", {})

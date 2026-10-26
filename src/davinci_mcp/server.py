@@ -17,7 +17,7 @@ from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, ValidationError
 
 from davinci_mcp import __version__
 from davinci_mcp.actions.pipeline import Pipeline, error_result, tool_result
-from davinci_mcp.actions.registry import ActionRegistry, ToolDefinition
+from davinci_mcp.actions.registry import ActionRegistry, ToolDefinition, compact_schema, shape
 from davinci_mcp.actions.spec import ActionSpec
 from davinci_mcp.api.surface import SearchHit, load_surface, search
 from davinci_mcp.audit import AuditLog
@@ -159,7 +159,7 @@ class ActionInfo(BaseModel):
     summary: str
     kind: str
     params_schema: dict[str, Any]
-    result_schema: dict[str, Any]
+    result_schema: dict[str, Any] | None = None
     since: str | None = None
     studio_only: bool = False
     long_running: bool = False
@@ -169,6 +169,11 @@ class ActionInfo(BaseModel):
 
 class DescribeOutput(BaseModel):
     actions: list[ActionInfo]
+
+
+class ToolActions(BaseModel):
+    tool: str
+    actions: list[str]
 
 
 class SearchOutput(BaseModel):
@@ -183,8 +188,8 @@ class SnapshotListOutput(BaseModel):
     snapshots: list[SnapshotInfo]
 
 
-def _ok(model: BaseModel) -> ToolResult:
-    return tool_result(model.model_dump(mode="json"))
+def _ok(model: BaseModel, *, exclude_none: bool = False) -> ToolResult:
+    return tool_result(model.model_dump(mode="json", exclude_none=exclude_none))
 
 
 def build_registry(actions: Sequence[ActionSpec] | None = None) -> ActionRegistry:
@@ -235,7 +240,7 @@ def build_server(
     for definition in definitions:
         mcp.add_tool(RegistryTool.create(definition, services.pipeline))
 
-    @mcp.tool(annotations=_READ_ONLY, output_schema=DescribeOutput.model_json_schema())
+    @mcp.tool(annotations=_READ_ONLY, output_schema=None)
     async def describe_action(
         tool: str | None = Field(default=None, description="Tool name, e.g. 'timeline_write'."),
         action: str | None = Field(default=None, description="op.action, e.g. 'append_clips'."),
@@ -246,9 +251,23 @@ def build_server(
                 "'gallery_write.grab_still']): one call instead of one per action."
             ),
         ] = None,
+        with_result: bool = Field(default=False, description="Also return result schemas."),
     ) -> ToolResult:
-        """Full parameter and result schemas of one or several actions, with their flags."""
+        """Parameter schemas (compact) of one or several actions, with their flags.
+
+        With only `tool`, lists that tool's actions and their signatures.
+        """
         wanted = [*(actions or []), *([f"{tool}.{action}"] if tool and action else [])]
+        if not wanted and tool and (definition := by_name.get(tool)):
+            return _ok(
+                ToolActions(
+                    tool=tool,
+                    actions=[
+                        f"{n}{shape(definition.op_models[n])}: {s.summary}"
+                        for n, s in definition.actions.items()
+                    ],
+                )
+            )
         if not wanted:
             return error_result(
                 DavinciError(
@@ -278,8 +297,10 @@ def build_server(
                     action=action_name,
                     summary=spec.summary,
                     kind=spec.kind.value,
-                    params_schema=definition.action_schema(action_name),
-                    result_schema=spec.result.model_json_schema(),
+                    params_schema=compact_schema(definition.action_schema(action_name)),
+                    result_schema=(
+                        compact_schema(spec.result.model_json_schema()) if with_result else None
+                    ),
                     since=".".join(map(str, spec.since)) if spec.since else None,
                     studio_only=spec.studio_only,
                     long_running=spec.long_running,
@@ -287,7 +308,7 @@ def build_server(
                     snapshot=spec.snapshot,
                 )
             )
-        return _ok(DescribeOutput(actions=infos))
+        return _ok(DescribeOutput(actions=infos), exclude_none=True)
 
     @mcp.tool(
         annotations=_READ_ONLY,
