@@ -29,6 +29,12 @@ def _setup(names: list[str] | None = None) -> tuple[FakeResolve, list[FakeComp]]
     return resolve, attach_fusion(item, ["Composition 1"] if names is None else names)
 
 
+def _with_code(settings: Settings) -> Settings:
+    return settings.model_copy(
+        update={"safety": settings.safety.model_copy(update={"enable_code_execution": True})}
+    )
+
+
 def _op(action: str, **kw: Any) -> dict[str, Any]:
     return {"op": {"action": action, "item": ITEM, **kw}}
 
@@ -82,7 +88,7 @@ async def test_comp_lifecycle(settings: Settings, tmp_path: Path) -> None:
     resolve, _ = _setup([])
     src = tmp_path / "x.comp"
     src.write_text("{}")
-    async with mcp_client(resolve, settings, ACTIONS) as client:
+    async with mcp_client(resolve, _with_code(settings), ACTIONS) as client:
         err, out = await call(client, "fusion_write", _op("add_comp"))
         assert not err and res(out)["comp"] == "Composition 1"
         err, out = await call(client, "fusion_write", _op("import_comp", path=str(src)))
@@ -168,7 +174,7 @@ async def test_keyframes_expression_clear(settings: Settings) -> None:
     resolve, comps = _setup()
     bg = comps[0].make_tool("Background")
     keys = [{"time": 0, "value": 0.0}, {"time": 24, "value": 1.0}]
-    async with mcp_client(resolve, settings, ACTIONS) as client:
+    async with mcp_client(resolve, _with_code(settings), ACTIONS) as client:
         err, out = await call(
             client,
             "fusion_write",
@@ -210,7 +216,7 @@ async def test_settings_files_and_paste(settings: Settings, tmp_path: Path) -> N
     resolve, comps = _setup()
     bg = comps[0].make_tool("Background")
     f = tmp_path / "bg.setting"
-    async with mcp_client(resolve, settings, ACTIONS) as client:
+    async with mcp_client(resolve, _with_code(settings), ACTIONS) as client:
         err, _o = await call(
             client, "fusion_write", _op("save_tool_settings", tool="Background1", path=str(f))
         )
@@ -318,19 +324,47 @@ async def test_fuses(settings: Settings, tmp_path: Path, monkeypatch: pytest.Mon
 
 
 async def test_script_content_is_gated(settings: Settings) -> None:
-    resolve, _ = _setup()
+    resolve, comps = _setup()
+    comps[0].make_tool("Background")
     async with mcp_client(resolve, settings, ACTIONS) as client:
-        err, out = await call(
-            client,
-            "fusion_write",
-            _op("paste_settings", text='{ Tools = { A = { FrameRenderScript = "os.exit()" } } }'),
-        )
-        assert err and out["code"] == "CAPABILITY_UNAVAILABLE"
+        err, out = await call(client, "fusion_write", _op("paste_settings", text="{ Tools = {} }"))
+        assert err and out["code"] == "CAPABILITY_UNAVAILABLE"  # always gated
+        for expression in (
+            "io.open('x')",
+            '_G["o".."s"].exit()',
+            "load(x)()",
+            "os.execute",
+            "Background1[1]",
+        ):
+            err, out = await call(
+                client,
+                "fusion_write",
+                _op(
+                    "set_expression", tool="Background1", input="TopLeftRed", expression=expression
+                ),
+            )
+            assert err and out["code"] == "CAPABILITY_UNAVAILABLE", expression
         err, out = await call(
             client,
             "fusion_write",
             _op(
-                "set_expression", tool="Background1", input="TopLeftRed", expression="io.open('x')"
+                "set_inputs",
+                sets=[{"tool": "Background1", "input": "FrameRenderScript", "value": "x"}],
             ),
         )
         assert err and out["code"] == "CAPABILITY_UNAVAILABLE"
+
+
+async def test_safe_expressions_are_allowed(settings: Settings) -> None:
+    resolve, comps = _setup()
+    comps[0].make_tool("Background")
+    async with mcp_client(resolve, settings, ACTIONS) as client:
+        for expression in ("time * 0.5", "sin(time / 24) * 2 + 1", "Background1.TopLeftRed * 2"):
+            err, out = await call(
+                client,
+                "fusion_write",
+                _op(
+                    "set_expression", tool="Background1", input="TopLeftRed", expression=expression
+                ),
+            )
+            assert not err, (expression, out)

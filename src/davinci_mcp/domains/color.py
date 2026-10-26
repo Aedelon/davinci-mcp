@@ -29,7 +29,7 @@ from davinci_mcp.refs import (
     resolve_item,
     resolve_timeline,
 )
-from davinci_mcp.safety.paths import check_path
+from davinci_mcp.safety.paths import SafeFileName, check_path
 
 if TYPE_CHECKING:
     from davinci_mcp.connection.backend import ResolveObject
@@ -924,7 +924,7 @@ def validate_dctl(s: ResolveSession, p: ValidateDctlParams) -> DctlValidation:
 class EncryptDctlParams(_Params):
     input_path: str = Field(description="Path of the .dctl file to encrypt.")
     output_folder: str = Field(description="Folder receiving the encrypted file.")
-    name: str | None = Field(default=None, description="Output filename (default: input name).")
+    name: SafeFileName | None = None
     expiry: str | None = Field(default=None, description="ISO 8601 expiry (default: none).")
 
 
