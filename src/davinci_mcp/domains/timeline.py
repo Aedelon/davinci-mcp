@@ -15,7 +15,7 @@ import hashlib
 import json
 from collections.abc import Generator
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -676,6 +676,33 @@ class CreateTimelineParams(_Params):
     name: str = Field(min_length=1)
 
 
+class ImportedTimeline(TimelineSummary):
+    items: int = Field(description="Video and audio items in the imported timeline.")
+    linked: int = Field(description="Items linked to a Media Pool clip.")
+    offline: int = Field(description="Items with no linked media (check reels / Start TC).")
+    warning: str | None = None
+
+
+def _imported(s: ResolveSession, timeline: ResolveObject) -> ImportedTimeline:
+    items = [it for _, _, _, it in iter_items(timeline, ("video", "audio"))]
+    linked = sum(1 for it in items if it.GetMediaPoolItem() is not None)
+    offline = len(items) - linked
+    warning = None
+    if offline:
+        warning = (
+            f"{offline} of {len(items)} items are offline. EDL/XML events link by reel or clip "
+            "name AND source timecode: set the clips' 'Start TC' to match the list (or import "
+            "with the right source clips path), delete this timeline and import again."
+        )
+    return ImportedTimeline(
+        **_summary_of(s, timeline).model_dump(),
+        items=len(items),
+        linked=linked,
+        offline=offline,
+        warning=warning,
+    )
+
+
 def _verify_created(s: ResolveSession, _: object, result: TimelineSummary) -> Verification:
     ids = [tl.GetUniqueId() for _, tl in iter_timelines(s.project)]
     return Verification(ok=result.id in ids, observed={"timelines": len(ids)})
@@ -709,6 +736,17 @@ def create_timeline(s: ResolveSession, p: CreateTimelineParams) -> TimelineSumma
 
 class SourceRange(_Params):
     clip: ClipRef
+
+    @model_validator(mode="before")
+    @classmethod
+    def _from_ref(cls, value: object) -> object:
+        """Accept a bare clip ref ("<uuid>" or {"id": ...}) for a whole clip."""
+        if isinstance(value, str):
+            return {"clip": value}
+        if isinstance(value, dict) and "clip" not in value:
+            return {"clip": cast("dict[str, object]", value)}
+        return cast("object", value)
+
     start_frame: int | None = Field(default=None, ge=0, description="Source start frame.")
     end_frame: int | None = Field(
         default=None, ge=1, description="Source end frame, EXCLUSIVE (duration = end - start)."
@@ -1498,10 +1536,10 @@ def _import_options(p: ImportParams) -> dict[str, Any]:
     domain=DOMAIN,
     kind=Kind.WRITE,
     params=ImportParams,
-    result=TimelineSummary,
+    result=ImportedTimeline,
     verify=_verify_created,
 )
-def import_timeline(s: ResolveSession, p: ImportParams) -> TimelineSummary:
+def import_timeline(s: ResolveSession, p: ImportParams) -> ImportedTimeline:
     """Create a timeline from an EDL/XML/AAF/DRT/OTIO file."""
     path: Path = check_path(p.path, runtime().allowed_roots, must_exist=True)
     if p.timeline_name is not None:
@@ -1526,7 +1564,7 @@ def import_timeline(s: ResolveSession, p: ImportParams) -> TimelineSummary:
             hint="FCP7 XML: the internal <sequence><name> wins over timeline_name; rename it.",
             retryable=False,
         )
-    return _summary_of(s, tl)
+    return _imported(s, tl)
 
 
 class ImportIntoParams(_TimelineParams):

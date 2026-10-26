@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal
 
@@ -198,9 +200,10 @@ class SetNodeLutParams(_Params):
     )
 
 
-def _verify_lut(s: ResolveSession, p: SetNodeLutParams, _: NodeChange) -> Verification:
+def _verify_lut(s: ResolveSession, p: SetNodeLutParams, result: NodeChange) -> Verification:
     observed = str(_graph(s, p.target).GetLUT(p.node) or "")
-    ok = observed == "" if p.lut_path == "" else Path(observed).name == Path(p.lut_path).name
+    expected = str(result.value)
+    ok = observed == "" if expected == "" else Path(observed).name == Path(expected).name
     return Verification(ok=ok, observed={"lut": observed})
 
 
@@ -212,21 +215,52 @@ def _verify_lut(s: ResolveSession, p: SetNodeLutParams, _: NodeChange) -> Verifi
     verify=_verify_lut,
 )
 def set_node_lut(s: ResolveSession, p: SetNodeLutParams) -> NodeChange:
-    """Set (or clear) the LUT of a node; the file must live under the master LUT root."""
+    """Set (or clear) a node LUT; files outside the LUT root are installed into it first."""
     graph = _graph(s, p.target)
     _check_node(graph, p.node)
-    path = (
-        p.lut_path
-        if p.lut_path == ""
-        else str(check_path(p.lut_path, runtime().allowed_roots, must_exist=True))
-    )
+    path = "" if p.lut_path == "" else _lut_reference(s, p.lut_path)
     if not graph.SetLUT(p.node, path):
         raise _fail(
             "Graph.SetLUT",
-            "Resolve only resolves LUTs under its master LUT root: copy the file there and "
-            "refresh the LUT list.",
+            "The LUT file may be invalid, or the path is not under the master LUT root.",
         )
     return NodeChange(node=p.node, value=path)
+
+
+def lut_root() -> Path:
+    """Resolve's master LUT folder (SetLUT resolves relative paths against it)."""
+    if sys.platform == "darwin":
+        return Path("/Library/Application Support/Blackmagic Design/DaVinci Resolve/LUT")
+    if sys.platform == "win32":
+        base = Path(os.environ.get("PROGRAMDATA", r"C:\ProgramData"))
+        return base / "Blackmagic Design/DaVinci Resolve/Support/LUT"
+    return Path("/opt/resolve/LUT")
+
+
+def _lut_reference(s: ResolveSession, lut_path: str) -> str:
+    """Path SetLUT accepts: relative to the LUT root, installing outside files first.
+
+    Measured on 21.1.1: SetLUT rejects absolute paths outside the LUT root. Files from the
+    allowed roots are copied into <LUT root>/MCP (Resolve's own folder) and the LUT list is
+    refreshed, which is what makes them selectable.
+    """
+    root = lut_root()
+    candidate = Path(lut_path)
+    if not candidate.is_absolute():
+        return lut_path
+    if candidate.resolve().is_relative_to(root.resolve()):
+        return str(candidate.resolve().relative_to(root.resolve()))
+    source = check_path(lut_path, runtime().allowed_roots, must_exist=True)
+    data = source.read_bytes()
+    target = root / "MCP" / source.name
+    if target.exists() and target.read_bytes() != data:
+        digest = hashlib.sha256(data).hexdigest()[:8]
+        target = target.with_name(f"{source.stem}_{digest}{source.suffix}")
+    if not target.exists():
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(data)
+        s.project.RefreshLUTList()
+    return f"MCP/{target.name}"
 
 
 class SetNodeEnabledParams(_Params):

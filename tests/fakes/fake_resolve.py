@@ -282,6 +282,10 @@ class FakeProject(FakeObject):
         return f"project-{self._name}"
 
     @recorded
+    def RefreshLUTList(self) -> bool:
+        return True
+
+    @recorded
     def GetMediaPool(self) -> FakeMediaPool:
         return self.media_pool
 

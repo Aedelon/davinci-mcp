@@ -29,6 +29,7 @@ from davinci_mcp.api._generated.resolve_21_1 import RenderSettings
 from davinci_mcp.domains._runtime import runtime
 from davinci_mcp.errors import DavinciError, ErrorCode
 from davinci_mcp.receipts import Verification
+from davinci_mcp.refs import proxies
 from davinci_mcp.safety.pages import restore_page_after
 from davinci_mcp.safety.paths import SAFE_NAME_PATTERN, check_path
 
@@ -367,6 +368,22 @@ def _add_job(s: ResolveSession) -> str:
     return str(job_id)
 
 
+def _job_outputs(project: ResolveObject, job_ids: list[str]) -> list[dict[str, Any]]:
+    wanted = set(job_ids)
+    outputs: list[dict[str, Any]] = []
+    for job in proxies(project.GetRenderJobList()):
+        info: dict[str, Any] = dict(job)
+        if str(info.get("JobId")) not in wanted:
+            continue
+        path = Path(str(info.get("TargetDir", ""))) / str(info.get("OutputFilename", ""))
+        # Individual-clip renders write several files; then only the folder is checked.
+        exists = path.is_file() or (
+            info.get("RenderMode") != "Single clip" and path.parent.is_dir()
+        )
+        outputs.append({"job_id": info.get("JobId"), "path": str(path), "exists": exists})
+    return outputs
+
+
 def _start_poll(job_ids: list[str]) -> Callable[[ResolveSession], dict[str, Any]]:
     """Aggregate the status of several jobs; never compares the localized JobStatus."""
     idle = [0]
@@ -393,7 +410,15 @@ def _start_poll(job_ids: list[str]) -> Callable[[ResolveSession], dict[str, Any]
         if errors:
             out["Error"] = "; ".join(errors)
         elif all_done:
-            out["done"] = True
+            # Report the files really produced: the preset decides the container
+            # (e.g. "H.264 Master" writes .mov), so the requested name alone can mislead.
+            outputs = _job_outputs(project, job_ids)
+            out["outputs"] = outputs
+            missing = [o["path"] for o in outputs if not o["exists"]]
+            if missing:
+                out["Error"] = f"Render finished but no file at: {', '.join(missing)}"
+            else:
+                out["done"] = True
         else:
             idle[0] = 0 if _in_progress(project) else idle[0] + 1
             if idle[0] >= _MAX_IDLE_POLLS:
@@ -912,6 +937,11 @@ class RenderTimelineParams(_Params):
     preset: str = Field(description="Render preset to use (a video preset).")
     target_dir: str = Field(description="Output directory (must exist, inside allowed roots).")
     name: str = Field(min_length=1, description="Output file name (without extension).")
+    format: str | None = Field(
+        default=None,
+        description="Container override, e.g. 'mp4' (presets pick their own: H.264 Master = mov).",
+    )
+    codec: str | None = Field(default=None, description="Codec id or description with format.")
     settings: RenderSettings | None = Field(
         default=None, description="Extra settings on top of the preset (MarkIn/MarkOut relative)."
     )
@@ -929,8 +959,22 @@ def render_timeline(s: ResolveSession, p: RenderTimelineParams) -> JobRequest:
     job_ids: list[str] = []
     inner_poll = _start_poll(job_ids)
 
+    container: tuple[str, str] | None = None
+    if p.format is not None:
+        fmt = _find_format(_formats(s, audio=False), p.format)
+        container = (fmt.extension, _find_codec(fmt, p.codec or fmt.codecs[0].id).id)
+
     def launch(sess: ResolveSession) -> bool:
-        _apply_settings(sess, payload, p.preset)
+        if container is None:
+            _apply_settings(sess, payload, p.preset)
+        else:
+            # Order matters: preset, then container/codec, then settings (the format switch
+            # resets per-format settings such as the custom name).
+            if not sess.project.LoadRenderPreset(p.preset):
+                raise _fail(f"LoadRenderPreset({p.preset!r}) returned False.")
+            if not sess.project.SetCurrentRenderFormatAndCodec(*container):
+                raise _fail("SetCurrentRenderFormatAndCodec returned False.", format=container[0])
+            _apply_settings(sess, payload, None)
         job_id = _add_job(sess)
         job_ids.append(job_id)
         return _launch_start([job_id], False)(sess)

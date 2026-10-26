@@ -6,7 +6,10 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 from davinci_mcp.config import Settings
+from davinci_mcp.domains import color
 from davinci_mcp.domains.color import ACTIONS
 from tests.fakes.color import install_color
 from tests.fakes.fake_resolve import FakeResolve, make_resolve
@@ -44,7 +47,11 @@ async def test_get_node_graph(settings: Settings) -> None:
         assert err
 
 
-async def test_set_node_lut(settings: Settings, tmp_path: Path) -> None:
+async def test_set_node_lut(
+    settings: Settings, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "LUT"
+    monkeypatch.setattr(color, "lut_root", lambda: root)  # never touch Resolve's real folder
     resolve, state = _setup()
     lut = tmp_path / "look.cube"
     lut.write_text("x")
@@ -52,7 +59,8 @@ async def test_set_node_lut(settings: Settings, tmp_path: Path) -> None:
     async with mcp_client(resolve, settings, ACTIONS) as c:
         err, out = await call(c, "color_write", {"op": op})
         assert not err and out["receipt"]["verified"] is True
-        assert _graph(state).luts[1] == str(lut)
+        assert _graph(state).luts[1] == "MCP/look.cube"  # installed under the LUT root
+        assert (root / "MCP" / "look.cube").read_text() == "x"
         _graph(state).lie = True
         err, out = await call(c, "color_write", {"op": {**op, "node": 1}})
         assert out["receipt"]["verified"] is False
