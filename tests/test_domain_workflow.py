@@ -601,3 +601,16 @@ def test_actions_are_all_writes() -> None:
         "title_overlay",
     }
     assert all(a.tool_name == "workflow_write" and not a.long_running for a in ACTIONS)
+
+
+def test_folder_expansion_skips_symlinks(tmp_path, monkeypatch) -> None:
+    inside = tmp_path / "media"
+    inside.mkdir()
+    (inside / "a.mov").write_text("x")
+    outside = tmp_path.parent / f"{tmp_path.name}-outside.mov"
+    outside.write_text("secret")
+    (inside / "link.mov").symlink_to(outside)
+
+    monkeypatch.setattr(workflow, "runtime", lambda: SimpleNamespace(allowed_roots=[inside]))
+    files = workflow._expand_media([str(inside)])
+    assert [f.name for f in files] == ["a.mov"]
