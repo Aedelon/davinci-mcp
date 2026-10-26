@@ -220,7 +220,13 @@ def _read_settings(s: ResolveSession, keys: list[str] | None) -> SettingsResult:
 
 
 def _match(a: object, b: object) -> bool:
-    return str(a) == str(b)
+    """Same value, whatever its spelling: Resolve reads back "25" as 25.0."""
+    if str(a) == str(b):
+        return True
+    try:
+        return float(str(a)) == float(str(b))
+    except ValueError:
+        return False
 
 
 def _preset_name(item: object) -> str:

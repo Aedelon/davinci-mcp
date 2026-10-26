@@ -361,11 +361,33 @@ def _apply_settings(s: ResolveSession, payload: dict[str, Any], base_preset: str
         if not project.LoadRenderPreset(base_preset):
             raise _fail(f"LoadRenderPreset({base_preset!r}) returned False.")
     if not project.SetRenderSettings(payload):
+        rejected = _rejected_keys(project, payload)
         raise _fail(
-            "Project.SetRenderSettings returned False.",
-            hint="Resolve rejects the whole payload if one value is invalid.",
+            "Project.SetRenderSettings returned False"
+            + (f": Resolve rejects {', '.join(rejected)}." if rejected else "."),
+            hint="Resolve rejects the whole payload if one value is invalid; fix or drop "
+            "the rejected keys (render_read list_formats / list_codecs give valid values).",
             payload=payload,
+            rejected=rejected,
         )
+
+
+# Keys Resolve only accepts together: probing them one at a time would blame them wrongly.
+_RANGE_KEYS = ("SelectAllFrames", "MarkIn", "MarkOut")
+
+
+def _rejected_keys(project: ResolveObject, payload: dict[str, Any]) -> list[str]:
+    """Probe the payload piece by piece to name the values Resolve refuses."""
+    groups: list[dict[str, Any]] = []
+    marks = {k: payload[k] for k in _RANGE_KEYS if k in payload}
+    if marks:
+        groups.append(marks)
+    groups += [{k: v} for k, v in payload.items() if k not in _RANGE_KEYS]
+    rejected: list[str] = []
+    for group in groups:
+        if not project.SetRenderSettings(group):
+            rejected.extend(f"{k}={v!r}" for k, v in group.items())
+    return rejected
 
 
 def _add_job(s: ResolveSession) -> str:

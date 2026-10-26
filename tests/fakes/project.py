@@ -30,6 +30,7 @@ class RichProject(FakeProject):
         self._settings = dict(_SETTINGS)
         self.presets: list[str] = ["Preset A"]
         self.lying_keys: set[str] = set()
+        self.float_keys: set[str] = set()  # read back as '25.0', like Resolve
 
     @recorded
     def GetUniqueId(self) -> str:
@@ -51,7 +52,7 @@ class RichProject(FakeProject):
             if key not in self._settings or key == "timelinePlaybackFrameRate":
                 ok = False
                 continue
-            self._settings[key] = str(value)
+            self._settings[key] = f"{float(value)}" if key in self.float_keys else str(value)
         return ok
 
     @recorded

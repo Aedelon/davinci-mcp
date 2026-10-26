@@ -16,7 +16,8 @@ from typing import TYPE_CHECKING, Any, Literal, cast
 from mcp.types import ContentBlock, TextContent
 from pydantic import BaseModel, ValidationError
 
-from davinci_mcp.actions.registry import WriteOutput, signature
+from davinci_mcp.actions.registry import WriteOutput, shape
+from davinci_mcp.actions.repair import repair
 from davinci_mcp.actions.spec import JobRequest, Kind, PlanDraft, SnapshotKind
 from davinci_mcp.errors import DavinciError, ErrorCode
 from davinci_mcp.images import image_blocks
@@ -91,10 +92,20 @@ class Pipeline:
 
     def _parse(
         self, tool: ToolDefinition, arguments: dict[str, Any]
-    ) -> tuple[ActionSpec, Any, Any]:
+    ) -> tuple[ActionSpec, Any, Any, list[str]]:
+        notes: list[str] = []
         try:
             call = tool.call_adapter.validate_python(arguments)
         except ValidationError as exc:
+            repaired: Any = _repaired(tool, arguments, notes)
+            if repaired is not None:
+                call = repaired
+                op = call.op
+                spec = tool.actions[op.action]
+                params = spec.params.model_validate(
+                    op.model_dump(exclude={"action"}, by_alias=False)
+                )
+                return spec, call, params, notes
             raw_op: object = arguments.get("op")
             name = (
                 cast("dict[str, object]", raw_op).get("action")
@@ -104,7 +115,7 @@ class Pipeline:
             details: dict[str, Any] = {"errors": json.loads(exc.json(include_url=False))}
             if isinstance(name, str) and name in tool.actions:
                 details["schema"] = tool.action_schema(name)
-                hint = f"{name}{signature(tool.op_models[name])}; full schema in details.schema."
+                hint = f"{name}{shape(tool.op_models[name])}; full schema in details.schema."
             else:
                 hint = f"op.action must be one of: {', '.join(tool.actions)}."
             raise DavinciError(
@@ -117,12 +128,12 @@ class Pipeline:
         op = call.op
         spec = tool.actions[op.action]
         params = spec.params.model_validate(op.model_dump(exclude={"action"}, by_alias=False))
-        return spec, call, params
+        return spec, call, params, notes
 
     async def _execute(
         self, tool: ToolDefinition, arguments: dict[str, Any], *, preauthorized: bool
     ) -> ToolResult:
-        spec, call, params = self._parse(tool, arguments)
+        spec, call, params, notes = self._parse(tool, arguments)
         session = await self.connection.session()
         self._gate(spec, session)
         started = time.monotonic()
@@ -131,10 +142,14 @@ class Pipeline:
             result = await self.connection.call(
                 lambda s: spec.handler(s, params), retry_safe=True, timeout=spec.timeout_s
             )
-            return tool_result(
-                {"action": spec.name, "result": _dump(result), "channel": session.caps.channel},
-                extra=image_blocks(result),
-            )
+            output: dict[str, Any] = {
+                "action": spec.name,
+                "result": _dump(result),
+                "channel": session.caps.channel,
+            }
+            if notes:
+                output["notes"] = notes
+            return tool_result(output, extra=image_blocks(result))
 
         dry_run: bool = call.dry_run
         params_json = params.model_dump(mode="json")
@@ -151,14 +166,14 @@ class Pipeline:
                     targets=draft.targets,
                 )
                 return tool_result(
-                    WriteOutput(status="planned", plan=plan.model_dump(mode="json")).model_dump(
-                        mode="json"
-                    )
+                    WriteOutput(
+                        status="planned", plan=plan.model_dump(mode="json"), notes=notes or None
+                    ).model_dump(mode="json", exclude_none=True)
                 )
             self.consent.verify(token, spec.qualified_name, params_json, draft.fingerprint)
 
         if spec.long_running:
-            return await self._start_job(spec, params, params_json, session, started)
+            return await self._start_job(spec, params, params_json, session, started, notes=notes)
 
         snapshot_kind = self._snapshot_kind(spec, getattr(call, "snapshot", None))
         try:
@@ -175,7 +190,7 @@ class Pipeline:
         receipt = self._receipt(spec, applied, session, started)
         self._audit(spec, params_json, session, started, receipt=receipt)
         return tool_result(
-            WriteOutput(status="applied", receipt=receipt).model_dump(
+            WriteOutput(status="applied", receipt=receipt, notes=notes or None).model_dump(
                 mode="json", exclude_none=True
             )
         )
@@ -187,6 +202,8 @@ class Pipeline:
         params_json: dict[str, Any],
         session: ResolveSession,
         started: float,
+        *,
+        notes: list[str],
     ) -> ToolResult:
         if self.jobs is None:
             raise DavinciError(ErrorCode.INTERNAL, "No job manager configured.", retryable=False)
@@ -218,7 +235,9 @@ class Pipeline:
             }
         )
         return tool_result(
-            WriteOutput(status="started", job=job.model_dump(mode="json")).model_dump(mode="json")
+            WriteOutput(
+                status="started", job=job.model_dump(mode="json"), notes=notes or None
+            ).model_dump(mode="json", exclude_none=True)
         )
 
     @staticmethod
@@ -327,3 +346,26 @@ class Pipeline:
                 "error": None if error is None else error.to_payload().model_dump(mode="json"),
             }
         )
+
+
+def _repaired(
+    tool: ToolDefinition, arguments: dict[str, Any], notes: list[str]
+) -> BaseModel | None:
+    """Validated call after repairing near-miss op parameters, or None (see repair.py)."""
+    raw_op: object = arguments.get("op")
+    if not isinstance(raw_op, dict):
+        return None
+    op = cast("dict[str, Any]", raw_op)
+    name = op.get("action")
+    if not isinstance(name, str) or name not in tool.op_models:
+        return None
+    found: list[str] = []
+    fixed = repair(tool.op_models[name], op, found)
+    if not found:
+        return None
+    try:
+        call = tool.call_adapter.validate_python({**arguments, "op": fixed})
+    except ValidationError:
+        return None
+    notes.extend(found)
+    return call

@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Annotated, Any, Literal, Union
 
 from pydantic import BaseModel, Field, TypeAdapter, create_model
 
+from davinci_mcp.actions.repair import field_models, is_list_field
 from davinci_mcp.actions.spec import ActionSpec, Kind
 from davinci_mcp.receipts import Receipt
 
@@ -39,6 +40,9 @@ class WriteOutput(BaseModel):
     )
     plan: dict[str, Any] | None = Field(
         default=None, description="Present when status='planned' (dry run or consent needed)."
+    )
+    notes: list[str] | None = Field(
+        default=None, description="How near-miss parameters were interpreted, if any."
     )
 
 
@@ -145,6 +149,25 @@ def signature(model: type[BaseModel], limit: int = 8) -> str:
         keep = optional[: max(0, limit - len(required))]
         names = [*required, *keep, f"+{len(optional) - len(keep)} more"]
     return f"({', '.join(names)})"
+
+
+def shape(model: type[BaseModel], limit: int = 8) -> str:
+    """Like ``signature``, with the field names of nested objects: ``fades*: {FadeIn, FadeOut}``.
+
+    Used in INVALID_PARAMS hints so a near-miss can be fixed without describe_action.
+    """
+    parts: list[str] = []
+    for name, info in model.model_fields.items():
+        if name in _IMPLICIT_PARAMS:
+            continue
+        label = name + ("*" if info.is_required() else "")
+        nested = field_models(info.annotation)
+        if len(nested) == 1:
+            inner = signature(nested[0], limit)[1:-1].replace("*", "")
+            inner = "{" + inner + "}"
+            label += f": [{inner}]" if is_list_field(info.annotation) else f": {inner}"
+        parts.append(label)
+    return f"({', '.join(parts)})"
 
 
 def _compact_input_schema(kind: Kind, specs: list[ActionSpec]) -> dict[str, Any]:

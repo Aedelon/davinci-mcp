@@ -12,7 +12,8 @@ from tests.helpers import call, mcp_client
 # ~4 chars per token. Raise deliberately (and say why in the commit) when domains grow.
 # 72k: workflow_write ships its full schema (always loaded) and base tools list shortcuts.
 MAX_INPUT_CHARS = 72_000
-MAX_OUTPUT_CHARS = 20_000
+# 22k: batch_run returns the RecipeRun schema (per-step outcomes).
+MAX_OUTPUT_CHARS = 22_000
 
 
 async def test_tool_list_stays_within_budget(settings: Settings) -> None:

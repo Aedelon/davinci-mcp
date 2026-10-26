@@ -483,12 +483,13 @@ def set_cdl(s: ResolveSession, p: SetCdlParams) -> CdlApplied:
     graph = item.GetNodeGraph()
     if graph is not None:
         _check_node(graph, p.node)
+    # SetCDL returns False for numeric NodeIndex/Saturation: every value must be a string.
     cdl: dict[str, Any] = {
-        "NodeIndex": p.node,
+        "NodeIndex": str(p.node),
         "Slope": _triple(p.slope),
         "Offset": _triple(p.offset),
         "Power": _triple(p.power),
-        "Saturation": p.saturation,
+        "Saturation": f"{p.saturation:g}",
     }
     if not item.SetCDL(cdl):
         raise _fail("TimelineItem.SetCDL")
