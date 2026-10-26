@@ -444,11 +444,17 @@ def _input_label(entry: Any) -> str:
 
 
 def _find_input(s: ResolveSession, tool: ResolveObject, name: str) -> ResolveObject:
-    """FusionInput proxy by registry id or display name."""
-    for entry in _input_objects(tool):
-        if isinstance(entry, str):
-            continue
-        if name in (str(_prop(entry, "ID")), str(_prop(entry, "Name"))):
+    """FusionInput proxy by registry id first, then display name.
+
+    Names are not unique (Text+ has both "Size" and "TransformSize" displayed as "Size"),
+    so an exact id always wins over a name match.
+    """
+    entries = [e for e in _input_objects(tool) if not isinstance(e, str)]
+    for entry in entries:
+        if str(_prop(entry, "ID")) == name:
+            return entry
+    for entry in entries:
+        if str(_prop(entry, "Name")) == name:
             return entry
     candidate = getattr(tool, name, None)
     if candidate is not None and s.caps.has(candidate, "GetConnectedOutput"):
@@ -464,10 +470,19 @@ def _is_animated(inp: ResolveObject) -> bool:
 
 
 def _keyframes(inp: ResolveObject) -> dict[str, Any]:
+    """{time: value}. Measured on 21.1.1: GetKeyFrames() returns {1-based index: time}."""
     raw = inp.GetKeyFrames()
     if not isinstance(raw, dict):
         return {}
-    return {str(k): _json(v) for k, v in raw.items()}
+    times = sorted(float(t) for t in raw.values() if isinstance(t, (int, float)))
+    out: dict[str, Any] = {}
+    for t in times:
+        key = str(int(t)) if t.is_integer() else str(t)
+        try:
+            out[key] = _json(inp[t])
+        except Exception:  # proxies without item access: report the time only
+            out[key] = None
+    return out
 
 
 def _output_tool_name(output: ResolveObject) -> str | None:
@@ -1006,8 +1021,11 @@ def add_tool(s: ResolveSession, p: AddToolParams) -> ToolResult:
                 f"Comp.AddTool({p.tool_id!r}) returned nothing.",
                 "Check the id with fusion_read(action='registry_types').",
             )
-        if p.name is not None and not tool.SetAttrs({"TOOLS_Name": p.name}):
-            _fail("Could not apply the requested tool name.")
+        # SetAttrs returns False when the name is unchanged (e.g. "Merge1" for a first Merge).
+        if p.name is not None and _tool_name(tool) != p.name:
+            tool.SetAttrs({"TOOLS_Name": p.name})
+            if _tool_name(tool) != p.name:
+                _fail("Could not apply the requested tool name.")
         name = _tool_name(tool)
     return ToolResult(tool=name, id=_tool_id(tool))
 

@@ -8,6 +8,7 @@ Resolve has no ``GetTimelineByName``: timelines are found by iterating indices.
 
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -19,10 +20,30 @@ if TYPE_CHECKING:
     from davinci_mcp.connection.manager import ResolveSession
 
 
+_UUID_RE = re.compile(
+    r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+)
+
+
+def _shorthand(value: object, *, text_field: str) -> object:
+    """Accept a bare string for a ref: a UUID is an id, anything else goes to ``text_field``.
+
+    Agents naturally pass ``"item": "<uuid>"``; refusing it costs a round trip.
+    """
+    if isinstance(value, str):
+        return {"id": value} if _UUID_RE.match(value) else {text_field: value}
+    return value
+
+
 class TimelineRef(BaseModel):
     """Select a timeline by unique id, exact name, or 1-based index. Omit for the current one."""
 
     model_config = ConfigDict(extra="forbid")
+
+    @model_validator(mode="before")
+    @classmethod
+    def _from_string(cls, value: object) -> object:
+        return _shorthand(value, text_field="name")
 
     id: str | None = Field(default=None, description="Timeline.GetUniqueId()")
     name: str | None = None
@@ -127,6 +148,11 @@ class ItemRef(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
+    @model_validator(mode="before")
+    @classmethod
+    def _from_string(cls, value: object) -> object:
+        return _shorthand(value, text_field="name")
+
     timeline: TimelineRef | None = None
     id: str | None = Field(default=None, description="TimelineItem.GetUniqueId()")
     track: TrackSel | None = None
@@ -207,6 +233,11 @@ class FolderRef(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
+    @model_validator(mode="before")
+    @classmethod
+    def _from_string(cls, value: object) -> object:
+        return _shorthand(value, text_field="path")
+
     id: str | None = None
     path: str | None = Field(default=None, description="Folder names joined by '/'")
 
@@ -221,6 +252,11 @@ class ClipRef(BaseModel):
     """Select a Media Pool clip by unique id, exact clip name, or source file path."""
 
     model_config = ConfigDict(extra="forbid")
+
+    @model_validator(mode="before")
+    @classmethod
+    def _from_string(cls, value: object) -> object:
+        return _shorthand(value, text_field="name")
 
     id: str | None = Field(default=None, description="MediaPoolItem.GetUniqueId()")
     name: str | None = None

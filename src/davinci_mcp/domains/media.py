@@ -224,6 +224,12 @@ class MatteList(BaseModel):
 
 class ImportItem(_Params):
     path: str = Field(description="File, folder or image-sequence pattern ('%06d').")
+
+    @model_validator(mode="before")
+    @classmethod
+    def _from_string(cls, value: object) -> object:
+        return {"path": value} if isinstance(value, str) else value
+
     start_index: int | None = Field(default=None, ge=0, description="Sequence start frame.")
     end_index: int | None = Field(default=None, ge=0, description="Sequence end frame.")
 
