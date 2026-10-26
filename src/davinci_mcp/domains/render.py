@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import time
 from collections.abc import Callable, Mapping
 from pathlib import Path
@@ -29,7 +30,7 @@ from davinci_mcp.domains._runtime import runtime
 from davinci_mcp.errors import DavinciError, ErrorCode
 from davinci_mcp.receipts import Verification
 from davinci_mcp.safety.pages import restore_page_after
-from davinci_mcp.safety.paths import check_path
+from davinci_mcp.safety.paths import SAFE_NAME_PATTERN, check_path
 
 if TYPE_CHECKING:
     from davinci_mcp.connection.backend import ResolveObject
@@ -299,11 +300,24 @@ def _refuse_if_rendering(project: ResolveObject) -> None:
         )
 
 
+def _check_output_name(name: str) -> str:
+    """CustomName becomes a file name inside TargetDir: no separators, no leading dot."""
+    if not re.fullmatch(SAFE_NAME_PATTERN, name):
+        raise DavinciError(
+            ErrorCode.INVALID_PARAMS,
+            f"Invalid output name {name!r}: use a plain file name without path separators.",
+            retryable=False,
+        )
+    return name
+
+
 def _payload(s: ResolveSession, settings: RenderSettings) -> dict[str, Any]:
     """Build the SetRenderSettings payload (empty CustomName dropped, absolute marks)."""
     data: dict[str, Any] = settings.model_dump(exclude_none=True)
     if "CustomName" in data and not str(data["CustomName"]).strip():
         del data["CustomName"]
+    if "CustomName" in data:
+        _check_output_name(str(data["CustomName"]))
     if "TargetDir" in data:
         data["TargetDir"] = str(
             check_path(str(data["TargetDir"]), runtime().allowed_roots, must_exist=True)
@@ -869,7 +883,7 @@ def quick_export(s: ResolveSession, p: QuickExportParams) -> JobRequest:
     if p.target_dir is not None:
         info["TargetDir"] = str(check_path(p.target_dir, runtime().allowed_roots, must_exist=True))
     if p.name:
-        info["CustomName"] = p.name
+        info["CustomName"] = _check_output_name(p.name)
     if p.video_quality is not None:
         info["VideoQuality"] = p.video_quality
 

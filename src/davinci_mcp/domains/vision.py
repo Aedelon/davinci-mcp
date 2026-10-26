@@ -33,6 +33,7 @@ from davinci_mcp.domains.interchange import frames_to_timecode, timecode_to_fram
 from davinci_mcp.errors import DavinciError, ErrorCode
 from davinci_mcp.images import ImageFile
 from davinci_mcp.refs import ClipRef, resolve_clip
+from davinci_mcp.safety.pages import restore_page_after
 from davinci_mcp.safety.paths import check_path
 
 if TYPE_CHECKING:
@@ -218,6 +219,22 @@ def _playhead(s: ResolveSession) -> Generator[ResolveObject]:
             timeline.SetCurrentTimecode(saved)
 
 
+# Measured on Resolve 21.1.1: ExportCurrentFrameAsStill works on media/cut/edit/color and
+# returns False on deliver/fusion/fairlight. Right after a timeline is created it can also
+# fail once while the viewer catches up, hence a single delayed retry.
+_NO_STILL_PAGES = frozenset({"deliver", "fusion", "fairlight"})
+
+
+def _export_still(s: ResolveSession, raw: Path) -> bool:
+    with restore_page_after(s.resolve):
+        if s.resolve.GetCurrentPage() in _NO_STILL_PAGES:
+            s.resolve.OpenPage("edit")
+        if s.project.ExportCurrentFrameAsStill(str(raw)):
+            return True
+        time.sleep(0.5)
+        return bool(s.project.ExportCurrentFrameAsStill(str(raw)))
+
+
 def _grab(s: ResolveSession, timeline: ResolveObject, timecode: str | None, raw: Path) -> str:
     """Move to ``timecode`` (if any) and export the current frame; return the actual timecode."""
     if timecode is not None and not timeline.SetCurrentTimecode(timecode):
@@ -228,7 +245,7 @@ def _grab(s: ResolveSession, timeline: ResolveObject, timecode: str | None, raw:
             retryable=False,
         )
     actual = str(timeline.GetCurrentTimecode() or timecode or "")
-    if not s.project.ExportCurrentFrameAsStill(str(raw)):
+    if not _export_still(s, raw):
         raise DavinciError(
             ErrorCode.API_CALL_FAILED,
             "Project.ExportCurrentFrameAsStill returned False.",

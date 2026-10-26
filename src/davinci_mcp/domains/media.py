@@ -776,7 +776,15 @@ def list_mattes(s: ResolveSession, p: MatteParams) -> MatteList:
 # -- write: import / folders ----------------------------------------------------------
 
 
-def _import_item(s: ResolveSession, item: ImportItem, storage: bool) -> dict[str, Any]:
+def _info_path(info: dict[str, Any] | str) -> str:
+    return info if isinstance(info, str) else str(info.get("FilePath") or info.get("media"))
+
+
+def _is_sequence(info: dict[str, Any] | str) -> bool:
+    return isinstance(info, dict) and ("StartIndex" in info or "startFrame" in info)
+
+
+def _import_item(s: ResolveSession, item: ImportItem, storage: bool) -> dict[str, Any] | str:
     sequence = item.start_index is not None or item.end_index is not None or "%" in item.path
     path = _path(item.path, must_exist=not sequence)
     if storage:
@@ -786,6 +794,10 @@ def _import_item(s: ResolveSession, item: ImportItem, storage: bool) -> dict[str
         if item.end_index is not None:
             info["endFrame"] = item.end_index
         return info
+    if not sequence:
+        # Measured on Resolve 21.1.1: ImportMedia([{"FilePath": p}]) returns None although the
+        # stub documents it; plain path strings work. Dicts are kept for image sequences.
+        return path
     info = {"FilePath": path}
     if item.start_index is not None:
         info["StartIndex"] = item.start_index
@@ -832,14 +844,11 @@ def import_media(s: ResolveSession, p: ImportParams) -> ImportResult:
         )
     imported_paths = [_prop(c, "File Path") for c in clips]
     unmatched = [
-        str(info.get("FilePath") or info.get("media"))
+        _info_path(info)
         for info in infos
-        if "StartIndex" not in info
-        and "startFrame" not in info
-        and not Path(str(info.get("FilePath") or info.get("media"))).is_dir()
-        and not any(
-            _same_path(ip, str(info.get("FilePath") or info.get("media"))) for ip in imported_paths
-        )
+        if not _is_sequence(info)
+        and not Path(_info_path(info)).is_dir()
+        and not any(_same_path(ip, _info_path(info)) for ip in imported_paths)
     ]
     return ImportResult(
         imported=[_summary(c, _folder_path(s, target)) for c in clips],

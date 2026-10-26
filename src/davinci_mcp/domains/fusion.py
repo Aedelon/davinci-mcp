@@ -47,6 +47,31 @@ if TYPE_CHECKING:
     from davinci_mcp.connection.manager import ResolveSession
 
 DOMAIN = "fusion"
+
+
+# Fusion settings text and expressions are Lua: these markers mean "can run code".
+_SCRIPT_MARKERS = re.compile(
+    r"RenderScript|\b(os|io|bmd|ffi|debug|package)\s*\.|\b(require|loadstring|loadfile|dofile|"
+    r"Execute|RunScript|ExecuteFile)\s*\("
+)
+
+
+def _require_code_execution(feature: str) -> None:
+    if not runtime().settings.safety.enable_code_execution:
+        raise DavinciError(
+            ErrorCode.CAPABILITY_UNAVAILABLE,
+            f"{feature} can execute code inside Resolve and is disabled.",
+            hint="Set safety.enable_code_execution = true in config.toml to allow it.",
+            retryable=False,
+        )
+
+
+def _guard_script(text: str | None, feature: str) -> None:
+    """Refuse script-bearing Fusion text unless code execution is enabled."""
+    if text and _SCRIPT_MARKERS.search(text):
+        _require_code_execution(f"{feature} with script content")
+
+
 _AUTO_POS = -32768  # AddTool(id, x, y): "place automatically"
 _FUSE_NAME = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9_. -]*\.fuse$")
 _HEX_COLOR = re.compile(r"^#[0-9A-Fa-f]{6}$")
@@ -1035,6 +1060,7 @@ def _verify_expression(
 )
 def set_expression(s: ResolveSession, p: SetExpressionParams) -> ExpressionResult:
     """Set (or clear, with an empty string) the expression of a tool input."""
+    _guard_script(p.expression, "set_expression")
     _, comp, _ = _open_comp(s, p)
     inp = _find_input(s, _find_tool(comp, p.tool), p.input)
     with _transaction(comp, f"MCP expression {p.tool}.{p.input}"):
@@ -1202,6 +1228,7 @@ def _verify_pasted(s: ResolveSession, p: PasteSettingsParams, r: PasteResult) ->
 )
 def paste_settings(s: ResolveSession, p: PasteSettingsParams) -> PasteResult:
     """Paste a Fusion .setting snippet (text) into a comp; reports the tools it created."""
+    _guard_script(p.text, "paste_settings")
     _, comp, _ = _open_comp(s, p)
     before = {_tool_name(t) for t in _tools(comp)}
     with _transaction(comp, "MCP paste settings", lock=True):
@@ -1305,15 +1332,33 @@ def _verify_fuse(_: ResolveSession, p: InstallFuseParams, r: PathResult) -> Veri
     return Verification(ok=ok, note="Resolve loads Fuses at startup: restart it to use this one.")
 
 
+def _plan_fuse(_: ResolveSession, p: InstallFuseParams) -> PlanDraft:
+    _require_code_execution("install_fuse")
+    target = _fuses_root(p.directory) / p.filename
+    digest = hashlib.sha256(p.source.encode()).hexdigest()
+    return PlanDraft(
+        summary=f"Install Fuse {p.filename} (Lua code that Resolve runs at every start).",
+        effects=[
+            f"Writes {target} ({len(p.source)} chars, sha256 {digest[:16]}).",
+            "The Fuse executes with Resolve's privileges once Resolve restarts.",
+            *p.source.splitlines()[:20],
+        ],
+        targets=[str(target)],
+        fingerprint=f"{digest}:{target.exists()}",
+    )
+
+
 @action(
     domain=DOMAIN,
-    kind=Kind.WRITE,
+    kind=Kind.DESTRUCTIVE,
     params=InstallFuseParams,
     result=PathResult,
     verify=_verify_fuse,
+    plan=_plan_fuse,
 )
 def install_fuse(_: ResolveSession, p: InstallFuseParams) -> PathResult:
-    """Write a .fuse source file into the user Fuses folder (Lua code Resolve will execute)."""
+    """Install a .fuse (Lua run by Resolve): needs code execution enabled + confirmation."""
+    _require_code_execution("install_fuse")
     if not _FUSE_NAME.match(p.filename):
         raise DavinciError(
             ErrorCode.INVALID_PARAMS,
