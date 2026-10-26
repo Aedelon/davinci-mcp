@@ -105,3 +105,31 @@ Same harness, with `--runs 5`, Sonnet everywhere and the servers interleaved ins
   - The 10 runs were re-run (same run indices) and all of them started. The pre-rerun rows are kept in `results/2026-10-26_bench5_before_rerun.json`.
 - The harness now reads the MCP status from the agent's init event, and retries then excludes any run whose server did not start.
 - One run detected another Resolve driver switching projects. It was retried automatically and excluded from the medians.
+
+
+## Benchmark v4: composites and recipes (2026-10-26)
+
+davinci-mcp gained five single-call  actions (, , , , ) and the recipe engine. Same prompts and harness as v3, 5 runs per cell. Nothing tells the agents to use the new tools. The other two servers keep their v3 results.
+
+| Scenario | davinci-mcp v3 | **davinci-mcp v4** | community | native |
+|---|---|---|---|---|
+| Reel | 15 calls · /bin/zsh.27 | 14 · /bin/zsh.28 | 18 · /bin/zsh.33 | 7 · /bin/zsh.20 |
+| Conform | 24 · /bin/zsh.59 | **8 · /bin/zsh.17** | 28 · /bin/zsh.41 | 5 · /bin/zsh.15 (2/5 pass) |
+| Grade | 14 · /bin/zsh.18 | 14 · /bin/zsh.18 | 32 · /bin/zsh.41 | 10 · /bin/zsh.19 |
+| Fusion | 11 · /bin/zsh.16 | 12 · /bin/zsh.18 | 15 · /bin/zsh.21 | 5 · /bin/zsh.13 |
+
+**Totals (sum of the medians):**
+
+| Server | Success | Calls | Wall (s) | Cost ($) |
+|---|---|---|---|---|
+| **davinci-mcp v4** | **100 %** (20/20) | 48 | **139** | 0.81 |
+| davinci-mcp v3 | 100 % | 64 | 209 | 1.20 |
+| community | 100 % | 93 | 247 | 1.36 |
+| native ResolveMCP | 85 % | **27** | 162 | **0.66** |
+
+### Reading
+
+- davinci-mcp is now the **fastest** of the three, at 100 % success, and within /bin/zsh.15 of the native server's cost.
+- **Adoption is the limit, not capability.** Agents used  +  in nearly every conform run (−67 % calls, −71 % cost on that scenario). They called  and  only once in 5 runs each, and  never: they kept composing primitives. All five composites passed the scenario checks when called directly on live Resolve. Next lever: make them discoverable (server instructions, tool descriptions, ).
+- **Bias caveat.** The composites were designed after seeing these four scenarios. A fair test of the general claim needs new scenarios the composites were not shaped for.
+- Live finding:  initially rejected the codec name "ProRes 422 HQ" (Resolve's id is ). Codec lookup now ignores case, spaces and dots.
