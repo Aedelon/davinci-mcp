@@ -8,7 +8,7 @@ from typing import Any
 import pytest
 
 from davinci_mcp.actions.registry import ActionRegistry, ToolDefinition, shape
-from davinci_mcp.actions.repair import repair
+from davinci_mcp.actions.repair import repair, unknown_keys
 from davinci_mcp.domains import all_actions
 
 UUID = "41a00d49-9924-4aad-a55a-076452edac6f"
@@ -77,3 +77,21 @@ def test_shape_lists_nested_fields(tools: dict[str, ToolDefinition]) -> None:
     hint = shape(tools["item_write"].op_models["set_fades"])
     assert "fades*: {FadeIn, FadeOut}" in hint
     assert "items*: [{" in hint
+
+
+def test_bare_id_wraps_into_the_first_declared_target(tools: dict[str, ToolDefinition]) -> None:
+    fixed, notes = _fix(tools, "color_read", {"action": "get_node_graph", "target": {"id": UUID}})
+    assert fixed.target.item.id == UUID and notes
+    notes = []
+    op = {"action": "get_node_graph", "target": {"name": "Shot"}}
+    assert repair(tools["color_read"].op_models["get_node_graph"], op, notes) == op
+    assert not notes  # a name could be a clip or a timeline: left for validation
+
+
+def test_unknown_keys_get_suggestions(tools: dict[str, ToolDefinition]) -> None:
+    lines = unknown_keys(
+        tools["item_write"].op_models["set_fades"],
+        {"action": "set_fades", "items": [], "fades": {"FadeOutt": 1, "zzz": 2}},
+    )
+    assert "op.fades.FadeOutt: unknown, did you mean FadeOut" in lines[0]
+    assert lines[1].startswith("op.fades.zzz: unknown, expected FadeIn, FadeOut")

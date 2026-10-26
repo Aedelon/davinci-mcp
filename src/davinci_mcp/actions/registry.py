@@ -175,7 +175,7 @@ def _compact_input_schema(kind: Kind, specs: list[ActionSpec]) -> dict[str, Any]
         "op": {
             "type": "object",
             "description": "{action, ...params}. Parameters per action: see the description "
-            "or describe_action.",
+            "or this server's describe_action tool.",
             "properties": {"action": {"type": "string", "enum": [s.name for s in specs]}},
             "required": ["action"],
             "additionalProperties": True,

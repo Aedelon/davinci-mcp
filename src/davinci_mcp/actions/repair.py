@@ -77,13 +77,21 @@ def _selector(value: str, model: type[BaseModel]) -> dict[str, Any] | None:
 
 
 def _wrap(data: dict[str, Any], model: type[BaseModel]) -> tuple[str, dict[str, Any]] | None:
-    """``data`` belongs one level down: exactly one field's model knows all its keys."""
+    """``data`` belongs one level down: one field's model knows all its keys.
+
+    Several candidates are only settled for a bare unique id: the first declared field
+    is the primary target (e.g. ``item`` before ``timeline``), and an id of another kind
+    simply fails as NOT_FOUND instead of selecting a wrong object.
+    """
     owners = [
         name
         for name, info in model.model_fields.items()
         if any(set(data) <= set(sub.model_fields) for sub in field_models(info.annotation))
     ]
-    return (owners[0], {owners[0]: data}) if len(owners) == 1 else None
+    only_id = set(data) == {"id"} and bool(_UUID_RE.match(str(data["id"])))
+    if len(owners) == 1 or (owners and only_id):
+        return owners[0], {owners[0]: data}
+    return None
 
 
 def _repair_value(value: object, annotation: object, path: str, notes: list[str]) -> object:
@@ -125,4 +133,20 @@ def repair(
     for key, value in list(out.items()):
         if key in fields:
             out[key] = _repair_value(value, fields[key].annotation, f"{path}.{key}", notes)
+    return out
+
+
+def unknown_keys(model: type[BaseModel], data: dict[str, Any], path: str = "op") -> list[str]:
+    """``"op.fades.x: did you mean FadeIn?"`` lines for keys no field accepts (for hints)."""
+    out: list[str] = []
+    fields = model.model_fields
+    for key, value in data.items():
+        if key not in fields:
+            close = difflib.get_close_matches(key, list(fields), n=2, cutoff=0.5)
+            guess = " or ".join(close) if close else ", ".join(list(fields)[:8])
+            out.append(f"{path}.{key}: unknown, {'did you mean ' if close else 'expected '}{guess}")
+            continue
+        models = field_models(fields[key].annotation)
+        if len(models) == 1 and isinstance(value, dict):
+            out += unknown_keys(models[0], cast("dict[str, Any]", value), f"{path}.{key}")
     return out

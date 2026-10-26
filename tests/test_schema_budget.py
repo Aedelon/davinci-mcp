@@ -66,3 +66,10 @@ async def test_composites_are_featured_and_advertised(settings: Settings) -> Non
     assert not (tools["render_write"].meta or {}).get("anthropic/alwaysLoad")
     assert "workflow_write.deliver" in (tools["render_write"].description or "")
     assert "workflow_write.conform_from_edl" in (tools["media_write"].description or "")
+
+
+async def test_action_called_on_the_wrong_tool_is_redirected(settings: Settings) -> None:
+    async with mcp_client(make_resolve(), settings) as client:
+        op = {"action": "set_audio_properties", "item": "x", "properties": {"AudioVolume": -8}}
+        err, out = await call(client, "item_write", {"op": op})
+    assert err and "set_audio_properties is an action of audio_write" in out["hint"]

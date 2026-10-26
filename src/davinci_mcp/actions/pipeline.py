@@ -10,14 +10,14 @@ from __future__ import annotations
 import json
 import time
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Literal, cast
 
 from mcp.types import ContentBlock, TextContent
 from pydantic import BaseModel, ValidationError
 
 from davinci_mcp.actions.registry import WriteOutput, shape
-from davinci_mcp.actions.repair import repair
+from davinci_mcp.actions.repair import repair, unknown_keys
 from davinci_mcp.actions.spec import JobRequest, Kind, PlanDraft, SnapshotKind
 from davinci_mcp.errors import DavinciError, ErrorCode
 from davinci_mcp.images import image_blocks
@@ -80,6 +80,8 @@ class Pipeline:
     cache: ReadCache
     jobs: JobManager | None = None
     auto_snapshot: Literal["destructive", "off", "all"] = "destructive"
+    # action name -> tools that define it, to redirect a call made on the wrong tool.
+    action_tools: dict[str, list[str]] = field(default_factory=dict[str, list[str]])
 
     async def execute(
         self, tool: ToolDefinition, arguments: dict[str, Any], *, preauthorized: bool = False
@@ -115,7 +117,12 @@ class Pipeline:
             details: dict[str, Any] = {"errors": json.loads(exc.json(include_url=False))}
             if isinstance(name, str) and name in tool.actions:
                 details["schema"] = tool.action_schema(name)
-                hint = f"{name}{shape(tool.op_models[name])}; full schema in details.schema."
+                hint = f"{name}{shape(tool.op_models[name])}"
+                unknown = unknown_keys(tool.op_models[name], cast("dict[str, Any]", raw_op))
+                hint += "; " + "; ".join(unknown) if unknown else ""
+                hint += "; full schema in details.schema."
+            elif isinstance(name, str) and (elsewhere := self.action_tools.get(name)):
+                hint = f"{name} is an action of {' / '.join(elsewhere)}, not {tool.name}."
             else:
                 hint = f"op.action must be one of: {', '.join(tool.actions)}."
             raise DavinciError(

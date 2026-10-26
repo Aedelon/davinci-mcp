@@ -222,6 +222,9 @@ def build_server(
     )
     by_name = {d.name: d for d in definitions}
     for definition in definitions:
+        for action_name in definition.actions:
+            services.pipeline.action_tools.setdefault(action_name, []).append(definition.name)
+    for definition in definitions:
         mcp.add_tool(RegistryTool.create(definition, services.pipeline))
 
     @mcp.tool(
