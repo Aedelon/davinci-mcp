@@ -147,7 +147,7 @@ Pour chaque appel :
 1. Validation Pydantic (paramètres inconnus refusés, avec la liste des noms valides).
 2. Capability gate.
 3. **Consentement** (DESTRUCTIVE) : sans `confirm_token`, on renvoie un `Plan` (effets, cibles, empreinte de l'état) et un jeton `HMAC(secret, action + params + empreinte)` valable 5 min. Avec `dry_run=true`, on renvoie toujours le plan, sans rien appliquer. Si l'empreinte de l'état a changé entre le plan et la confirmation, on renvoie `CONFIRMATION_STALE`. Si le client gère l'elicitation, on la propose ; le jeton reste la garantie.
-4. **Snapshot** si l'action le demande (`timeline` = `DuplicateTimeline` ; `project` = `ExportProject` en `.drp`). On refuse le snapshot de projet sur « Untitled Project » (`SaveProject` bloque en headless).
+4. **Snapshot** : l'action déclare *quoi* copier (`timeline` = `DuplicateTimeline` de la timeline visée par son paramètre `timeline` ; `project` = `ExportProject` en `.drp`). *Quand* le prendre : le paramètre d'appel `snapshot: true|false` prime, sinon le réglage `safety.auto_snapshot` décide (`destructive` par défaut, ou `all`, ou `off`). Une écriture réversible ne crée donc aucune copie. Les copies de timeline sont rangées dans le bin « davinci-mcp snapshots ». On refuse le snapshot de projet sur « Untitled Project » (`SaveProject` bloque en headless).
 5. **PageGuard** si l'action exige une page (ex. `ExportLUT`, `AddVersion` → `color`). On restaure la page d'origine ensuite. Les getters à effet de bord connus (`GetCurrentRenderMode` → Deliver) sont marqués `page_side_effect`.
 6. Appel via l'exécuteur.
 7. **Reçu** : relecture, `before` / `after` / `verified`. Un `True` de l'API contredit par la relecture donne `verified=false` + `VERIFICATION_FAILED` (avertissement, pas une exception).
@@ -225,6 +225,7 @@ call_timeout_s = 30
 allowed_roots = ["~/Movies", "~/Documents/Resolve"]
 snapshot_dir = "~/.local/state/davinci-mcp/snapshots"
 snapshot_retention = 20
+auto_snapshot = "destructive"   # destructive | all | off
 enable_code_execution = false
 [http]
 host = "127.0.0.1"

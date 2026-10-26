@@ -25,6 +25,12 @@ def _camel(text: str) -> str:
     return "".join(part.capitalize() for part in text.split("_"))
 
 
+SNAPSHOT_HELP = (
+    "true: copy the target timeline (or export the project) first; false: never; "
+    "omitted: server policy (destructive actions only, by default)."
+)
+
+
 class WriteOutput(BaseModel):
     status: Literal["applied", "planned", "started"]
     receipt: Receipt | None = None
@@ -135,6 +141,7 @@ def _compact_input_schema(kind: Kind, specs: list[ActionSpec]) -> dict[str, Any]
     }
     if kind is not Kind.READ:
         props["dry_run"] = {"type": "boolean", "default": False}
+        props["snapshot"] = {"type": ["boolean", "null"], "default": None}
     if kind is Kind.DESTRUCTIVE:
         props["confirm_token"] = {"type": ["string", "null"], "default": None}
     return {"type": "object", "properties": props, "required": ["op"]}
@@ -174,6 +181,10 @@ def _build_tool(name: str, specs: list[ActionSpec], *, compact: bool = True) -> 
         fields["dry_run"] = (
             bool,
             Field(default=False, description="Describe the effect without applying it."),
+        )
+        fields["snapshot"] = (
+            bool | None,
+            Field(default=None, description=SNAPSHOT_HELP),
         )
     if kind is Kind.DESTRUCTIVE:
         fields["confirm_token"] = (

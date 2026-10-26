@@ -12,11 +12,12 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from davinci_mcp.connection.backend import ResolveObject
 from davinci_mcp.connection.manager import ResolveSession
 from davinci_mcp.errors import DavinciError, ErrorCode
+from davinci_mcp.refs import proxies, walk_folders
 
 UNTITLED = "Untitled Project"
 
@@ -28,11 +29,50 @@ class SnapshotInfo(BaseModel):
     label: str
     project: str
     timeline_name: str | None = None
+    folder: str | None = Field(default=None, description="Media Pool bin holding the copy.")
     path: str | None = None
 
 
 def _safe_dir(name: str) -> str:
     return re.sub(r"[^\w .-]", "_", name).strip() or "project"
+
+
+SNAPSHOT_FOLDER = "davinci-mcp snapshots"
+
+
+def _file_into_snapshot_folder(project: ResolveObject, snap_name: str) -> str | None:
+    """Move the duplicated timeline's Media Pool entry into a dedicated bin (best effort).
+
+    DuplicateTimeline puts the copy in the current bin, next to the working timelines;
+    keeping snapshots apart is what makes them harmless. Returns the bin path, or None
+    when the API could not do it (the snapshot itself is still valid).
+    """
+    try:
+        pool = project.GetMediaPool()
+        root = pool.GetRootFolder()
+        current = pool.GetCurrentFolder()
+        folder = next(
+            (f for f in proxies(root.GetSubFolderList()) if f.GetName() == SNAPSHOT_FOLDER),
+            None,
+        ) or pool.AddSubFolder(root, SNAPSHOT_FOLDER)
+        if current is not None:
+            pool.SetCurrentFolder(current)  # AddSubFolder may switch the current bin
+        if folder is None:
+            return None
+        entry = next(
+            (
+                clip
+                for _, bin_ in walk_folders(root)
+                for clip in proxies(bin_.GetClipList())
+                if clip.GetName() == snap_name
+            ),
+            None,
+        )
+        if entry is None or not pool.MoveClips([entry], folder):
+            return None
+        return f"{root.GetName()}/{SNAPSHOT_FOLDER}"
+    except Exception:  # never fail a snapshot because filing it failed
+        return None
 
 
 class SnapshotManager:
@@ -108,6 +148,7 @@ class SnapshotManager:
             label=label,
             project=str(project.GetName()),
             timeline_name=snap_name,
+            folder=_file_into_snapshot_folder(project, snap_name),
         )
         self._record(info)
         return info

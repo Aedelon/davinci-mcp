@@ -11,17 +11,18 @@ import json
 import time
 from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 from mcp.types import ContentBlock, TextContent
 from pydantic import BaseModel, ValidationError
 
 from davinci_mcp.actions.registry import WriteOutput, signature
-from davinci_mcp.actions.spec import JobRequest, Kind, PlanDraft
+from davinci_mcp.actions.spec import JobRequest, Kind, PlanDraft, SnapshotKind
 from davinci_mcp.errors import DavinciError, ErrorCode
 from davinci_mcp.images import image_blocks
 from davinci_mcp.jobs import default_interpret
 from davinci_mcp.receipts import Receipt, Verification
+from davinci_mcp.refs import TimelineRef, resolve_timeline
 from davinci_mcp.safety.pages import PageGuard
 
 if TYPE_CHECKING:
@@ -77,6 +78,7 @@ class Pipeline:
     audit: AuditLog
     cache: ReadCache
     jobs: JobManager | None = None
+    auto_snapshot: Literal["destructive", "off", "all"] = "destructive"
 
     async def execute(self, tool: ToolDefinition, arguments: dict[str, Any]) -> ToolResult:
         try:
@@ -153,9 +155,10 @@ class Pipeline:
         if spec.long_running:
             return await self._start_job(spec, params, params_json, session, started)
 
+        snapshot_kind = self._snapshot_kind(spec, getattr(call, "snapshot", None))
         try:
             applied = await self.connection.call(
-                lambda s: self._apply(spec, s, params),
+                lambda s: self._apply(spec, s, params, snapshot_kind),
                 retry_safe=spec.retry_safe,
                 timeout=spec.timeout_s,
             )
@@ -237,14 +240,35 @@ class Pipeline:
             fingerprint="",
         )
 
-    def _apply(self, spec: ActionSpec, session: ResolveSession, params: BaseModel) -> _Applied:
+    def _snapshot_kind(self, spec: ActionSpec, requested: bool | None) -> SnapshotKind | None:
+        """Explicit request wins; otherwise the auto_snapshot policy decides."""
+        if requested is False:
+            return None
+        if requested is True:
+            return spec.snapshot or "timeline"
+        if spec.snapshot is None or self.auto_snapshot == "off":
+            return None
+        if self.auto_snapshot == "destructive" and spec.kind is not Kind.DESTRUCTIVE:
+            return None
+        return spec.snapshot
+
+    def _apply(
+        self,
+        spec: ActionSpec,
+        session: ResolveSession,
+        params: BaseModel,
+        snapshot_kind: SnapshotKind | None,
+    ) -> _Applied:
         with PageGuard(session.resolve, spec.page):
             snapshot_id: str | None = None
-            if spec.snapshot == "timeline":
+            if snapshot_kind == "timeline":
+                # Copy the timeline the action targets, not merely the current one.
+                ref = getattr(params, "timeline", None)
+                target = resolve_timeline(session, ref if isinstance(ref, TimelineRef) else None)
                 snapshot_id = self.snapshots.snapshot_timeline(
-                    session, session.timeline, spec.qualified_name
+                    session, target, spec.qualified_name
                 ).id
-            elif spec.snapshot == "project":
+            elif snapshot_kind == "project":
                 snapshot_id = self.snapshots.snapshot_project(session, spec.qualified_name).id
             before = spec.capture(session, params) if spec.capture else None
             result = spec.handler(session, params)
