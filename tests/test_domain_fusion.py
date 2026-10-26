@@ -340,6 +340,9 @@ async def test_script_content_is_gated(settings: Settings) -> None:
             "Background1.TopLeftRed.Foo",
             "Background1.NoSuchInput",
             "time(1)",
+            "(Background1.TopLeftRed)(1)",
+            "sin(1)(2)",
+            "Background1.TopLeftRed (1)",
         ):
             err, out = await call(
                 client,
@@ -379,7 +382,7 @@ async def test_reserved_tool_names_are_refused(settings: Settings) -> None:
     resolve, comps = _setup()
     comps[0].make_tool("Background")
     async with mcp_client(resolve, settings, ACTIONS) as client:
-        for name in ("os", "comp", "_G", "bad name"):
+        for name in ("os", "comp", "_G", "bad name", "tostring", "sin", "end", "eyeon"):
             err, out = await call(
                 client, "fusion_write", _op("rename_tool", tool="Background1", new_name=name)
             )

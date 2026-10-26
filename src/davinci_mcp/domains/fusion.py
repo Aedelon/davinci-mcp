@@ -92,6 +92,7 @@ _EXPR_FUNCTIONS = frozenset(
 _EXPR_VALUES = frozenset({"time", "pi", "and", "or", "not", "true", "false"})
 _EXPR_COMPONENTS = frozenset({"X", "Y", "Z"})
 _MAX_REF_PARTS = 2  # Input, then optionally X/Y/Z
+_GROUP_OPENERS = frozenset({"", "(", ",", "+", "-", "*", "/", "%", "^", "<", ">", "=", "~"})
 # Lua and Fusion globals: never accepted as a tool reference nor as a tool name, so a tool
 # renamed "os" or "comp" cannot smuggle a global into an expression.
 RESERVED_NAMES = frozenset(
@@ -144,13 +145,65 @@ RESERVED_NAMES = frozenset(
 )
 
 
+_LUA_KEYWORDS = frozenset(
+    {
+        "and",
+        "break",
+        "do",
+        "else",
+        "elseif",
+        "end",
+        "false",
+        "for",
+        "function",
+        "goto",
+        "if",
+        "in",
+        "local",
+        "nil",
+        "not",
+        "or",
+        "repeat",
+        "return",
+        "then",
+        "true",
+        "until",
+        "while",
+    }
+)
+_MORE_GLOBALS = frozenset(
+    {
+        "eyeon",
+        "ui",
+        "dispatcher",
+        "tostring",
+        "tonumber",
+        "unpack",
+        "type",
+        "collectgarbage",
+        "newproxy",
+        "module",
+        "arg",
+        "Execute",
+        "RunScript",
+        "_VERSION",
+    }
+)
+_ALL_RESERVED = RESERVED_NAMES | _LUA_KEYWORDS | _MORE_GLOBALS
+
+
+def _reserved(name: str) -> bool:
+    """Lua keywords/globals, Fusion globals and every expression helper name."""
+    return name in _ALL_RESERVED or name in _EXPR_FUNCTIONS or name in _EXPR_VALUES
+
+
 def _is_name(token: str) -> bool:
     return bool(token) and (token[0].isalpha() or token[0] == "_")
 
 
 def check_tool_name(name: str) -> str:
     """Tool names must be plain identifiers that do not shadow Lua/Fusion globals."""
-    if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,63}", name) or name in RESERVED_NAMES:
+    if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,63}", name) or _reserved(name):
         raise DavinciError(
             ErrorCode.INVALID_PARAMS,
             f"Invalid tool name {name!r}: use a plain identifier that is not a reserved name.",
@@ -177,8 +230,10 @@ def _check_expression(expression: str, inputs_by_tool: dict[str, set[str]]) -> N
         pos = match.end()
         if token.isspace():
             continue
-        is_call = token == "("  # noqa: S105 - a token, not a secret
-        if is_call and _is_name(previous) and previous not in _EXPR_FUNCTIONS:
+        is_paren = token == "("  # noqa: S105 - a token, not a secret
+        # "(" is a call after a name and after ")" / a reference: only allowlisted functions
+        # may be called; otherwise it must open a group (start, operator, "," or "(").
+        if is_paren and previous not in _EXPR_FUNCTIONS and previous not in _GROUP_OPENERS:
             raise _expression_refused(expression, f"{previous!r} cannot be called")
         if _is_name(token):
             _check_name(expression, token, inputs_by_tool)
@@ -191,7 +246,7 @@ def _check_name(expression: str, token: str, inputs_by_tool: dict[str, set[str]]
         if token not in _EXPR_FUNCTIONS and token not in _EXPR_VALUES:
             raise _expression_refused(expression, f"name {token!r} is not allowed")
         return
-    inputs = None if head in RESERVED_NAMES else inputs_by_tool.get(head)
+    inputs = None if _reserved(head) else inputs_by_tool.get(head)
     if inputs is None:
         raise _expression_refused(expression, f"{head!r} is not a tool of this comp")
     if parts[0] not in inputs:
