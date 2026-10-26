@@ -63,3 +63,45 @@ No other project was changed in any run, and every throwaway project was deleted
 - The agents inherit the user's Claude Code environment (hooks, CLAUDE.md, skills) on both sides. One davinci-mcp v1 run loaded a skill, which inflated its tokens.
 - Input tokens are dominated by per-turn context, mostly cache reads. The baseline's tools are deferred behind ToolSearch, while ours (~13 k tokens) are loaded upfront; this explains part of the token gap on long scenarios.
 - Not measured: the native Blackmagic `ResolveMCP` (run-script approach).
+
+
+## Benchmark v3: 5 runs per cell, 3 servers (2026-10-26)
+
+Same harness, with `--runs 5`, Sonnet everywhere and the servers interleaved inside each run. The contenders: davinci-mcp (with the v2 fixes), the community MCP (samuelgursky v4.14.4) and Blackmagic's built-in **ResolveMCP**, which works by docs search plus a sandboxed `run_script`. Values are **medians over 5 runs**; "success" means every check passed.
+
+| Scenario | Server | Success | Calls | Errors | Wall (s) | Input tok | Cost ($) |
+|---|---|---|---|---|---|---|---|
+| Reel | davinci-mcp | 5/5 | 15 | 0 | 55.5 | 1 122 k | 0.27 |
+| Reel | community | 5/5 | 18 | 0 | 49.6 | 952 k | 0.33 |
+| Reel | native | 5/5 | 7 | 0 | 38.8 | 504 k | 0.20 |
+| Conform | davinci-mcp | 5/5 | 24 | 1 | 81.4 | 1 354 k | 0.59 |
+| Conform | community | 5/5 | 28 | 0 | 89.5 | 1 255 k | 0.41 |
+| Conform | native | **2/5** | 5 | 0 | 36.2 | 389 k | 0.15 |
+| Grade | davinci-mcp | 5/5 | 14 | 0 | 36.0 | 599 k | 0.18 |
+| Grade | community | 5/5 | 32 | 0 | 66.1 | 1 126 k | 0.41 |
+| Grade | native | 5/5 | 10 | 1 | 53.6 | 583 k | 0.19 |
+| Fusion | davinci-mcp | 5/5 | 11 | 0 | 36.0 | 585 k | 0.16 |
+| Fusion | community | 5/5 | 15 | 0 | 42.2 | 473 k | 0.21 |
+| Fusion | native | 5/5 | 5 | 0 | 32.9 | 377 k | 0.13 |
+
+**Totals (sum of the medians over the 4 scenarios):**
+
+| Server | Success | Calls | Wall (s) | Input tok | Cost ($) |
+|---|---|---|---|---|---|
+| davinci-mcp | **100 %** (20/20) | 64 | 209 | 3.66 M | 1.20 |
+| community | 100 % (20/20) | 93 | 247 | 3.81 M | 1.36 |
+| native ResolveMCP | 85 % (17/20) | **27** | **162** | **1.85 M** | **0.66** |
+
+### Reading
+
+- **Reliability.** davinci-mcp and the community server pass every run. The native server writes one Python script per task: it is the cheapest and the fastest, but it failed the conform scenario in 3 runs out of 5. The EDL imported, but its events were not linked to the media, and nothing in that approach detects or reports it.
+- **Against the community server**, davinci-mcp uses 31 % fewer calls, 15 % less time, 4 % fewer input tokens and 12 % less money. It is cheaper on grade and Fusion, and costlier on conform, where linking EDL events takes several attempts.
+- **Against the native server**, davinci-mcp costs about twice the tokens: typed tools mean more round trips, where a script does everything in one call. The trade is reliability and verifiable receipts against raw cost.
+
+### Incidents and exclusions
+
+- **10 of the first 20 davinci-mcp runs never started.** Claude Code's 30 s MCP connect timeout expired because the repository lived in iCloud Drive: evicted ("dataless") source files were re-downloaded at each cold start, and `PYTHONDONTWRITEBYTECODE=1` prevented any bytecode cache.
+  - Fix: the repo now lives outside synced folders, with a local venv precompiled through `uv sync --compile-bytecode` (cold import ≈ 0.8 s).
+  - The 10 runs were re-run (same run indices) and all of them started. The pre-rerun rows are kept in `results/2026-10-26_bench5_before_rerun.json`.
+- The harness now reads the MCP status from the agent's init event, and retries then excludes any run whose server did not start.
+- One run detected another Resolve driver switching projects. It was retried automatically and excluded from the medians.

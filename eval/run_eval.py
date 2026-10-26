@@ -52,7 +52,7 @@ SYSTEM_RULES = (
 def server_configs(work: Path) -> dict[str, dict[str, Any]]:
     claude = json.loads((Path.home() / ".claude.json").read_text())
     existing = claude["mcpServers"]["davinci-resolve"]
-    ours_exe = Path.home() / ".local/share/venvs/davinci-mcp/bin/davinci-mcp"
+    ours_exe = Path(__file__).resolve().parents[1] / ".venv/bin/davinci-mcp"
     return {
         "davinci-mcp": {
             "command": str(ours_exe),
@@ -149,6 +149,7 @@ def run_agent(
             timed_out = True
     wall = time.monotonic() - started
     tool_calls = errors = 0
+    started = False
     result: dict[str, Any] = {}
     for line in log.read_text().splitlines():
         try:
@@ -165,6 +166,9 @@ def run_agent(
                     errors += 1
         if ev.get("type") == "result":
             result = ev
+        if ev.get("type") == "system" and ev.get("subtype") == "init":
+            statuses = {m.get("name"): m.get("status") for m in ev.get("mcp_servers", [])}
+            started = statuses.get(server) == "connected"
     usage = result.get("usage", {})
     return {
         "wall_s": round(wall, 1),
@@ -178,6 +182,7 @@ def run_agent(
         + (usage.get("cache_creation_input_tokens") or 0),
         "output_tokens": usage.get("output_tokens"),
         "final": str(result.get("result", ""))[:300],
+        "server_started": started,
     }
 
 
@@ -232,8 +237,8 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
     """Per (scenario, server): success rate, median score and median metrics."""
     cells: dict[tuple[str, str], list[dict[str, Any]]] = {}
     for row in results:
-        if row.get("interference"):
-            continue  # another Resolve driver switched projects: not a measurement
+        if row.get("interference") or row.get("server_started") is False:
+            continue  # another driver switched projects / the server never started
         cells.setdefault((row["scenario"], row["server"]), []).append(row)
     out: dict[str, Any] = {"cells": [], "servers": {}}
     for (scenario, server), rows in sorted(cells.items()):
@@ -320,6 +325,9 @@ def main() -> int:
                         continue
                     print(f"== run {run} / {server} / {sc.key}", flush=True)
                     res = run_one(resolve_handle(), server, configs[server], sc, args, run)
+                    if not res["server_started"]:
+                        print("   MCP server did not start: retrying once")
+                        res = run_one(resolve_handle(), server, configs[server], sc, args, run)
                     if res["interference"]:
                         print("   interference detected (project switched): retrying once")
                         res = run_one(resolve_handle(), server, configs[server], sc, args, run)
