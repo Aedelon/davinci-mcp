@@ -109,14 +109,14 @@ Same harness, with `--runs 5`, Sonnet everywhere and the servers interleaved ins
 
 ## Benchmark v4: composites and recipes (2026-10-26)
 
-davinci-mcp gained five single-call  actions (, , , , ) and the recipe engine. Same prompts and harness as v3, 5 runs per cell. Nothing tells the agents to use the new tools. The other two servers keep their v3 results.
+davinci-mcp gained five single-call `workflow_write` actions (`conform_from_edl`, `deliver`, `build_vertical_reel`, `apply_look`, `title_overlay`) and the recipe engine. Same prompts and harness as v3, 5 runs per cell. Nothing tells the agents to use the new tools. The other two servers keep their v3 results.
 
 | Scenario | davinci-mcp v3 | **davinci-mcp v4** | community | native |
 |---|---|---|---|---|
-| Reel | 15 calls · /bin/zsh.27 | 14 · /bin/zsh.28 | 18 · /bin/zsh.33 | 7 · /bin/zsh.20 |
-| Conform | 24 · /bin/zsh.59 | **8 · /bin/zsh.17** | 28 · /bin/zsh.41 | 5 · /bin/zsh.15 (2/5 pass) |
-| Grade | 14 · /bin/zsh.18 | 14 · /bin/zsh.18 | 32 · /bin/zsh.41 | 10 · /bin/zsh.19 |
-| Fusion | 11 · /bin/zsh.16 | 12 · /bin/zsh.18 | 15 · /bin/zsh.21 | 5 · /bin/zsh.13 |
+| Reel | 15 calls · $0.27 | 14 · $0.28 | 18 · $0.33 | 7 · $0.20 |
+| Conform | 24 · $0.59 | **8 · $0.17** | 28 · $0.41 | 5 · $0.15 (2/5 pass) |
+| Grade | 14 · $0.18 | 14 · $0.18 | 32 · $0.41 | 10 · $0.19 |
+| Fusion | 11 · $0.16 | 12 · $0.18 | 15 · $0.21 | 5 · $0.13 |
 
 **Totals (sum of the medians):**
 
@@ -129,7 +129,7 @@ davinci-mcp gained five single-call  actions (, , , , ) and the recipe engine. S
 
 ### Reading
 
-- davinci-mcp is now the **fastest** of the three, at 100 % success, and within /bin/zsh.15 of the native server's cost.
-- **Adoption is the limit, not capability.** Agents used  +  in nearly every conform run (−67 % calls, −71 % cost on that scenario). They called  and  only once in 5 runs each, and  never: they kept composing primitives. All five composites passed the scenario checks when called directly on live Resolve. Next lever: make them discoverable (server instructions, tool descriptions, ).
+- davinci-mcp is now the **fastest** of the three, at 100 % success, and within $0.15 of the native server's cost.
+- **Adoption is the limit, not capability.** Agents used `conform_from_edl` + `deliver` in nearly every conform run (−67 % calls, −71 % cost on that scenario). They called `build_vertical_reel` and `title_overlay` only once in 5 runs each, and `apply_look` never: they kept composing primitives. All five composites passed the scenario checks when called directly on live Resolve. Next lever: make them discoverable (server instructions, tool descriptions, `alwaysLoad`).
 - **Bias caveat.** The composites were designed after seeing these four scenarios. A fair test of the general claim needs new scenarios the composites were not shaped for.
-- Live finding:  initially rejected the codec name "ProRes 422 HQ" (Resolve's id is ). Codec lookup now ignores case, spaces and dots.
+- Live finding: `deliver` initially rejected the codec name "ProRes 422 HQ" (Resolve's id is `ProRes422HQ`). Codec lookup now ignores case, spaces and dots.
