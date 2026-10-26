@@ -9,15 +9,17 @@ from __future__ import annotations
 
 import json
 import time
+from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, cast
 
-from mcp.types import TextContent
+from mcp.types import ContentBlock, TextContent
 from pydantic import BaseModel, ValidationError
 
 from davinci_mcp.actions.registry import WriteOutput
 from davinci_mcp.actions.spec import JobRequest, Kind, PlanDraft
 from davinci_mcp.errors import DavinciError, ErrorCode
+from davinci_mcp.images import image_blocks
 from davinci_mcp.jobs import default_interpret
 from davinci_mcp.receipts import Receipt, Verification
 from davinci_mcp.safety.pages import PageGuard
@@ -35,12 +37,17 @@ if TYPE_CHECKING:
     from davinci_mcp.safety.snapshots import SnapshotManager
 
 
-def tool_result(structured: dict[str, Any], *, is_error: bool = False) -> ToolResult:
+def tool_result(
+    structured: dict[str, Any],
+    *,
+    is_error: bool = False,
+    extra: Sequence[ContentBlock] = (),
+) -> ToolResult:
     from fastmcp.tools import ToolResult  # noqa: PLC0415 - keep import cost off module load
 
     text = json.dumps(structured, ensure_ascii=False, default=str)
     return ToolResult(
-        content=[TextContent(type="text", text=text)],
+        content=[TextContent(type="text", text=text), *extra],
         structured_content=structured,
         is_error=is_error,
     )
@@ -106,7 +113,8 @@ class Pipeline:
                 lambda s: spec.handler(s, params), retry_safe=True, timeout=spec.timeout_s
             )
             return tool_result(
-                {"action": spec.name, "result": _dump(result), "channel": session.caps.channel}
+                {"action": spec.name, "result": _dump(result), "channel": session.caps.channel},
+                extra=image_blocks(result),
             )
 
         dry_run: bool = call.dry_run
