@@ -65,11 +65,11 @@ The server's own state, its configuration and the Claude configuration files are
 
 ## Benchmarks
 
-[eval/](eval/) runs headless Claude agents on real jobs in a live Resolve, with checks that do not go through the server under test. Result of [benchmark v7](eval/RESULTS.md): 4 jobs written blind, 5 runs each, sum of medians.
+[eval/](eval/) runs headless Claude agents on real jobs in a live Resolve, with checks that do not go through the server under test. Result of [benchmark v7/v8](eval/RESULTS.md): 4 jobs written blind, 5 runs each, sum of medians. The community and built-in servers were measured in v7, davinci-mcp in v8, all with the same harness.
 
 | Server | Success | Calls | Cost |
 |---|---|---|---|
-| **davinci-mcp** | **20/20** | 36 | $0.68 |
+| **davinci-mcp** | **20/20** | 35 | $0.62 |
 | community MCP | 13/20 | 90 | $0.99 |
 | Resolve's built-in MCP (`run_script_unsafe`) | 20/20 | 17 | $0.35 |
 

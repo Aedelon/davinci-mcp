@@ -1,0 +1,78 @@
+{
+  "cells": [
+    {
+      "scenario": "big_project",
+      "server": "davinci-mcp",
+      "runs": 3,
+      "success_rate": 1.0,
+      "median_score": 1.0,
+      "timeouts": 0,
+      "foreign_project_changes": 0,
+      "median_tool_calls": 6,
+      "median_tool_errors": 0,
+      "median_wall_s": 39.2,
+      "median_input_tokens": 197428,
+      "median_output_tokens": 2284,
+      "median_cost_usd": 0.12209550000000001
+    },
+    {
+      "scenario": "big_project",
+      "server": "davinci-resolve",
+      "runs": 3,
+      "success_rate": 1.0,
+      "median_score": 1.0,
+      "timeouts": 0,
+      "foreign_project_changes": 0,
+      "median_tool_calls": 9,
+      "median_tool_errors": 0,
+      "median_wall_s": 34.0,
+      "median_input_tokens": 370750,
+      "median_output_tokens": 1997,
+      "median_cost_usd": 0.1755429
+    },
+    {
+      "scenario": "big_project",
+      "server": "resolve-native",
+      "runs": 3,
+      "success_rate": 0.6666666666666666,
+      "median_score": 1.0,
+      "timeouts": 0,
+      "foreign_project_changes": 0,
+      "median_tool_calls": 3,
+      "median_tool_errors": 0,
+      "median_wall_s": 18.1,
+      "median_input_tokens": 226982,
+      "median_output_tokens": 1175,
+      "median_cost_usd": 0.0755179
+    }
+  ],
+  "servers": {
+    "davinci-mcp": {
+      "success_rate": 1.0,
+      "sum_median_tool_calls": 6,
+      "sum_median_tool_errors": 0,
+      "sum_median_wall_s": 39.2,
+      "sum_median_input_tokens": 197428,
+      "sum_median_output_tokens": 2284,
+      "sum_median_cost_usd": 0.122
+    },
+    "davinci-resolve": {
+      "success_rate": 1.0,
+      "sum_median_tool_calls": 9,
+      "sum_median_tool_errors": 0,
+      "sum_median_wall_s": 34.0,
+      "sum_median_input_tokens": 370750,
+      "sum_median_output_tokens": 1997,
+      "sum_median_cost_usd": 0.176
+    },
+    "resolve-native": {
+      "success_rate": 0.6666666666666666,
+      "sum_median_tool_calls": 3,
+      "sum_median_tool_errors": 0,
+      "sum_median_wall_s": 18.1,
+      "sum_median_input_tokens": 226982,
+      "sum_median_output_tokens": 1175,
+      "sum_median_cost_usd": 0.076
+    }
+  }
+}

@@ -252,3 +252,36 @@ All three servers ran the v2 suite, 5 runs per cell (60 runs). The harness chang
   - `describe_action` replies average 17k chars of raw JSON Schema (titles, `anyOf` with null, defaults, `$defs`, result schemas) and stay in context for the rest of the run;
   - `render_read.list_render_formats` replies are about 15k chars, called 2–3 times on `spot_qc` only to find a codec id;
   - `spot_qc` never uses `batch_run`, with 5 separate `timeline_write` calls.
+
+
+## Benchmark v8: compact schemas and render listing (2026-10-26)
+
+Changes since v7:
+- `describe_action` returns compact parameter schemas, with defs inlined and no titles, null unions or null defaults. Result schemas come only on request. Five actions now take 6.3k chars instead of ~17k.
+- `describe_action(tool=…)` lists that tool's actions.
+- Without a format, `list_render_formats` lists formats only; codecs come when a format is given.
+- Every write tool ends with a one-line `batch_run` hint.
+
+davinci-mcp ran the v2 suite, 5 runs per scenario, with the v7 harness.
+
+| | v7 | **v8** |
+|---|---|---|
+| Success | 20/20 | **20/20** |
+| Calls | 36 | 35 |
+| Wall (s) | 132 | 131 |
+| Input tokens | 1.35 M | **1.19 M** (−12 %) |
+| Cost ($) | 0.68 | **0.62** (−10 %) |
+
+Most of the gain is on `spot_qc`, the scenario these changes targeted: 11 → 7 calls and 466k → 281k tokens. The other scenarios moved within run-to-run noise.
+
+## Scale check: 160 clips, 4 timelines (2026-10-26)
+
+[scenarios_scale.py](scenarios_scale.py) (`--suite scale`) builds a 160-clip project with four timelines of 40 items. The task: color every `broll_*` item of `Edit_03` and only those, then add a marker at the start of `shot_052` in `Edit_02`. A raw-API reference solution passes every check, and the untouched setup fails them. 3 runs per server:
+
+| Server | Success | Calls | Wall (s) | Input tokens | Cost ($) |
+|---|---|---|---|---|---|
+| **davinci-mcp v8** | **3/3** | 6 | 39 | 197k | 0.12 |
+| community | 3/3 | 9 | 34 | 371k | 0.18 |
+| native ResolveMCP | 2/3 | **3** | **18** | 227k | **0.08** |
+
+davinci-mcp stays small on a large project: paginated, filterable lists and one `batch_run` instead of 8 separate coloring calls. The native server misplaced the marker in one run, and nothing in its script reported it.
