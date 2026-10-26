@@ -204,3 +204,51 @@ The v6 total ran in 209 s with 4.04 M input tokens; the success rate stayed at 1
 
   The next levers are a compact `batch_run` reply and descriptions that make `describe_action` unnecessary for the common actions.
 - The gap with the native server, at 67 calls against 26 and $1.02 against $0.63, is the price of per-step validation, verification and audit.
+
+
+## Benchmark v7: deferred tools, compact replies, fixed harness (2026-10-26)
+
+**What the v6 transcripts showed.** Most of the cost came from context resent on every turn, not from tool replies (about 5k tokens of replies per run). davinci-mcp started every run at 88.6k first-turn tokens, against 62k for the native server and 40k for the community server, and its agents never called `ToolSearch`. Two causes, both measured with `claude -p`:
+
+| Cause | Fix |
+|---|---|
+| One tool marked `anthropic/alwaysLoad` makes Claude Code load the whole server up front instead of deferring its tools (101.7k first-turn tokens with it, 48.8k without). | No tool is marked `alwaysLoad` any more; a test guards it. |
+| The harness's `--disallowedTools` list (7 built-ins) also disabled deferral, but not for every server: ours was loaded in full (89k), the community server deferred (40k). The v1–v6 cost comparisons were biased against davinci-mcp. | Agents now run with `--setting-sources local --permission-mode default --permission-prompts none --disallowedTools Bash`. The user's Bash/Write allow rules are ignored, anything that would ask for approval is denied, and Bash is denied outright, since default mode auto-approves read-only commands. Only Read, Glob, Grep and ToolSearch remain. A run that still succeeds with any other tool is flagged and excluded; none was. |
+
+With the fixed harness, first-turn context is 32k for davinci-mcp, 32k for the community server and 58k for the native server.
+
+**Also in v7:**
+- `batch_run` and `recipe_run` return compact step outputs (status, verified, result, plus warnings, notes and job) with no duplicated YAML outputs; `verbose=true` keeps the full receipts;
+- `describe_action` accepts `actions=['tool.action', …]`, several actions in one call;
+- the server instructions say to load every needed tool in one search and to send known sequences as one `batch_run`.
+
+All three servers ran the v2 suite, 5 runs per cell (60 runs). The harness change makes every server cheaper, so **v7 numbers compare with each other only, not with v5 or v6**.
+
+| Scenario | davinci-mcp | community | native |
+|---|---|---|---|
+| `dailies` | 8 calls · $0.13 | 20 · $0.16 | 3 · $0.07 |
+| `promo` | 6 · $0.19 | 20 · $0.27 (0/5 pass) | 6 · $0.11 |
+| `look` | 11 · $0.16 | 36 · $0.35 (3/5 pass) | 4 · $0.09 |
+| `spot_qc` | 11 · $0.20 | 14 · $0.21 | 4 · $0.09 |
+
+**Totals (sum of the medians):**
+
+| Server | Success | Calls | Errors | Wall (s) | Input tokens | Cost ($) |
+|---|---|---|---|---|---|---|
+| **davinci-mcp v7** | **100 %** (20/20) | 36 | 1 | 132 | 1.35 M | 0.68 |
+| community | 65 % (13/20) | 90 | 1 | 184 | 2.83 M | 0.99 |
+| native ResolveMCP | **100 %** (20/20) | **17** | 0 | **86** | **1.15 M** | **0.35** |
+
+### Reading
+
+- **Against the community server**, davinci-mcp uses 60 % fewer calls, 28 % less time, 52 % fewer input tokens and 31 % less money, and it never fails.
+- **Where the community server failed:**
+  - `promo` in all 5 runs: the music volume never reached −8 dB;
+  - `look` in 2 runs: the still album or JPEG export was missing;
+  - it also wrote stills to `~/Documents/resolve-stills`, outside the job's folder.
+- **Calls fell from 67 (v6) to 36** at the same harness level of strictness. On `promo` the agent did nearly everything in two `batch_run` calls; `describe_action` was called in groups.
+- **The native server is still about 2× cheaper.** It runs one Python script per job through `run_script_unsafe`: no validation, no read-back, no audit, no snapshot, no delete confirmation. A davinci-mcp turn is lighter (32k against 58k of context), but there are more of them.
+- **Remaining levers, from the v7 transcripts:**
+  - `describe_action` replies average 17k chars of raw JSON Schema (titles, `anyOf` with null, defaults, `$defs`, result schemas) and stay in context for the rest of the run;
+  - `render_read.list_render_formats` replies are about 15k chars, called 2–3 times on `spot_qc` only to find a codec id;
+  - `spot_qc` never uses `batch_run`, with 5 separate `timeline_write` calls.
