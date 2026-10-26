@@ -36,13 +36,14 @@ ignore = ["PLR0913", "TRY003", "S101"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["ANN", "PLR2004", "S", "PT018"]
+"eval/**" = ["PLR0917", "S603", "S607", "ANN401", "E501", "PLR0915", "PLR2004", "T201", "INP001", "N813", "S108"]
 "tools/live_smoke.py" = ["S603", "S607", "ANN401", "PLR0915"]
 "tools/introspect/**" = ["ANN401", "N813", "PLR0912", "PLR0915", "S603", "S607"]
 "src/davinci_mcp/api/_generated/**" = ["E501", "N815", "RUF012"]
 
 [tool.pyright]
 include = ["src", "tests", "tools"]
-exclude = ["tools/introspect", "tools/live_smoke.py", "**/.venv*"]
+exclude = ["tools/introspect", "tools/live_smoke.py", "eval", "**/.venv*"]
 pythonVersion = "3.13"
 typeCheckingMode = "strict"
 reportMissingModuleSource = false
