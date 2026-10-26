@@ -133,3 +133,74 @@ davinci-mcp gained five single-call `workflow_write` actions (`conform_from_edl`
 - **Adoption is the limit, not capability.** Agents used `conform_from_edl` + `deliver` in nearly every conform run (−67 % calls, −71 % cost on that scenario). They called `build_vertical_reel` and `title_overlay` only once in 5 runs each, and `apply_look` never: they kept composing primitives. All five composites passed the scenario checks when called directly on live Resolve. Next lever: make them discoverable (server instructions, tool descriptions, `alwaysLoad`).
 - **Bias caveat.** The composites were designed after seeing these four scenarios. A fair test of the general claim needs new scenarios the composites were not shaped for.
 - Live finding: `deliver` initially rejected the codec name "ProRes 422 HQ" (Resolve's id is `ProRes422HQ`). Codec lookup now ignores case, spaces and dots.
+
+
+## Benchmark v5: four scenarios written blind (2026-10-26)
+
+The v1–v4 scenarios were known when the composites were designed. For v5, an agent that could read only the scenario format and Blackmagic's scripting docs, never the server code, wrote four new jobs: [scenarios_v2.py](scenarios_v2.py) (`run_eval.py --suite v2`).
+
+| Scenario | Task |
+|---|---|
+| `dailies` | bins and sub-bins, metadata from a camera-log CSV, clip colors, a clip marker |
+| `promo` | 25 fps timeline at 10:00:00:00, music alone on a renamed A2, −8 dB, 50-frame fade out, marker |
+| `look` | local version "warm" on every clip with a CDL, still album, still exported as JPEG |
+| `spot_qc` | duplicate a timeline, markers, FCPXML + OTIO exports, range render in ProRes 422 LT |
+
+None of them maps directly onto a composite. Each was validated live: a raw-API reference solution passes every check, and the untouched setup fails them.
+
+Results are medians over 3 runs per cell. The run was stopped after 3 complete passes, once the gaps were stable. davinci-mcp also took the blind-written v2 suite, unchanged.
+
+| Server | Success | Calls | Errors | Wall (s) | Input tokens | Cost ($) |
+|---|---|---|---|---|---|---|
+| davinci-mcp v5 | **100 %** (12/12) | 89 | 8 | 228 | 4.49 M | 1.06 |
+| community | 75 % (9/12) | 93 | 0 | 266 | 3.32 M | 1.26 |
+| native ResolveMCP | **100 %** (12/12) | **26** | 3 | **163** | **1.57 M** | **0.63** |
+
+### Reading
+
+- **Reliability.** The community server failed `promo` in all 3 runs: the music volume never reached −8 dB.
+- **The native server wins on cost.** It writes one Python script through `run_script_unsafe` (2 calls for the whole `look` job), with no validation, read-back, audit, snapshot or delete confirmation.
+- **davinci-mcp lost calls to near-miss parameters.** In the transcripts it made 8 errors where the community server made none. Two were bugs:
+  - `set_cdl` sent numbers where `SetCDL` wants strings;
+  - `set_settings` compared "25" with 25.0 as text.
+
+  The others were almost-right shapes: `"album": "Stills 2"`, `fades: {"fade_out": 50}`, `properties: {"Volume": -8}`.
+- **Composites were not used.** On jobs they do not cover, adding them makes no difference.
+
+### Incidents
+
+- Resolve 21.1.1 fails ProRes 422 LT renders downscaled to 720p on the GPU (repeatable, at 7–14 %). `spot_qc` therefore renders 1080p.
+- A fresh project defaults to 24 fps; the v2 setup sets 25 fps before building timelines.
+- After 21 runs, two progress windows that no benchmark run had opened ("Create Subtitles", "AI Smart Reframe") blocked project creation. The run was resumed from where it stopped.
+
+## Benchmark v6: input repair and batch_run (2026-10-26)
+
+Changes, all driven by the v5 transcripts:
+- the `set_cdl` and `set_settings` fixes, both checked live;
+- **near-miss repair**: when strict validation fails, the pipeline rewrites the call along the model's own fields and reports each rewrite in `notes`. It turns a bare string into a selector, matches field names loosely (`fade_out` → `FadeOut`, `Volume` → `AudioVolume`), and wraps a value one level down;
+- `INVALID_PARAMS` hints show the field names of nested objects;
+- render errors name the rejected settings;
+- **`batch_run`**, always loaded: ad-hoc steps chained server-side through the recipe engine, with `{{ steps.<id>… }}` templates and one confirmation when a step deletes.
+
+The v2 suite was run on davinci-mcp only, 5 runs per scenario. The other servers keep their v5 numbers.
+
+| Scenario | v5 calls · errors · $ | **v6 calls · errors · $** |
+|---|---|---|
+| `dailies` | 20 · 1 · 0.21 | **11** · 1 · 0.19 |
+| `promo` | 22 · 3 · 0.27 | **17** · **0** · 0.24 |
+| `look` | 28 · 3 · 0.29 | **19** · **0** · 0.27 |
+| `spot_qc` | 19 · 1 · 0.28 | 20 · 1 · 0.33 |
+| **Total** | 89 · 8 · 1.06 | **67 · 2 · 1.02** |
+
+The v6 total ran in 209 s with 4.04 M input tokens; the success rate stayed at 100 % (20/20).
+
+### Reading
+
+- **Calls fell by 25 % and call errors by 75 %, with success unchanged.** Repairs fired in the `look` and `promo` runs.
+- **Adoption of `batch_run` is uneven.** Agents used it in every `dailies` run and in `look`, never in `promo` or `spot_qc`.
+- **Cost barely moved (−3 %).** Two reasons appear in the transcripts:
+  - the `batch_run` reply repeats every step's full receipt;
+  - agents called `describe_action` 48 times in 20 runs (23 in `look`, 18 in `spot_qc`).
+
+  The next levers are a compact `batch_run` reply and descriptions that make `describe_action` unnecessary for the common actions.
+- The gap with the native server, at 67 calls against 26 and $1.02 against $0.63, is the price of per-step validation, verification and audit.

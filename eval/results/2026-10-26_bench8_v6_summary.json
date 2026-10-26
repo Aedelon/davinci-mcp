@@ -1,0 +1,75 @@
+{
+  "cells": [
+    {
+      "scenario": "dailies",
+      "server": "davinci-mcp",
+      "runs": 5,
+      "success_rate": 1.0,
+      "median_score": 1.0,
+      "timeouts": 0,
+      "foreign_project_changes": 0,
+      "median_tool_calls": 11,
+      "median_tool_errors": 1,
+      "median_wall_s": 38.6,
+      "median_input_tokens": 638008,
+      "median_output_tokens": 2420,
+      "median_cost_usd": 0.1909001
+    },
+    {
+      "scenario": "look",
+      "server": "davinci-mcp",
+      "runs": 5,
+      "success_rate": 1.0,
+      "median_score": 1.0,
+      "timeouts": 0,
+      "foreign_project_changes": 0,
+      "median_tool_calls": 19,
+      "median_tool_errors": 0,
+      "median_wall_s": 50.8,
+      "median_input_tokens": 1150870,
+      "median_output_tokens": 2796,
+      "median_cost_usd": 0.2650218
+    },
+    {
+      "scenario": "promo",
+      "server": "davinci-mcp",
+      "runs": 5,
+      "success_rate": 1.0,
+      "median_score": 1.0,
+      "timeouts": 0,
+      "foreign_project_changes": 0,
+      "median_tool_calls": 17,
+      "median_tool_errors": 0,
+      "median_wall_s": 57.5,
+      "median_input_tokens": 1019136,
+      "median_output_tokens": 2600,
+      "median_cost_usd": 0.23640190000000003
+    },
+    {
+      "scenario": "spot_qc",
+      "server": "davinci-mcp",
+      "runs": 5,
+      "success_rate": 1.0,
+      "median_score": 1.0,
+      "timeouts": 0,
+      "foreign_project_changes": 0,
+      "median_tool_calls": 20,
+      "median_tool_errors": 1,
+      "median_wall_s": 62.5,
+      "median_input_tokens": 1235907,
+      "median_output_tokens": 2798,
+      "median_cost_usd": 0.3306139
+    }
+  ],
+  "servers": {
+    "davinci-mcp": {
+      "success_rate": 1.0,
+      "sum_median_tool_calls": 67,
+      "sum_median_tool_errors": 2,
+      "sum_median_wall_s": 209.4,
+      "sum_median_input_tokens": 4043921,
+      "sum_median_output_tokens": 10614,
+      "sum_median_cost_usd": 1.023
+    }
+  }
+}
