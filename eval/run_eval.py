@@ -40,6 +40,8 @@ NATIVE_MCP = Path(
 )
 METRICS = ("tool_calls", "tool_errors", "wall_s", "input_tokens", "output_tokens", "cost_usd")
 
+ALLOWED_BUILTINS = frozenset({"Read", "Glob", "Grep", "ToolSearch"})
+
 SYSTEM_RULES = (
     "You operate DaVinci Resolve only through the MCP tools you have. Work ONLY inside the "
     "currently open project; never open, create, rename or delete any other project and "
@@ -107,6 +109,21 @@ def delete_project(r: Any, name: str, home: str | None) -> bool:
     return False
 
 
+def _results(ev: dict[str, Any], names: dict[str, str], server: str) -> tuple[int, int]:
+    """(errored tool results, successful results of tools the agent must not use)."""
+    failed = outside = 0
+    for block in ev.get("message", {}).get("content", []) or []:
+        if not isinstance(block, dict) or block.get("type") != "tool_result":
+            continue
+        if block.get("is_error"):
+            failed += 1
+            continue
+        name = names.get(str(block.get("tool_use_id")), "")
+        if not name.startswith(f"mcp__{server}__") and name not in ALLOWED_BUILTINS:
+            outside += 1
+    return failed, outside
+
+
 def run_agent(
     server: str, config: dict[str, Any], prompt: str, model: str, timeout: int, log: Path
 ) -> dict[str, Any]:
@@ -121,8 +138,15 @@ def run_agent(
         "--strict-mcp-config",
         "--allowedTools",
         f"mcp__{server}",
-        "--disallowedTools",
-        "Bash,Edit,Write,NotebookEdit,WebFetch,WebSearch,Agent",
+        # Isolation without --disallowedTools: that list stops Claude Code from deferring MCP
+        # tools behind tool search (89k vs 32k first-turn tokens). Ignore the user's settings
+        # (their Bash/Write allow rules), and deny anything that would ask for permission.
+        "--setting-sources",
+        "local",
+        "--permission-mode",
+        "default",
+        "--permission-prompts",
+        "none",
         "--append-system-prompt",
         SYSTEM_RULES,
         "--output-format",
@@ -150,6 +174,8 @@ def run_agent(
     wall = time.monotonic() - started
     tool_calls = errors = 0
     started = False
+    names: dict[str, str] = {}
+    forbidden = 0  # successful calls to tools other than this server's, Read/Glob/Grep, search
     result: dict[str, Any] = {}
     for line in log.read_text().splitlines():
         try:
@@ -160,10 +186,11 @@ def run_agent(
             for block in ev.get("message", {}).get("content", []):
                 if block.get("type") == "tool_use":
                     tool_calls += 1
+                    names[block.get("id", "")] = str(block.get("name", ""))
         if ev.get("type") == "user":
-            for block in ev.get("message", {}).get("content", []) or []:
-                if isinstance(block, dict) and block.get("is_error"):
-                    errors += 1
+            failed, outside = _results(ev, names, server)
+            errors += failed
+            forbidden += outside
         if ev.get("type") == "result":
             result = ev
         if ev.get("type") == "system" and ev.get("subtype") == "init":
@@ -183,6 +210,7 @@ def run_agent(
         "output_tokens": usage.get("output_tokens"),
         "final": str(result.get("result", ""))[:300],
         "server_started": started,
+        "forbidden_tool_calls": forbidden,
     }
 
 
@@ -239,6 +267,8 @@ def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
     for row in results:
         if row.get("interference") or row.get("server_started") is False:
             continue  # another driver switched projects / the server never started
+        if row.get("forbidden_tool_calls"):
+            continue  # the agent bypassed the server under test (shell, file writes...)
         cells.setdefault((row["scenario"], row["server"]), []).append(row)
     out: dict[str, Any] = {"cells": [], "servers": {}}
     for (scenario, server), rows in sorted(cells.items()):
@@ -337,6 +367,8 @@ def main() -> int:
                     if not res["server_started"]:
                         print("   MCP server did not start: retrying once")
                         res = run_one(resolve_handle(), server, configs[server], sc, args, run)
+                    if res.get("forbidden_tool_calls"):
+                        print("   WARNING: tools outside the server under test were used")
                     if res["interference"]:
                         print("   interference detected (project switched): retrying once")
                         res = run_one(resolve_handle(), server, configs[server], sc, args, run)
