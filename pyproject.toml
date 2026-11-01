@@ -1,6 +1,6 @@
 [project]
 name = "davinci-mcp"
-version = "1.0.3"
+version = "1.0.4"
 description = "Exhaustive, typed and safe MCP server for DaVinci Resolve."
 authors = [{ name = "Delanoe Pirard", email = "delanoe.pirard@gmail.com" }]
 license = "Apache-2.0"
