@@ -1,0 +1,57 @@
+# Copyright Delanoe Pirard / Aedelon. Apache 2.0.
+# Publishes to PyPI with Trusted Publishing (OIDC, no token) and creates the GitHub release.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  UV_PYTHON: "3.14"
+
+jobs:
+  release:
+    name: Build, publish, release
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/davinci-mcp/
+    permissions:
+      contents: write # create the GitHub release
+      id-token: write # Trusted Publishing
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+
+      - name: Check the tag matches the package version
+        run: |
+          version="$(uv version --short)"
+          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match pyproject version ${version}" >&2
+            exit 1
+          fi
+
+      - run: uv build
+
+      - name: Publish to PyPI
+        run: uv publish --trusted-publishing always
+
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          # Notes: the CHANGELOG section of this version, up to the next "## " heading.
+          awk -v v="$version" '
+            /^## / { if (found) exit; if (index($0, "## " v) == 1) { found = 1; next } }
+            found
+          ' CHANGELOG.md > notes.md
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "davinci-mcp $version" --notes-file notes.md --verify-tag
