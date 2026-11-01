@@ -1135,11 +1135,54 @@ def _grab_first(s: ResolveSession, tl: ResolveObject, first: ResolveObject) -> N
 class TitleParams(_Params):
     item: ItemRef
     text: str = Field(min_length=1, max_length=2000)
-    font: str | None = None
+    font: str | None = Field(
+        default=None, description="Font family, e.g. 'Avenir Next' ('Avenir Next Bold' is split)."
+    )
+    style: str | None = Field(default=None, description="Font style, e.g. 'Bold', 'Demi Bold'.")
     size_from: float = Field(default=0.0, ge=0.0, le=10.0, description="Text+ Size at frame 0.")
     size_to: float = Field(default=0.1, ge=0.0, le=10.0, description="Text+ Size at `frames`.")
     frames: int = Field(default=24, ge=1, le=100000, description="Animation length in frames.")
     merge: bool = Field(default=True, description="Merge the text over the clip into MediaOut.")
+
+
+# Longest first: "Demi Bold" must win over "Bold".
+_FONT_STYLES = (
+    "Ultra Light Italic",
+    "Demi Bold Italic",
+    "Semi Bold Italic",
+    "Extra Bold Italic",
+    "Ultra Light",
+    "Demi Bold",
+    "Semi Bold",
+    "Extra Bold",
+    "Bold Italic",
+    "Heavy Italic",
+    "Medium Italic",
+    "Light Italic",
+    "Italic",
+    "Bold",
+    "Medium",
+    "Light",
+    "Regular",
+    "Heavy",
+    "Black",
+    "Thin",
+)
+
+
+def _font_parts(font: str | None, style: str | None) -> tuple[str | None, str | None]:
+    """Split 'Avenir Next Bold' into ('Avenir Next', 'Bold').
+
+    Fusion's Text+ takes the family in Font and the face in Style; a family name that
+    carries the style ("Avenir Next Bold") is unknown to Fusion and makes the comp fail
+    at render time, although SetInput accepts it.
+    """
+    if font is None or style is not None:
+        return font, style
+    for suffix in _FONT_STYLES:
+        if font.endswith(" " + suffix) and len(font) > len(suffix) + 1:
+            return font[: -len(suffix) - 1], suffix
+    return font, None
 
 
 class TitleResult(BaseModel):
@@ -1267,8 +1310,11 @@ def title_overlay(s: ResolveSession, p: TitleParams) -> TitleResult:
                 _connect(media_out, "Input", merge.FindMainOutput(1))
         # Input edits stay unlocked: SetInput under Lock is not applied at render.
         text.SetInput("StyledText", p.text)
-        if p.font is not None:
-            text.SetInput("Font", p.font)
+        family, style = _font_parts(p.font, p.style)
+        if family is not None:
+            text.SetInput("Font", family)
+        if style is not None:
+            text.SetInput("Style", style)
         size = _find_input(s, text, "Size")  # exact id; "TransformSize" is another input
         if not _is_animated(size) and not text.AddModifier("Size", "BezierSpline"):
             raise _fail("AddModifier('Size', 'BezierSpline') returned False.")

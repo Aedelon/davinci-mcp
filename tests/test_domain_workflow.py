@@ -13,7 +13,7 @@ import pytest
 
 from davinci_mcp.config import Settings
 from davinci_mcp.domains import color, workflow
-from davinci_mcp.domains.workflow import ACTIONS
+from davinci_mcp.domains.workflow import ACTIONS, _font_parts  # pyright: ignore[reportPrivateUsage]
 from tests.fakes.workflow import WfItem, World
 from tests.helpers import call, mcp_client
 
@@ -614,3 +614,30 @@ def test_folder_expansion_skips_symlinks(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(workflow, "runtime", lambda: SimpleNamespace(allowed_roots=[inside]))
     files = workflow._expand_media([str(inside)])
     assert [f.name for f in files] == ["a.mov"]
+
+
+@pytest.mark.parametrize(
+    ("font", "style", "expected"),
+    [
+        ("Avenir Next Bold", None, ("Avenir Next", "Bold")),
+        ("Avenir Next Demi Bold", None, ("Avenir Next", "Demi Bold")),
+        ("Open Sans", None, ("Open Sans", None)),
+        ("Avenir Next Bold", "Regular", ("Avenir Next Bold", "Regular")),
+        ("Bold", None, ("Bold", None)),
+    ],
+)
+def test_font_family_and_style_are_split(
+    font: str, style: str | None, expected: tuple[str, str | None]
+) -> None:
+    # Fusion fails the comp at render time for a family name that carries the style.
+    assert _font_parts(font, style) == expected
+
+
+async def test_title_overlay_sets_family_and_style(settings: Settings) -> None:
+    world, item = _title_world()
+    async with mcp_client(world.resolve, settings, ACTIONS) as c:
+        err, _ = await _write(
+            c, "title_overlay", item={"id": item.GetUniqueId()}, text="Hi", font="Avenir Next Bold"
+        )
+    text = world.comps[0].FindTool("MCP_Title")
+    assert not err and (text.values["Font"], text.values["Style"]) == ("Avenir Next", "Bold")
