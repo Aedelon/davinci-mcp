@@ -25,13 +25,13 @@ It is built for **editors and colorists** who want an assistant that does the cl
 A real Claude agent, given four plain messages, cut this 52-second action trailer from the open movie *Tears of Steel*. It imported the footage, laid out 33 shots on the beat, added the title cards, graded teal and orange, and rendered it. Nothing in the run was staged; the video below is sped up 4×.
 
 <p align="center">
-  <a href="docs/assets/demo.mp4"><img src="docs/assets/demo-preview.gif" alt="A Claude agent editing a trailer in DaVinci Resolve through davinci-mcp" width="100%"></a>
-  <br><sub><a href="docs/assets/demo.mp4">▶ Watch the full demo (39 s)</a></sub>
+  <a href="https://www.youtube.com/watch?v=iT-ptK_Gx-g"><img src="docs/assets/demo-preview.gif" alt="A Claude agent editing a trailer in DaVinci Resolve through davinci-mcp" width="100%"></a>
+  <br><sub><a href="https://www.youtube.com/watch?v=iT-ptK_Gx-g">▶ Watch the full demo on YouTube (39 s)</a></sub>
 </p>
 
 <p align="center">
-  <a href="docs/assets/trailer.mp4"><img src="docs/assets/trailer-poster.jpg" alt="The trailer the agent cut" width="70%"></a>
-  <br><sub><a href="docs/assets/trailer.mp4">▶ Watch the trailer the agent cut (52 s)</a></sub>
+  <a href="https://www.youtube.com/watch?v=epndWG8TqFM"><img src="docs/assets/trailer-poster.jpg" alt="The trailer the agent cut" width="70%"></a>
+  <br><sub><a href="https://www.youtube.com/watch?v=epndWG8TqFM">▶ Watch the trailer the agent cut on YouTube (52 s)</a></sub>
 </p>
 
 ## Why davinci-mcp
