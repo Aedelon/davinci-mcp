@@ -263,6 +263,33 @@ auto_snapshot = "destructive"               # "off" | "destructive" | "all"
 allow_python = false                        # Python recipes run arbitrary code: opt in
 ```
 
+The file does not exist until you create it; without it the defaults below apply. Unknown keys, or keys in the wrong section, stop the server with a validation error. In an environment variable a list is written `[~/Movies,~/Footage]`.
+
+<details>
+<summary><b>All settings</b></summary>
+
+| Key | Default | Meaning |
+|---|---|---|
+| `state_dir` (top level) | `~/.local/state/davinci-mcp` | Audit log, jobs, confirm tokens, temporary frames. |
+| `connection.auto_launch` | `true` | Start Resolve when it is not running. |
+| `connection.headless` | `false` | Launch Resolve with `-nogui`. |
+| `connection.call_timeout_s` | `30` | Maximum seconds for one Resolve API call. |
+| `connection.launch_timeout_s` | `90` | Maximum seconds to wait for Resolve to start. |
+| `connection.script_api`, `connection.script_lib` | auto-detected | Paths to Resolve's scripting modules, only if detection fails. |
+| `safety.allowed_roots` | `["~"]` | Folders tools may read or write; anything else is refused. |
+| `safety.auto_snapshot` | `"destructive"` | When snapshots are taken unasked: `"destructive"`, `"all"` or `"off"`. A call can force it with `snapshot`. |
+| `safety.snapshot_dir` | `<state_dir>/snapshots` | Where project exports (`.drp`) are written. |
+| `safety.snapshot_retention` | `20` | Snapshots kept per project; older ones are pruned. `0` keeps none. |
+| `safety.consent_ttl_s` | `300` | Lifetime of a `confirm_token`, in seconds. |
+| `safety.enable_code_execution` | `false` | Allow arbitrary Python/Lua (`code_delete`) and Fusion scripts. This code runs with your user rights, outside `allowed_roots`. |
+| `http.host`, `http.port` | `127.0.0.1`, `8765` | Address for `serve --transport http`. Any non-loopback host requires a token. |
+| `http.token_env` | `DAVINCI_MCP_TOKEN` | Name of the environment variable holding the bearer token. |
+| `server.schema_mode` | `"compact"` | `"full"` lists every action's complete schema in `tools/list` (much larger). |
+| `recipes.dirs` | `["~/.config/davinci-mcp/recipes"]` | Folders of user recipes (see [recipes](https://github.com/Aedelon/davinci-mcp/blob/main/docs/recipes.md)). |
+| `recipes.allow_python` | `false` | Load `*.py` recipes, which run arbitrary code. |
+
+</details>
+
 ## FAQ
 
 <details>
