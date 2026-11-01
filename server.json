@@ -1,0 +1,24 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Aedelon/davinci-mcp",
+  "title": "DaVinci Resolve",
+  "description": "Typed, safe MCP server for DaVinci Resolve: every write verified, deletes confirmed, snapshots.",
+  "repository": {
+    "url": "https://github.com/Aedelon/davinci-mcp",
+    "source": "github"
+  },
+  "websiteUrl": "https://github.com/Aedelon/davinci-mcp",
+  "version": "1.0.1",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "davinci-mcp",
+      "version": "1.0.1",
+      "runtimeHint": "uvx",
+      "packageArguments": [
+        { "type": "positional", "value": "serve" }
+      ],
+      "transport": { "type": "stdio" }
+    }
+  ]
+}

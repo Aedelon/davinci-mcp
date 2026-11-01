@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1 (2026-11-01)
+
+- Listed in the official MCP Registry as `io.github.Aedelon/davinci-mcp` (`server.json`, published by the release workflow).
+
 ## 1.0.0 (2026-11-01)
 
 First public release.

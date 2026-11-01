@@ -1,3 +1,5 @@
+<!-- mcp-name: io.github.Aedelon/davinci-mcp -->
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/Aedelon/davinci-mcp/main/docs/assets/banner.png" alt="davinci-mcp: the safe, verified MCP server for DaVinci Resolve" width="100%">
 </p>
