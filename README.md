@@ -136,12 +136,14 @@ flowchart LR
 
 - **DaVinci Resolve Studio 21.1 or later.** In *Preferences → General → External scripting using*, choose **Local**.
 - **The free edition** is reachable through the in-app bridge: run `davinci-mcp install --bridge`, then start the bridge from *Workspace → Scripts*.
-- **Python 3.13+** and [uv](https://docs.astral.sh/uv/).
+- **Python 3.13+** and [uv](https://docs.astral.sh/uv/) (or pipx / pip).
 </details>
 
 ```bash
 uv tool install davinci-mcp
 ```
+
+`pipx install davinci-mcp` and `pip install davinci-mcp` work too.
 
 ```bash
 davinci-mcp doctor
@@ -181,6 +183,8 @@ This adds the server to `claude_desktop_config.json`. Restart Claude Desktop to 
 ```
 
 If Claude Desktop can't find the command, use its absolute path (`which davinci-mcp`).
+
+Without installing anything, any client can run it through uvx: `{ "command": "uvx", "args": ["davinci-mcp", "serve"] }`. Don't run `uvx davinci-mcp install`: it would write a path from uv's temporary cache into the client config.
 </details>
 
 <details>
