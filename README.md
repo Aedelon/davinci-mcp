@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/Aedelon/davinci-mcp/actions/workflows/ci.yml"><img src="https://github.com/Aedelon/davinci-mcp/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/version-1.0.0-e9762b" alt="Version 1.0.0">
+  <a href="https://pypi.org/project/davinci-mcp/"><img src="https://img.shields.io/pypi/v/davinci-mcp?color=e9762b" alt="PyPI"></a>
   <img src="https://img.shields.io/badge/python-3.13%2B-3776ab" alt="Python 3.13+">
   <img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="Apache 2.0">
   <img src="https://img.shields.io/badge/DaVinci%20Resolve-21.1-d9381e" alt="DaVinci Resolve 21.1">
@@ -138,7 +138,7 @@ flowchart LR
 </details>
 
 ```bash
-uv tool install git+https://github.com/Aedelon/davinci-mcp
+uv tool install davinci-mcp
 ```
 
 ```bash
