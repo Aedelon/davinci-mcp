@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0 (unreleased)
+## 1.0.0 (2026-11-01)
 
 First public release.
 
