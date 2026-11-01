@@ -129,6 +129,34 @@ flowchart LR
 4. **Read back.** The server reads the result back from Resolve and returns a receipt with `verified`. Long renders become jobs that the agent can wait on.
 
 
+## Tools
+
+52 tools. Domain tools are named `<domain>_read`, `<domain>_write` and `<domain>_delete`, and take `{"op": {"action": ..., ...}}`; together they expose about 300 actions. Reads have no side effects, writes return a verified receipt, deletes ask for confirmation first.
+
+- `resolve_status` - Connection state, Resolve version and edition, current project, timeline and page.
+- `describe_action` - Compact parameter schemas of one or several actions.
+- `search_api` - Search the Resolve 21.1 scripting API by name or description.
+- `batch_run` - Run several tool calls in one call, server-side, with one confirmation for the batch.
+- `workflow_write` - One-call jobs: `conform_from_edl`, `deliver`, `build_vertical_reel`, `apply_look`, `title_overlay`.
+- `recipe_list` / `recipe_run` - List and run YAML or Python recipes; every step is validated, verified and audited.
+- `project_read` / `project_write` / `project_delete` - Projects, folders, databases, settings and settings presets; create, load, save, archive, import, export.
+- `media_read` / `media_write` / `media_delete` - Media pool and storage: import, bins, relink, proxies, metadata, markers, flags, multicam, mattes, audio sync.
+- `timeline_read` / `timeline_write` / `timeline_delete` - Timelines, tracks, markers, playhead, compound and Fusion clips, import and export.
+- `item_read` / `item_write` / `item_delete` - Timeline items: properties, speed, fades, takes, flags, colors, markers, transitions, stabilization.
+- `color_read` / `color_write` / `color_delete` - Node graphs, CDL, LUTs, versions, color groups, DRX grades, DCTL.
+- `fusion_read` / `fusion_write` / `fusion_delete` - Fusion comps and tools: add, connect, inputs, keyframes, expressions, Text+ titles, settings, fuses.
+- `gallery_read` / `gallery_write` / `gallery_delete` - Still albums: grab, import, export, label.
+- `audio_read` / `audio_write` - Loudness analysis, silence detection, normalization, voice isolation, Fairlight presets, audio mapping.
+- `render_read` / `render_write` / `render_delete` - Formats, codecs, presets and render jobs; render a timeline or a range, Quick Export.
+- `interchange_read` / `interchange_write` - EDL, FCPXML, OTIO, marker CSV and .cube LUT files, read and written without Resolve.
+- `ai_read` / `ai_write` / `ai_delete` - Transcription, subtitles from audio, scene-cut detection, Smart Reframe, audio classification, IntelliSearch.
+- `vision_read` - Export or screenshot frames and contact sheets so the agent can look at the picture.
+- `ui_read` / `ui_write` / `ui_delete` - Pages, menus and keyboard shortcuts, for the few things the API can't do.
+- `app_read` / `app_write` / `app_delete` - Resolve app info, layout presets, keyframe mode, quit.
+- `snapshot_list` / `snapshot_write` - Safety copies of the timeline or project, taken automatically before destructive edits.
+- `job_status` / `job_wait` / `job_list` / `job_cancel` - Long operations (renders, analyses) run as jobs.
+- `code_delete` - `run_lua` and `run_python` inside Resolve, an escape hatch that is off by default and always asks for confirmation.
+
 ## Install
 
 <details open>
