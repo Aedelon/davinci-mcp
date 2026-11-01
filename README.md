@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/banner.png" alt="davinci-mcp: the safe, verified MCP server for DaVinci Resolve" width="100%">
+  <img src="https://raw.githubusercontent.com/Aedelon/davinci-mcp/main/docs/assets/banner.png" alt="davinci-mcp: the safe, verified MCP server for DaVinci Resolve" width="100%">
 </p>
 
 <p align="center">
@@ -25,12 +25,12 @@ It is built for **editors and colorists** who want an assistant that does the cl
 A real Claude agent, given four plain messages, cut this 52-second action trailer from the open movie *Tears of Steel*. It imported the footage, laid out 33 shots on the beat, added the title cards, graded teal and orange, and rendered it. Nothing in the run was staged; the video below is sped up 4×.
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=iT-ptK_Gx-g"><img src="docs/assets/demo-preview.gif" alt="A Claude agent editing a trailer in DaVinci Resolve through davinci-mcp" width="100%"></a>
+  <a href="https://www.youtube.com/watch?v=iT-ptK_Gx-g"><img src="https://raw.githubusercontent.com/Aedelon/davinci-mcp/main/docs/assets/demo-preview.gif" alt="A Claude agent editing a trailer in DaVinci Resolve through davinci-mcp" width="100%"></a>
   <br><sub><a href="https://www.youtube.com/watch?v=iT-ptK_Gx-g">▶ Watch the full demo on YouTube (39 s)</a></sub>
 </p>
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=epndWG8TqFM"><img src="docs/assets/trailer-poster.jpg" alt="The trailer the agent cut" width="70%"></a>
+  <a href="https://www.youtube.com/watch?v=epndWG8TqFM"><img src="https://raw.githubusercontent.com/Aedelon/davinci-mcp/main/docs/assets/trailer-poster.jpg" alt="The trailer the agent cut" width="70%"></a>
   <br><sub><a href="https://www.youtube.com/watch?v=epndWG8TqFM">▶ Watch the trailer the agent cut on YouTube (52 s)</a></sub>
 </p>
 
@@ -56,7 +56,7 @@ A real Claude agent, given four plain messages, cut this 52-second action traile
 **Exhaustive and extensible**
 - 17 domains: project, media, timeline, item, color, Fusion, gallery, audio, render, interchange, AI tools, UI, app and more.
 - One-call workflows: `conform_from_edl`, `deliver`, `build_vertical_reel`, `apply_look`, `title_overlay`.
-- Your own [recipes](docs/recipes.md): YAML templates, plus Python when you opt in.
+- Your own [recipes](https://github.com/Aedelon/davinci-mcp/blob/main/docs/recipes.md): YAML templates, plus Python when you opt in.
 
 **Safe by default**
 - File access is limited to the folders you allow.
@@ -71,11 +71,11 @@ Headless Claude agents (Sonnet) ran four post-production jobs on a live Resolve 
 - **look**: grade with versions and a still;
 - **spot QC**: duplicate, export interchange files and render a range.
 
-Each check reads Resolve directly, never through the server under test. Every agent ran under the same isolated harness. [Full method and history →](eval/RESULTS.md)
+Each check reads Resolve directly, never through the server under test. Every agent ran under the same isolated harness. [Full method and history →](https://github.com/Aedelon/davinci-mcp/blob/main/eval/RESULTS.md)
 
 <p align="center">
-  <img src="docs/assets/bench-success.svg" alt="Jobs completed: davinci-mcp 100 %, community MCP 65 %, Resolve built-in MCP 100 %" width="49%">
-  <img src="docs/assets/bench-cost.svg" alt="Cost for the 4 jobs: davinci-mcp $0.62, community MCP $0.99, Resolve built-in MCP $0.35" width="49%">
+  <img src="https://raw.githubusercontent.com/Aedelon/davinci-mcp/main/docs/assets/bench-success.svg" alt="Jobs completed: davinci-mcp 100 %, community MCP 65 %, Resolve built-in MCP 100 %" width="49%">
+  <img src="https://raw.githubusercontent.com/Aedelon/davinci-mcp/main/docs/assets/bench-cost.svg" alt="Cost for the 4 jobs: davinci-mcp $0.62, community MCP $0.99, Resolve built-in MCP $0.35" width="49%">
 </p>
 
 | Server | Jobs passed | Tool calls | Cost (4 jobs) |
@@ -267,7 +267,7 @@ It runs one unchecked Python script per job. davinci-mcp makes typed, verified c
 
 ## Contributing
 
-Issues and pull requests are welcome. [docs/domain-guide.md](docs/domain-guide.md) shows how to add an action: a parameter model, a handler, a read-back check and a test. The rest is generated from there.
+Issues and pull requests are welcome. [docs/domain-guide.md](https://github.com/Aedelon/davinci-mcp/blob/main/docs/domain-guide.md) shows how to add an action: a parameter model, a handler, a read-back check and a test. The rest is generated from there.
 
 ```bash
 uv sync
