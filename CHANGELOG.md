@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- **Tool descriptions:** every domain tool opens with when to use it; `dry_run`, `snapshot` and `confirm_token` are described in the compact schemas; `job_*`, `recipe_list`, `snapshot_list`, `resolve_status` and `search_api` explain their parameters and their siblings.
+- **Annotations:** `*_write` tools and `job_cancel` are now `destructiveHint: true`, since they can overwrite current values (a grade, a preset) or stop a render.
+
 ## 1.0.2 (2026-11-01)
 
 - **Docs:** the free edition is supported only up to 21.0.x. Free 21.1 hides in-app Python scripts; in-app Lua scripts get no API, and the Console's Lua, which has the API, has no file or network access (tested on 21.1.2). The 1.0.0 notes claimed otherwise.

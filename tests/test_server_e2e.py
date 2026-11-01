@@ -59,6 +59,7 @@ async def test_tool_list_is_deterministic_and_annotated(client: Client) -> None:
     assert read.read_only_hint is True
     assert delete.destructive_hint is True
     assert write.read_only_hint is False
+    assert write.destructive_hint is True  # writes may overwrite current values
     for tool in tools.values():
         schema = tool.input_schema
         assert schema["type"] == "object"

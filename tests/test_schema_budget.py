@@ -12,7 +12,9 @@ from tests.helpers import call, mcp_client
 # ~4 chars per token. Raise deliberately (and say why in the commit) when domains grow.
 # 76k: workflow_write ships its full schema; base tools list shortcuts and the batch_run
 # hint. Tools are deferred by clients, so this is paid per loaded tool, not per turn.
-MAX_INPUT_CHARS = 76_000
+# 86k: dry_run/snapshot/confirm_token carry descriptions and each tool opens with a
+# when-to-use line (~170 chars per tool), as tool-quality graders (Glama TDQS) expect.
+MAX_INPUT_CHARS = 86_000
 # 22k: batch_run returns the RecipeRun schema (per-step outcomes).
 MAX_OUTPUT_CHARS = 22_000
 

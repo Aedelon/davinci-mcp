@@ -335,7 +335,11 @@ def build_server(
         output_schema=StatusOutput.model_json_schema(),
     )
     async def resolve_status() -> ToolResult:
-        """Connection state, Resolve version/edition/channel, current project, timeline and page."""
+        """Connection state, Resolve version/edition/channel, current project, timeline and page.
+
+        Call it first, and again after an error: it tells whether Resolve is reachable
+        and what the other tools act on by default.
+        """
         return _ok(await status())
 
     @mcp.resource(
@@ -352,7 +356,11 @@ def build_server(
         pattern: str = Field(description="Substring of a class, method or description."),
         limit: int = Field(default=20, ge=1, le=100),
     ) -> ToolResult:
-        """Search the Resolve scripting API (official 21.1 stub) by name or description."""
+        """Search the Resolve scripting API (official 21.1 stub) by name or description.
+
+        Use it to check what Resolve itself can do; to call something, use the domain
+        tools (describe_action gives their parameters).
+        """
         return _ok(SearchOutput(hits=search(surface, pattern, limit)))
 
     _add_job_and_snapshot_tools(mcp, services)
@@ -381,7 +389,11 @@ def _add_recipe_tools(
 
     @mcp.tool(annotations=_READ_ONLY, output_schema=RecipeListOutput.model_json_schema())
     async def recipe_list() -> ToolResult:
-        """Workflows that run several actions in one call (built-in and user recipes)."""
+        """List the recipes recipe_run can execute: name, description, parameters.
+
+        Built-in and user recipes, plus any that failed to load. Call it before recipe_run;
+        for an ad-hoc sequence use batch_run instead.
+        """
         return _ok(RecipeListOutput(recipes=engine.infos(), load_errors=loaded.errors))
 
     @mcp.tool(
@@ -475,10 +487,16 @@ def _add_batch_tool(mcp: FastMCP, engine: RecipeEngine) -> None:
         return _ok(run)
 
 
+_JOB_ID = Field(description="Id from a write that returned status='started' (or job_list).")
+
+
 def _add_job_and_snapshot_tools(mcp: FastMCP, services: Services) -> None:
     @mcp.tool(annotations=_READ_ONLY, output_schema=JobInfo.model_json_schema())
-    async def job_status(job_id: str) -> ToolResult:
-        """Current state and progress of a long-running job."""
+    async def job_status(job_id: str = _JOB_ID) -> ToolResult:
+        """State and progress of a long-running job (render, transcription...), right now.
+
+        Returns at once; use job_wait instead to block until it finishes.
+        """
         try:
             return _ok(services.jobs.status(job_id))
         except DavinciError as err:
@@ -486,20 +504,28 @@ def _add_job_and_snapshot_tools(mcp: FastMCP, services: Services) -> None:
 
     @mcp.tool(annotations=_READ_ONLY, output_schema=JobInfo.model_json_schema())
     async def job_wait(
-        job_id: str, timeout_s: float = Field(default=60.0, gt=0, le=600)
+        job_id: str = _JOB_ID,
+        timeout_s: float = Field(default=60.0, gt=0, le=600, description="Seconds to wait."),
     ) -> ToolResult:
-        """Wait for a job to finish (returns it still running when the timeout elapses)."""
+        """Block until a job finishes, then return its final state and result.
+
+        If timeout_s elapses first, returns it still running: call again to keep waiting.
+        """
         try:
             return _ok(await services.jobs.wait(job_id, timeout_s, None))
         except DavinciError as err:
             return error_result(err)
 
     @mcp.tool(
-        annotations=ToolAnnotations(destructive_hint=False, open_world_hint=False),
+        annotations=ToolAnnotations(destructive_hint=True, open_world_hint=False),
         output_schema=JobInfo.model_json_schema(),
     )
-    async def job_cancel(job_id: str) -> ToolResult:
-        """Cancel a running job when the operation supports it."""
+    async def job_cancel(job_id: str = _JOB_ID) -> ToolResult:
+        """Stop a running job and return its state ("cancelled").
+
+        A job whose operation cannot be interrupted returns WRONG_STATE and keeps running;
+        a finished job is returned unchanged. Check it first with job_status if unsure.
+        """
         try:
             return _ok(await services.jobs.cancel(job_id))
         except DavinciError as err:
@@ -507,12 +533,21 @@ def _add_job_and_snapshot_tools(mcp: FastMCP, services: Services) -> None:
 
     @mcp.tool(annotations=_READ_ONLY, output_schema=JobListOutput.model_json_schema())
     async def job_list() -> ToolResult:
-        """All jobs known to this server, including finished ones."""
+        """Every job this server started, running and finished, with its state.
+
+        Use it to recover a job_id; job_status gives one job's details.
+        """
         return _ok(JobListOutput(jobs=services.jobs.list()))
 
     @mcp.tool(annotations=_READ_ONLY, output_schema=SnapshotListOutput.model_json_schema())
-    async def snapshot_list(project: str | None = None) -> ToolResult:
-        """Safety snapshots taken by this server (optionally for one project)."""
+    async def snapshot_list(
+        project: str | None = Field(default=None, description="Only this project's snapshots."),
+    ) -> ToolResult:
+        """Safety copies (timeline duplicates, .drp exports) this server took before changes.
+
+        Use it to find the copy to go back to after a bad edit; snapshot_write takes a
+        new one on demand.
+        """
         return _ok(SnapshotListOutput(snapshots=services.snapshots.list(project)))
 
 
