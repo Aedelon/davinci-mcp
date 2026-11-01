@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.3 (2026-11-01)
 
 - **Tool descriptions:** every domain tool opens with when to use it; `dry_run`, `snapshot` and `confirm_token` are described in the compact schemas; `job_*`, `recipe_list`, `snapshot_list`, `resolve_status` and `search_api` explain their parameters and their siblings.
 - **Annotations:** `*_write` tools and `job_cancel` are now `destructiveHint: true`, since they can overwrite current values (a grade, a preset) or stop a render.
