@@ -74,7 +74,7 @@ def main(argv: list[str] | None = None) -> int:
             p.add_argument(
                 "--bridge",
                 action="store_true",
-                help="Also install the in-app bridge script (free edition).",
+                help="Also install the in-app bridge script (free edition up to 21.0).",
             )
         else:
             p.set_defaults(bridge=False)
