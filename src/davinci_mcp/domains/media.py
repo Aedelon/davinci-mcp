@@ -22,7 +22,7 @@ import contextlib
 import hashlib
 import json
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Literal, cast
+from typing import TYPE_CHECKING, Any, Literal, cast, get_args
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -30,6 +30,7 @@ from davinci_mcp.actions.spec import JobRequest, Kind, PlanDraft, action
 from davinci_mcp.api._generated.resolve_21_1 import (
     AudioSyncSettings,
     ClipColor,
+    ClipProperties,
     CloneChecksumType,
     FlagColor,
     MarkerColor,
@@ -282,14 +283,21 @@ class FolderIds(BaseModel):
     folder_ids: list[str]
 
 
+PropertyValue = int | float | str
+
+
 class SetPropertiesParams(_Params):
     clip: ClipRef
-    properties: dict[str, str] = Field(min_length=1, description="Clip property key -> value.")
+    properties: dict[str, PropertyValue] = Field(
+        min_length=1,
+        description="Clip property key -> value. Numeric keys take numbers "
+        "(e.g. 'Super Scale': 2); the rest take strings.",
+    )
 
 
 class SetPropertiesResult(BaseModel):
     clip_id: str
-    applied: dict[str, str]
+    applied: dict[str, PropertyValue]
     rejected: list[str]
 
 
@@ -967,12 +975,33 @@ def move_folders(s: ResolveSession, p: MoveFoldersParams) -> FolderIds:
 # -- write: clip attributes -----------------------------------------------------------
 
 
+# Clip properties Resolve only accepts as numbers (SetClipProperty refuses "2" for
+# "Super Scale"), from the typed 21.1 stub.
+_NUMERIC_PROPS: dict[str, type[int] | type[float]] = {
+    field.alias or name: kind
+    for name, field in ClipProperties.model_fields.items()
+    for kind in (int, float)
+    if kind in get_args(field.annotation)
+}
+
+
+def _prop_value(key: str, value: PropertyValue) -> PropertyValue:
+    """The value as Resolve wants it: numeric keys get a number, others a string."""
+    kind = _NUMERIC_PROPS.get(key)
+    if kind is None:
+        return value if isinstance(value, str) else str(value)
+    try:
+        return kind(value)
+    except ValueError:
+        return value
+
+
 def _verify_props(
     s: ResolveSession, p: SetPropertiesParams, result: SetPropertiesResult
 ) -> Verification:
     clip = resolve_clip(s, ClipRef(id=result.clip_id))
     observed = {k: _prop(clip, k) for k in result.applied}
-    bad = {k: v for k, v in observed.items() if str(v) != result.applied[k]}
+    bad = {k: v for k, v in observed.items() if str(v) != str(result.applied[k])}
     note = "Resolve may accept a value without persisting it (e.g. 'Reel Name')." if bad else None
     return Verification(ok=not bad and not result.rejected, observed=observed, note=note)
 
@@ -987,9 +1016,10 @@ def _verify_props(
 def set_clip_properties(s: ResolveSession, p: SetPropertiesParams) -> SetPropertiesResult:
     """Set clip properties (key -> value), reading each one back."""
     clip = resolve_clip(s, p.clip)
-    applied: dict[str, str] = {}
+    applied: dict[str, PropertyValue] = {}
     rejected: list[str] = []
-    for key, value in p.properties.items():
+    for key, raw in p.properties.items():
+        value = _prop_value(key, raw)
         if clip.SetClipProperty(key, value):
             applied[key] = value
         else:

@@ -50,9 +50,11 @@ class MItem(FakeMediaPoolItem):
         return True
 
     @recorded
-    def SetClipProperty(self, key: str, value: str) -> bool:
+    def SetClipProperty(self, key: str, value: object) -> bool:
         if key not in self._props:
             return False
+        if key == "Super Scale" and not isinstance(value, int):
+            return False  # like Resolve 21.1: the string "2" is refused
         if key not in self.noop:
             self._props[key] = value
         return True
