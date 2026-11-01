@@ -83,17 +83,12 @@ class RecipeSettings(_Section):
     )
 
 
-class TelemetrySettings(_Section):
-    otlp_endpoint: str = ""
-
-
 class Settings(_Section):
     connection: ConnectionSettings = Field(default_factory=ConnectionSettings)
     safety: SafetySettings = Field(default_factory=SafetySettings)
     http: HttpSettings = Field(default_factory=HttpSettings)
     server: ServerSettings = Field(default_factory=ServerSettings)
     recipes: RecipeSettings = Field(default_factory=RecipeSettings)
-    telemetry: TelemetrySettings = Field(default_factory=TelemetrySettings)
     state_dir: Path = Field(default_factory=state_home)
     config_file: Path | None = Field(default=None, description="Set by load_settings.")
 

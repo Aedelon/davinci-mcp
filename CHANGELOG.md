@@ -3,6 +3,7 @@
 ## Unreleased
 
 - **Fix:** `media_write.set_clip_properties` accepts numbers, and sends numeric keys (`Super Scale`, `FPS`) to Resolve as numbers. Resolve refused `"Super Scale": "2"`, so Super Scale could not be set; a string such as `"2"` is now converted.
+- **Config:** removed `[telemetry] otlp_endpoint`. It was accepted but never used. A `config.toml` that still sets it now fails validation: delete the `[telemetry]` section.
 
 ## 1.0.3 (2026-11-01)
 
