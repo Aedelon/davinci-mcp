@@ -13,7 +13,7 @@ import pytest
 
 from davinci_mcp.config import Settings
 from davinci_mcp.domains import color, workflow
-from davinci_mcp.domains.workflow import ACTIONS
+from davinci_mcp.domains.workflow import ACTIONS, _font_parts  # pyright: ignore[reportPrivateUsage]
 from tests.fakes.workflow import WfItem, World
 from tests.helpers import call, mcp_client
 
@@ -465,6 +465,25 @@ async def test_apply_look_lut_group_and_still(
     assert all(len(g.members) == 3 for g in world.project.groups)  # type: ignore[attr-defined]
 
 
+async def test_apply_look_excludes_items(
+    settings: Settings, tmp_path: Path, lut_root: Path
+) -> None:
+    world = _look_world()
+    lut = tmp_path / "film.cube"
+    lut.write_text("LUT")
+    last = world.project._current.tracks[0][2]  # type: ignore[union-attr]
+    async with mcp_client(world.resolve, settings, ACTIONS) as c:
+        err, out = await _write(
+            c,
+            "apply_look",
+            lut=str(lut),
+            exclude=[{"track": {"type": "video", "index": 1}, "position": 3}],
+        )
+    assert not err and out["receipt"]["verified"] is True
+    assert len(out["receipt"]["result"]["items"]) == 2
+    assert not last.GetNodeGraph().GetLUT(1)
+
+
 async def test_apply_look_reuses_existing_group(
     settings: Settings, tmp_path: Path, lut_root: Path
 ) -> None:
@@ -614,3 +633,30 @@ def test_folder_expansion_skips_symlinks(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(workflow, "runtime", lambda: SimpleNamespace(allowed_roots=[inside]))
     files = workflow._expand_media([str(inside)])
     assert [f.name for f in files] == ["a.mov"]
+
+
+@pytest.mark.parametrize(
+    ("font", "style", "expected"),
+    [
+        ("Avenir Next Bold", None, ("Avenir Next", "Bold")),
+        ("Avenir Next Demi Bold", None, ("Avenir Next", "Demi Bold")),
+        ("Open Sans", None, ("Open Sans", None)),
+        ("Avenir Next Bold", "Regular", ("Avenir Next Bold", "Regular")),
+        ("Bold", None, ("Bold", None)),
+    ],
+)
+def test_font_family_and_style_are_split(
+    font: str, style: str | None, expected: tuple[str, str | None]
+) -> None:
+    # Fusion fails the comp at render time for a family name that carries the style.
+    assert _font_parts(font, style) == expected
+
+
+async def test_title_overlay_sets_family_and_style(settings: Settings) -> None:
+    world, item = _title_world()
+    async with mcp_client(world.resolve, settings, ACTIONS) as c:
+        err, _ = await _write(
+            c, "title_overlay", item={"id": item.GetUniqueId()}, text="Hi", font="Avenir Next Bold"
+        )
+    text = world.comps[0].FindTool("MCP_Title")
+    assert not err and (text.values["Font"], text.values["Style"]) == ("Avenir Next", "Bold")

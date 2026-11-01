@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Annotated, Any, Literal, Union
+from typing import TYPE_CHECKING, Annotated, Any, Literal, Union, cast
 
 from pydantic import BaseModel, Field, TypeAdapter, create_model
 
@@ -270,6 +270,10 @@ def _build_tool(
         )
     if shortcuts:
         lines += ["Shortcuts (prefer them for whole tasks):", *shortcuts]
+    if kind is not Kind.READ:
+        lines.append(
+            "Calls known in advance (a sequence, the same change on several items): ONE batch_run."
+        )
     return ToolDefinition(
         name=name,
         domain=domain,
@@ -290,3 +294,40 @@ def _build_tool(
         op_models=op_by_name,
         featured=featured,
     )
+
+
+_MAX_REF_DEPTH = 8  # recursive models stop being inlined here
+
+
+def compact_schema(schema: dict[str, Any]) -> dict[str, Any]:
+    """JSON Schema reduced to what an agent needs: types, required, enums, descriptions.
+
+    Inlines ``$defs``, drops titles and null defaults, and turns ``anyOf: [X, null]`` into
+    X: describe_action replies shrank from ~17k chars to a fraction while staying exact.
+    """
+    defs: dict[str, Any] = schema.get("$defs", {})
+
+    def walk(node: object, depth: int = 0) -> object:
+        if isinstance(node, list):
+            return [walk(n, depth) for n in cast("list[Any]", node)]
+        if not isinstance(node, dict):
+            return node
+        n = cast("dict[str, Any]", node)
+        ref = n.get("$ref")
+        if isinstance(ref, str) and depth < _MAX_REF_DEPTH:
+            target = defs.get(ref.rsplit("/", 1)[-1], {})
+            return walk({**target, **{k: v for k, v in n.items() if k != "$ref"}}, depth + 1)
+        any_of = n.get("anyOf")
+        if isinstance(any_of, list):
+            kept = [a for a in cast("list[Any]", any_of) if a != {"type": "null"}]
+            if len(kept) == 1:
+                rest = {k: v for k, v in n.items() if k != "anyOf"}
+                return walk({**cast("dict[str, Any]", kept[0]), **rest}, depth)
+        out: dict[str, Any] = {}
+        for k, v in n.items():
+            if k in {"title", "$defs", "additionalProperties"} or (k == "default" and v is None):
+                continue
+            out[k] = walk(v, depth)
+        return out
+
+    return cast("dict[str, Any]", walk(schema))

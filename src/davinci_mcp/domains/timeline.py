@@ -581,6 +581,7 @@ def list_tracks(s: ResolveSession, p: _TimelineParams) -> TrackList:
 
 class ListItemsParams(_TimelineParams):
     track: TrackSel | None = Field(default=None, description="Only this track (default: all).")
+    name_contains: str | None = Field(default=None, description="Case-insensitive substring.")
     limit: int = Field(default=100, ge=1, le=1000)
     offset: int = Field(default=0, ge=0)
 
@@ -597,6 +598,9 @@ def list_items(s: ResolveSession, p: ListItemsParams) -> ItemPage:
         ]
     else:
         rows = [summarize_item(it, t, i, pos) for t, i, pos, it in iter_items(tl)]
+    if p.name_contains:
+        needle = p.name_contains.lower()
+        rows = [r for r in rows if needle in r.name.lower()]
     return ItemPage(
         timeline_id=tl.GetUniqueId(),
         total=len(rows),
@@ -1327,6 +1331,9 @@ class SetTimecodeParams(_TimelineParams):
     timecode: str = Field(pattern=r"^\d{2}:\d{2}:\d{2}[:;]\d{2}$")
 
 
+_NO_PLAYHEAD_PAGES = frozenset({"media"})
+
+
 def _verify_playhead(s: ResolveSession, p: SetTimecodeParams, _: Ack) -> Verification:
     got = resolve_timeline(s, p.timeline).GetCurrentTimecode()
     return Verification(ok=got == p.timecode, observed={"timecode": got})
@@ -1341,10 +1348,19 @@ def _verify_playhead(s: ResolveSession, p: SetTimecodeParams, _: Ack) -> Verific
     verify=_verify_playhead,
 )
 def set_current_timecode(s: ResolveSession, p: SetTimecodeParams) -> Ack:
-    """Move the playhead to a timecode."""
+    """Move the playhead to a timecode (from the Edit page when Resolve is on Media)."""
     tl = resolve_timeline(s, p.timeline)
+    # The Media page has no playhead: SetCurrentTimecode returns False there and
+    # GetCurrentTimecode None. Set it from the Edit page (the pipeline restores the page).
+    if s.resolve.GetCurrentPage() in _NO_PLAYHEAD_PAGES and not s.resolve.OpenPage("edit"):
+        raise _fail("Resolve.OpenPage('edit')", "The playhead only exists on timeline pages.")
     if not tl.SetCurrentTimecode(p.timecode):
-        raise _fail("Timeline.SetCurrentTimecode", "The timecode may be outside the timeline.")
+        start, end = tl.GetStartTimecode(), tl.GetEndFrame()
+        raise _fail(
+            "Timeline.SetCurrentTimecode",
+            f"Check the timecode is inside the timeline (starts at {start}, "
+            f"{int(end) - int(tl.GetStartFrame())} frames long) and is the current one.",
+        )
     return Ack(timeline_id=tl.GetUniqueId(), detail={"timecode": p.timecode})
 
 

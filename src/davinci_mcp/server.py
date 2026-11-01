@@ -17,7 +17,7 @@ from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, ValidationError
 
 from davinci_mcp import __version__
 from davinci_mcp.actions.pipeline import Pipeline, error_result, tool_result
-from davinci_mcp.actions.registry import ActionRegistry, ToolDefinition
+from davinci_mcp.actions.registry import ActionRegistry, ToolDefinition, compact_schema, shape
 from davinci_mcp.actions.spec import ActionSpec
 from davinci_mcp.api.surface import SearchHit, load_surface, search
 from davinci_mcp.audit import AuditLog
@@ -60,9 +60,16 @@ validate, verify and report like any write): conform_from_edl (media + EDL → t
 offline fix), deliver (one or more renders, files checked), build_vertical_reel (vertical
 timeline, subtitles, render), apply_look (LUT on every clip, color group, still),
 title_overlay (animated Text+ over a clip). recipe_list / recipe_run chain more steps.
+To save round trips: load every tool you will need (domain tools, describe_action,
+batch_run) in one tool search; ask describe_action for several actions at once; and send
+known sequences of calls (e.g. the same change on several clips) as ONE batch_run.
+Independent reads can go out together in one turn. Lists are paginated (limit/offset)
+and filterable (name_contains): ask only for what you need.
 """
 
-ALWAYS_LOAD = {"anthropic/alwaysLoad": True}
+# No tool is marked "anthropic/alwaysLoad": Claude Code then loads every tool of the
+# server up front instead of deferring them behind tool search (measured: 101k vs 49k
+# context tokens on the first turn, paid again on every turn).
 _READ_ONLY = ToolAnnotations(read_only_hint=True, idempotent_hint=True, open_world_hint=False)
 
 
@@ -130,7 +137,6 @@ class RegistryTool(Tool):
             parameters=definition.input_schema,
             output_schema=definition.output_schema,
             annotations=ToolAnnotations.model_validate(definition.annotations),
-            meta=ALWAYS_LOAD if definition.featured else None,
         )
         tool._definition = definition
         tool._pipeline = pipeline
@@ -155,12 +161,21 @@ class ActionInfo(BaseModel):
     summary: str
     kind: str
     params_schema: dict[str, Any]
-    result_schema: dict[str, Any]
+    result_schema: dict[str, Any] | None = None
     since: str | None = None
     studio_only: bool = False
     long_running: bool = False
     page: str | None = None
     snapshot: str | None = None
+
+
+class DescribeOutput(BaseModel):
+    actions: list[ActionInfo]
+
+
+class ToolActions(BaseModel):
+    tool: str
+    actions: list[str]
 
 
 class SearchOutput(BaseModel):
@@ -175,8 +190,8 @@ class SnapshotListOutput(BaseModel):
     snapshots: list[SnapshotInfo]
 
 
-def _ok(model: BaseModel) -> ToolResult:
-    return tool_result(model.model_dump(mode="json"))
+def _ok(model: BaseModel, *, exclude_none: bool = False) -> ToolResult:
+    return tool_result(model.model_dump(mode="json", exclude_none=exclude_none))
 
 
 def build_registry(actions: Sequence[ActionSpec] | None = None) -> ActionRegistry:
@@ -227,49 +242,77 @@ def build_server(
     for definition in definitions:
         mcp.add_tool(RegistryTool.create(definition, services.pipeline))
 
-    @mcp.tool(
-        annotations=_READ_ONLY, meta=ALWAYS_LOAD, output_schema=ActionInfo.model_json_schema()
-    )
+    @mcp.tool(annotations=_READ_ONLY, output_schema=None)
     async def describe_action(
-        tool: str = Field(description="Tool name, e.g. 'timeline_write'."),
-        action: str = Field(description="op.action value, e.g. 'append_clips'."),
+        tool: str | None = Field(default=None, description="Tool name, e.g. 'timeline_write'."),
+        action: str | None = Field(default=None, description="op.action, e.g. 'append_clips'."),
+        actions: Annotated[
+            list[str] | None,
+            Field(
+                description="Several at once, as 'tool.action' (e.g. ['color_write.set_cdl', "
+                "'gallery_write.grab_still']): one call instead of one per action."
+            ),
+        ] = None,
+        with_result: bool = Field(default=False, description="Also return result schemas."),
     ) -> ToolResult:
-        """Full parameter and result schema of one action, with its flags."""
-        definition = by_name.get(tool)
-        if definition is None or action not in definition.actions:
-            known = sorted(definition.actions) if definition else sorted(by_name)
+        """Parameter schemas (compact) of one or several actions, with their flags.
+
+        With only `tool`, lists that tool's actions and their signatures.
+        """
+        wanted = [*(actions or []), *([f"{tool}.{action}"] if tool and action else [])]
+        if not wanted and tool and (definition := by_name.get(tool)):
+            return _ok(
+                ToolActions(
+                    tool=tool,
+                    actions=[
+                        f"{n}{shape(definition.op_models[n])}: {s.summary}"
+                        for n, s in definition.actions.items()
+                    ],
+                )
+            )
+        if not wanted:
             return error_result(
                 DavinciError(
-                    ErrorCode.NOT_FOUND,
-                    f"Unknown {'action' if definition else 'tool'}: {tool}.{action}.",
-                    hint=f"Known: {', '.join(known)}",
+                    ErrorCode.INVALID_PARAMS,
+                    "Give tool + action, or actions=['tool.action', ...].",
                     retryable=False,
                 )
             )
-        spec = definition.actions[action]
-        return _ok(
-            ActionInfo(
-                tool=tool,
-                action=action,
-                summary=spec.summary,
-                kind=spec.kind.value,
-                params_schema=definition.action_schema(action),
-                result_schema=spec.result.model_json_schema(),
-                since=".".join(map(str, spec.since)) if spec.since else None,
-                studio_only=spec.studio_only,
-                long_running=spec.long_running,
-                page=spec.page,
-                snapshot=spec.snapshot,
+        infos: list[ActionInfo] = []
+        for ref in wanted:
+            tool_name, _, action_name = ref.partition(".")
+            definition = by_name.get(tool_name)
+            if definition is None or action_name not in definition.actions:
+                known = sorted(definition.actions) if definition else sorted(by_name)
+                return error_result(
+                    DavinciError(
+                        ErrorCode.NOT_FOUND,
+                        f"Unknown {'action' if definition else 'tool'}: {ref}.",
+                        hint=f"Known: {', '.join(known)}",
+                        retryable=False,
+                    )
+                )
+            spec = definition.actions[action_name]
+            infos.append(
+                ActionInfo(
+                    tool=tool_name,
+                    action=action_name,
+                    summary=spec.summary,
+                    kind=spec.kind.value,
+                    params_schema=compact_schema(definition.action_schema(action_name)),
+                    result_schema=(
+                        compact_schema(spec.result.model_json_schema()) if with_result else None
+                    ),
+                    since=".".join(map(str, spec.since)) if spec.since else None,
+                    studio_only=spec.studio_only,
+                    long_running=spec.long_running,
+                    page=spec.page,
+                    snapshot=spec.snapshot,
+                )
             )
-        )
+        return _ok(DescribeOutput(actions=infos), exclude_none=True)
 
-    @mcp.tool(
-        annotations=_READ_ONLY,
-        meta=ALWAYS_LOAD,
-        output_schema=StatusOutput.model_json_schema(),
-    )
-    async def resolve_status() -> ToolResult:
-        """Connection state, Resolve version/edition/channel, current project, timeline and page."""
+    async def status() -> StatusOutput:
         try:
 
             def read(s: ResolveSession) -> StatusOutput:
@@ -283,13 +326,28 @@ def build_server(
                     page=s.resolve.GetCurrentPage(),
                 )
 
-            return _ok(await services.connection.call(read, retry_safe=True))
+            return await services.connection.call(read, retry_safe=True)
         except DavinciError as err:
-            return _ok(StatusOutput(connected=False, error=err.to_payload()))
+            return StatusOutput(connected=False, error=err.to_payload())
 
     @mcp.tool(
-        annotations=_READ_ONLY, meta=ALWAYS_LOAD, output_schema=SearchOutput.model_json_schema()
+        annotations=_READ_ONLY,
+        output_schema=StatusOutput.model_json_schema(),
     )
+    async def resolve_status() -> ToolResult:
+        """Connection state, Resolve version/edition/channel, current project, timeline and page."""
+        return _ok(await status())
+
+    @mcp.resource(
+        "davinci://status",
+        name="resolve_status",
+        description="Same as the resolve_status tool, readable without a tool call.",
+        mime_type="application/json",
+    )
+    async def status_resource() -> str:
+        return (await status()).model_dump_json(exclude_none=True)
+
+    @mcp.tool(annotations=_READ_ONLY, output_schema=SearchOutput.model_json_schema())
     async def search_api(
         pattern: str = Field(description="Substring of a class, method or description."),
         limit: int = Field(default=20, ge=1, le=100),
@@ -337,6 +395,7 @@ def _add_recipe_tools(
         confirm_token: str | None = Field(
             default=None, description="For destructive recipes: token from the planned call."
         ),
+        verbose: bool = Field(default=False, description="Full receipts for every step."),
     ) -> ToolResult:
         """Run a recipe server-side: every step is validated, verified and audited.
 
@@ -344,7 +403,9 @@ def _add_recipe_tools(
         Destructive recipes first return a plan with a confirm_token.
         """
         try:
-            run = await engine.run(name, params or {}, dry_run=dry_run, confirm_token=confirm_token)
+            run = await engine.run(
+                name, params or {}, dry_run=dry_run, confirm_token=confirm_token, verbose=verbose
+            )
         except DavinciError as err:
             return error_result(err)
         return _ok(run)
@@ -368,7 +429,6 @@ MAX_BATCH_STEPS = 50
 def _add_batch_tool(mcp: FastMCP, engine: RecipeEngine) -> None:
     @mcp.tool(
         annotations=ToolAnnotations(destructive_hint=True, open_world_hint=False),
-        meta=ALWAYS_LOAD,
         output_schema=RecipeRun.model_json_schema(),
     )
     async def batch_run(
@@ -380,6 +440,7 @@ def _add_batch_tool(mcp: FastMCP, engine: RecipeEngine) -> None:
         confirm_token: str | None = Field(
             default=None, description="When it contains *_delete steps: token from the plan."
         ),
+        verbose: bool = Field(default=False, description="Full receipts for every step."),
     ) -> ToolResult:
         """Run several domain-tool calls in ONE call, in order, server-side.
 
@@ -406,7 +467,9 @@ def _add_batch_tool(mcp: FastMCP, engine: RecipeEngine) -> None:
                 )
             )
         try:
-            run = await engine.run_batch(specs, dry_run=dry_run, confirm_token=confirm_token)
+            run = await engine.run_batch(
+                specs, dry_run=dry_run, confirm_token=confirm_token, verbose=verbose
+            )
         except DavinciError as err:
             return error_result(err)
         return _ok(run)

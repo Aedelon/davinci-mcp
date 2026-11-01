@@ -30,6 +30,8 @@ async def test_read_formats_presets_config(settings: Settings) -> None:
         fmt = out["formats"][0]
         assert fmt["extension"] == "mov"
         assert {"id": "ProRes422", "description": "Apple ProRes 422"} in fmt["codecs"]
+        err, out = await _do(client, "render_read", "list_render_formats")
+        assert not err and all(f["codecs"] == [] for f in out["formats"])
         err, out = await _do(client, "render_read", "list_render_formats", audio=True)
         assert not err
         err, out = await _do(client, "render_read", "list_render_presets")

@@ -489,11 +489,14 @@ class ListFormatsParams(_Params):
 
 @action(domain=DOMAIN, kind=Kind.READ, params=ListFormatsParams, result=RenderFormatList)
 def list_render_formats(s: ResolveSession, p: ListFormatsParams) -> RenderFormatList:
-    """List render formats with their codecs (id + description)."""
+    """Render formats; their codecs only with `format` (natural names work everywhere)."""
     formats = _formats(s, audio=p.audio)
     if p.format is not None:
-        formats = [_find_format(formats, p.format)]
-    return RenderFormatList(audio=p.audio, formats=formats)
+        return RenderFormatList(audio=p.audio, formats=[_find_format(formats, p.format)])
+    # Every codec of every format is ~15k chars: list names, codecs on request.
+    return RenderFormatList(
+        audio=p.audio, formats=[f.model_copy(update={"codecs": []}) for f in formats]
+    )
 
 
 @action(domain=DOMAIN, kind=Kind.READ, result=PresetList)
@@ -978,7 +981,10 @@ class RenderTimelineParams(_Params):
         default=None,
         description="Container override, e.g. 'mp4' (presets pick their own: H.264 Master = mov).",
     )
-    codec: str | None = Field(default=None, description="Codec id or description with format.")
+    codec: str | None = Field(
+        default=None,
+        description="Codec with format; natural names work ('ProRes 422 LT', 'H.264').",
+    )
     settings: RenderSettings | None = Field(
         default=None, description="Extra settings on top of the preset (MarkIn/MarkOut relative)."
     )
