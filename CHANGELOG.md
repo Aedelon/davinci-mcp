@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.0.2 (2026-11-01)
 
-- **Docs:** the free edition is supported only up to 21.0.x. Free 21.1 hides in-app Python scripts, and its Lua sandbox has no access to the Resolve API, files or network (tested on 21.1.2). The 1.0.0 notes claimed otherwise.
+- **Docs:** the free edition is supported only up to 21.0.x. Free 21.1 hides in-app Python scripts; in-app Lua scripts get no API, and the Console's Lua, which has the API, has no file or network access (tested on 21.1.2). The 1.0.0 notes claimed otherwise.
 
 ## 1.0.1 (2026-11-01)
 
