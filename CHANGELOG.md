@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Fix:** `media_write.set_clip_properties` accepts numbers, and sends numeric keys (`Super Scale`, `FPS`) to Resolve as numbers. Resolve refused `"Super Scale": "2"`, so Super Scale could not be set; a string such as `"2"` is now converted.
+
 ## 1.0.3 (2026-11-01)
 
 - **Tool descriptions:** every domain tool opens with when to use it; `dry_run`, `snapshot` and `confirm_token` are described in the compact schemas; `job_*`, `recipe_list`, `snapshot_list`, `resolve_status` and `search_api` explain their parameters and their siblings.

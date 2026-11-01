@@ -220,6 +220,17 @@ async def test_properties_metadata_name_color_flags(settings: Settings) -> None:
             c, {"action": "set_clip_properties", "clip": ref, "properties": {"Nope": "x"}}
         )
         assert err and out["code"] == "API_CALL_FAILED"
+        clip._props["Super Scale"] = 1
+        for value in (2, "3"):  # numeric key: a number or a numeric string both work
+            err, out = await _w(
+                c,
+                {
+                    "action": "set_clip_properties",
+                    "clip": ref,
+                    "properties": {"Super Scale": value},
+                },
+            )
+            assert _verified(out) and clip._props["Super Scale"] == int(value)
         err, out = await _w(
             c, {"action": "set_clip_metadata", "clip": ref, "metadata": {"Comments": "hi"}}
         )
