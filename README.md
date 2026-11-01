@@ -11,6 +11,7 @@
   <img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="Apache 2.0">
   <img src="https://img.shields.io/badge/DaVinci%20Resolve-21.1-d9381e" alt="DaVinci Resolve 21.1">
   <img src="https://img.shields.io/badge/MCP-2026--07--28-7a8a99" alt="MCP spec 2026-07-28">
+  <a href="https://glama.ai/mcp/servers/Aedelon/davinci-mcp"><img src="https://glama.ai/mcp/servers/Aedelon/davinci-mcp/badges/score.svg" alt="Glama score"></a>
   <a href="https://ko-fi.com/aedelon"><img src="https://img.shields.io/badge/Ko--fi-support-ff5e5b?logo=ko-fi&logoColor=white" alt="Support on Ko-fi"></a>
 </p>
 
