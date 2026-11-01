@@ -9,7 +9,7 @@ them alike. Raw rows go to ``<work>/results.json``, medians to ``<work>/summary.
 
 Usage:
     uv run python eval/run_eval.py --work DIR [--runs 5]
-        [--servers davinci-mcp davinci-resolve resolve-native]
+        [--servers davinci-mcp davinci-resolve resolve-native davinci-pro]
         [--scenarios reel conform grade fusion] [--model sonnet] [--timeout 1500]
     uv run python eval/run_eval.py --work DIR --summarize-only
 """
@@ -51,6 +51,19 @@ SYSTEM_RULES = (
 )
 
 
+_PRO_DOMAINS = (
+    "project_management",
+    "timeline_operations",
+    "timeline_item_editing",
+    "media_pool",
+    "clip_properties",
+    "color_grading",
+    "render_delivery",
+    "ai_studio",
+    "system_fairlight_storage",
+)
+
+
 def server_configs(work: Path) -> dict[str, dict[str, Any]]:
     claude = json.loads((Path.home() / ".claude.json").read_text())
     existing = claude["mcpServers"]["davinci-resolve"]
@@ -67,6 +80,15 @@ def server_configs(work: Path) -> dict[str, dict[str, Any]]:
         "davinci-resolve": existing,
         # Blackmagic's built-in MCP (Studio 21.1+): docs search + sandboxed run_script.
         "resolve-native": {"command": str(NATIVE_MCP), "args": []},
+        # hoyt-harness/davinci-mcp-professional: 6 kernel tools, domains loaded on demand.
+        # Path to its checkout (with a .venv) in $DMP_PRO_DIR.
+        "davinci-pro": {
+            "command": f"{os.environ.get('DMP_PRO_DIR', '')}/.venv/bin/python",
+            "args": [f"{os.environ.get('DMP_PRO_DIR', '')}/mcp_server.py"],
+            # claude -p ignores tools/list_changed: preload every domain (their documented
+            # workaround), otherwise only the 6 kernel tools are ever callable.
+            "env": {"DAVINCI_MCP_DOMAINS": ",".join(_PRO_DOMAINS)},
+        },
     }
 
 

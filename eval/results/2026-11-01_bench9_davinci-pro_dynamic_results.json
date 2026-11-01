@@ -1,0 +1,53 @@
+[
+  {
+    "run": 0,
+    "server": "davinci-pro",
+    "scenario": "dailies",
+    "checks": {
+      "bins_created": false,
+      "clips_sorted": false,
+      "imported_once": false,
+      "metadata_from_log": false,
+      "clip_colors": false,
+      "boom_marker": false
+    },
+    "score": 0.0,
+    "other_projects_changed": [],
+    "eval_project_deleted": true,
+    "interference": false,
+    "wall_s": 19.5,
+    "timed_out": false,
+    "turns": 11,
+    "tool_calls": 10,
+    "tool_errors": 3,
+    "cost_usd": 0.2922861,
+    "input_tokens": 466297,
+    "output_tokens": 1264,
+    "final": "I couldn't do any of this. The domains activated, but the media pool and clip tools never became callable in this session.\n\nI activated `media_pool` and `clip_properties`, and the activation reported tools like `get_media_pool_root_folder`, `create_media_pool_folder`, `import_media`, `set_clip_metad",
+    "server_started": true,
+    "forbidden_tool_calls": 0
+  },
+  {
+    "run": 0,
+    "server": "davinci-pro",
+    "scenario": "promo",
+    "checks": {
+      "timeline_exists": false
+    },
+    "score": 0.0,
+    "other_projects_changed": [],
+    "eval_project_deleted": true,
+    "interference": false,
+    "wall_s": 14.9,
+    "timed_out": false,
+    "turns": 7,
+    "tool_calls": 6,
+    "tool_errors": 3,
+    "cost_usd": 0.0758412,
+    "input_tokens": 231915,
+    "output_tokens": 1147,
+    "final": "I couldn't do any of the editing. The DaVinci tools I activated (`import_media`, `create_timeline_from_clips`, and the rest) never became callable in this session. Each call failed with \"No such tool available.\"\n\nThe `media_pool` and `timeline_operations` domains did activate successfully. Only `act",
+    "server_started": true,
+    "forbidden_tool_calls": 0
+  }
+]

@@ -285,3 +285,38 @@ Most of the gain is on `spot_qc`, the scenario these changes targeted: 11 → 7 
 | native ResolveMCP | 2/3 | **3** | **18** | 227k | **0.08** |
 
 davinci-mcp stays small on a large project: paginated, filterable lists and one `batch_run` instead of 8 separate coloring calls. The native server misplaced the marker in one run, and nothing in its script reported it.
+
+## Benchmark v9: davinci-mcp-professional (2026-11-01)
+
+A fourth server: [hoyt-harness/davinci-mcp-professional](https://github.com/hoyt-harness/davinci-mcp-professional) v5.1.0 (commit `90f8f1f`, 2026-10-31). It exposes 6 kernel tools and loads its 9 domains on demand through `tools/list_changed`. The v2 suite ran with the v7 harness, 5 runs per scenario. The other servers keep their v7 and v8 numbers.
+
+**Setup.** `claude -p` does not act on `tools/list_changed`, so in the server's default mode the domain tools it activates are never callable: 2 runs, 0 % success. The scored runs preload all 9 domains with `DAVINCI_MCP_DOMAINS`, which is the server's own workaround (290 tools). The `davinci-pro` target in [run_eval.py](run_eval.py) reads the checkout path from `$DMP_PRO_DIR`.
+
+| Scenario | Success | Calls | Errors | Wall (s) | Input tokens | Cost ($) |
+|---|---|---|---|---|---|---|
+| `dailies` | 5/5 | 31 | 0 | 35.5 | 370 k | 0.17 |
+| `promo` | **0/5** | 77 | 1 | 129.3 | 2 094 k | 0.52 |
+| `look` | **0/5** | 28 | 3 | 36.2 | 595 k | 0.18 |
+| `spot_qc` | 5/5 | 20 | 0 | 32.7 | 559 k | 0.17 |
+
+**Totals (sum of the medians):**
+
+| Server | Success | Calls | Wall (s) | Input tokens | Cost ($) |
+|---|---|---|---|---|---|
+| **davinci-mcp v8** | **100 %** (20/20) | 35 | 131 | 1.19 M | 0.62 |
+| community | 65 % (13/20) | 90 | 184 | 2.83 M | 0.99 |
+| davinci-mcp-professional | 50 % (10/20) | 156 | 234 | 3.62 M | 1.04 |
+| native ResolveMCP | 100 % (20/20) | **17** | **86** | 1.15 M | **0.35** |
+
+### Reading
+
+- **`promo` failed in every run on the 50-frame music fade-out.** The server has no fade action. In 4 of the 5 runs the agent then wrote an FCPXML file by hand with Write/Edit to import it; the harness flags these runs (tools outside the server under test). They are counted as failures and kept in the medians, since none of them passed. Two runs also missed the renamed A2 track.
+- **`look` failed in every run on the same two checks:** no named still album and no JPEG export. The server has `GrabStill` and `ExportStills`, but no way to create a named album was found.
+- **`dailies` and `spot_qc` passed every run**, at 2–3× davinci-mcp's calls.
+- **Context weight.** With every domain preloaded, the 290 tools are about 124k chars of schemas, so each turn is heavier than with the deferred davinci-mcp tools.
+- **Safety, from its code:** `delete_timeline` deletes in a single call with `confirm: true`; there is no plan or token round trip.
+
+### Caveats
+
+- Preloading all domains is not the server's intended mode. A client that honours `tools/list_changed` may get lighter turns, but not the missing actions behind the two failed scenarios.
+- Raw rows: `results/2026-11-01_bench9_davinci-pro_results.json` (preloaded) and `results/2026-11-01_bench9_davinci-pro_dynamic_results.json` (default mode).

@@ -47,7 +47,7 @@ A real Claude agent, given four plain messages, cut this 52-second action traile
 - Every call is written to a JSONL audit log.
 
 **Reliable**
-- In the benchmark below, 20 of 20 jobs passed. The community MCP server passed 13 of 20.
+- In the benchmark below, 20 of 20 jobs passed. The community MCP server passed 13 of 20, davinci-mcp-professional 10 of 20.
 - Near-miss parameters are repaired instead of refused (`fade_out` → `FadeOut`, a bare clip name → a selector), and every rewrite is reported.
 - Errors are actionable: they suggest the right field ("did you mean"), name the right tool, and say which render setting Resolve rejected.
 
@@ -77,14 +77,15 @@ Headless Claude agents (Sonnet) ran four post-production jobs on a live Resolve 
 Each check reads Resolve directly, never through the server under test. Every agent ran under the same isolated harness. [Full method and history →](https://github.com/Aedelon/davinci-mcp/blob/main/eval/RESULTS.md)
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Aedelon/davinci-mcp/main/docs/assets/bench-success.svg" alt="Jobs completed: davinci-mcp 100 %, community MCP 65 %, Resolve built-in MCP 100 %" width="49%">
-  <img src="https://raw.githubusercontent.com/Aedelon/davinci-mcp/main/docs/assets/bench-cost.svg" alt="Cost for the 4 jobs: davinci-mcp $0.62, community MCP $0.99, Resolve built-in MCP $0.35" width="49%">
+  <img src="https://raw.githubusercontent.com/Aedelon/davinci-mcp/main/docs/assets/bench-success.svg" alt="Jobs completed: davinci-mcp 100 %, community MCP 65 %, MCP Professional 50 %, Resolve built-in MCP 100 %" width="49%">
+  <img src="https://raw.githubusercontent.com/Aedelon/davinci-mcp/main/docs/assets/bench-cost.svg" alt="Cost for the 4 jobs: davinci-mcp $0.62, community MCP $0.99, MCP Professional $1.04, Resolve built-in MCP $0.35" width="49%">
 </p>
 
 | Server | Jobs passed | Tool calls | Cost (4 jobs) |
 |---|---|---|---|
 | **davinci-mcp** | **20 / 20** | 35 | $0.62 |
 | Community MCP ([samuelgursky/davinci-resolve-mcp](https://github.com/samuelgursky/davinci-resolve-mcp)) | 13 / 20 | 90 | $0.99 |
+| MCP Professional ([hoyt-harness/davinci-mcp-professional](https://github.com/hoyt-harness/davinci-mcp-professional)) | 10 / 20 | 156 | $1.04 |
 | Resolve's built-in MCP | 20 / 20 | 17 | $0.35 |
 
 **About the built-in server.** Resolve 21.1 ships its own MCP server, which is cheaper because it hands the agent one tool, `run_script_unsafe`, to run arbitrary Python inside Resolve. That makes for short runs, but nothing is validated, read back, audited, snapshotted or confirmed before a delete. In our scale test (160 clips, 4 timelines) it once put a marker at the wrong frame, then reported the job done. davinci-mcp trades a little cost for changes you can trust.
