@@ -1,14 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="760" height="226" viewBox="0 0 760 226" font-family="Avenir Next, Inter, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="282" viewBox="0 0 760 282" font-family="Avenir Next, Inter, Helvetica, Arial, sans-serif">
 <rect width="100%" height="100%" rx="14" fill="#fbf6ef"/>
 <text x="24" y="38" font-size="20" font-weight="700" fill="#3a2418">Tool calls for the 4 jobs</text>
 <text x="736" y="38" font-size="13" fill="#8a6f5a" text-anchor="end">sum of medians · lower is better</text>
 <text x="24" y="84" font-size="15" font-weight="700" fill="#3a2418">davinci-mcp</text>
-<rect x="210" y="62" width="171.1" height="34" rx="7" fill="#e9762b"/>
-<text x="391.1" y="84" font-size="15" font-weight="700" fill="#3a2418">35</text>
+<rect x="210" y="62" width="98.7" height="34" rx="7" fill="#e9762b"/>
+<text x="318.7" y="84" font-size="15" font-weight="700" fill="#3a2418">35</text>
 <text x="24" y="136" font-size="15" font-weight="500" fill="#3a2418">Community MCP</text>
-<rect x="210" y="114" width="440.0" height="34" rx="7" fill="#7a8a99"/>
-<text x="660.0" y="136" font-size="15" font-weight="500" fill="#3a2418">90</text>
-<text x="24" y="188" font-size="15" font-weight="500" fill="#3a2418">Resolve built-in MCP</text>
-<rect x="210" y="166" width="83.1" height="34" rx="7" fill="#b9a58c"/>
-<text x="303.1" y="188" font-size="15" font-weight="500" fill="#3a2418">17</text>
+<rect x="210" y="114" width="253.8" height="34" rx="7" fill="#7a8a99"/>
+<text x="473.8" y="136" font-size="15" font-weight="500" fill="#3a2418">90</text>
+<text x="24" y="188" font-size="15" font-weight="500" fill="#3a2418">MCP Professional</text>
+<rect x="210" y="166" width="440.0" height="34" rx="7" fill="#9aa88a"/>
+<text x="660.0" y="188" font-size="15" font-weight="500" fill="#3a2418">156</text>
+<text x="24" y="240" font-size="15" font-weight="500" fill="#3a2418">Resolve built-in MCP</text>
+<rect x="210" y="218" width="47.9" height="34" rx="7" fill="#b9a58c"/>
+<text x="267.9" y="240" font-size="15" font-weight="500" fill="#3a2418">17</text>
 </svg>
