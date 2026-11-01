@@ -530,3 +530,19 @@ async def test_delete_track_missing(settings: Settings, action_name: str) -> Non
             {"op": {"action": action_name, "track": {"type": "audio", "index": 3}}},
         )
         assert err and out["code"] == "NOT_FOUND"
+
+
+async def test_set_current_timecode_leaves_the_media_page(settings: Settings) -> None:
+    # Live Resolve 21.1: the Media page has no playhead, SetCurrentTimecode returns False.
+    resolve = make_timeline_resolve()
+    resolve.page = "media"  # type: ignore[attr-defined]
+    tl = _tl(resolve)
+    original = tl.SetCurrentTimecode
+    tl.SetCurrentTimecode = lambda tc: resolve.page != "media" and original(tc)  # type: ignore[method-assign]
+    async with mcp_client(resolve, settings, ACTIONS) as client:
+        err, out = await call(
+            client,
+            "timeline_write",
+            {"op": {"action": "set_current_timecode", "timecode": "01:00:05:00"}},
+        )
+    assert not err and _verified(out) and tl.timecode == "01:00:05:00"  # type: ignore[attr-defined]

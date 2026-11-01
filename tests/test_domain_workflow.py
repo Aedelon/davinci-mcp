@@ -465,6 +465,25 @@ async def test_apply_look_lut_group_and_still(
     assert all(len(g.members) == 3 for g in world.project.groups)  # type: ignore[attr-defined]
 
 
+async def test_apply_look_excludes_items(
+    settings: Settings, tmp_path: Path, lut_root: Path
+) -> None:
+    world = _look_world()
+    lut = tmp_path / "film.cube"
+    lut.write_text("LUT")
+    last = world.project._current.tracks[0][2]  # type: ignore[union-attr]
+    async with mcp_client(world.resolve, settings, ACTIONS) as c:
+        err, out = await _write(
+            c,
+            "apply_look",
+            lut=str(lut),
+            exclude=[{"track": {"type": "video", "index": 1}, "position": 3}],
+        )
+    assert not err and out["receipt"]["verified"] is True
+    assert len(out["receipt"]["result"]["items"]) == 2
+    assert not last.GetNodeGraph().GetLUT(1)
+
+
 async def test_apply_look_reuses_existing_group(
     settings: Settings, tmp_path: Path, lut_root: Path
 ) -> None:

@@ -959,6 +959,11 @@ class LookParams(_Params):
         default=None, description="Color group for every video item (created if missing)."
     )
     grab_still: bool = Field(default=False, description="Grab a still of the first item.")
+    exclude: list[ItemRef] = Field(
+        default_factory=list[ItemRef],
+        description="Video items to skip.",
+        max_length=500,
+    )
 
     @model_validator(mode="after")
     def _something(self) -> LookParams:
@@ -1000,6 +1005,13 @@ def _find_or_create_group(s: ResolveSession, name: str) -> ResolveObject:
 
 def _still_count(s: ResolveSession) -> int:
     return len(proxies(_resolve_album(s, None).GetStills()))
+
+
+def _on(ref: ItemRef, timeline: TimelineRef | None) -> ItemRef:
+    """An exclude selector without its own timeline points at the graded one."""
+    if ref.timeline is None and timeline is not None:
+        return ref.model_copy(update={"timeline": timeline})
+    return ref
 
 
 def _verify_look(s: ResolveSession, p: LookParams, r: LookResult) -> Verification:
@@ -1053,9 +1065,10 @@ def _existing_group(s: ResolveSession, name: str) -> ResolveObject | None:
 def apply_look(s: ResolveSession, p: LookParams) -> LookResult:
     """Apply a LUT to every video item, group them in a color group and grab a still."""
     tl = resolve_timeline(s, p.timeline)
-    items = [it for _, _, _, it in iter_items(tl, ("video",))]
+    skipped = {resolve_item(s, _on(ref, p.timeline)).GetUniqueId() for ref in p.exclude}
+    items = [it for _, _, _, it in iter_items(tl, ("video",)) if it.GetUniqueId() not in skipped]
     if not items:
-        raise DavinciError(ErrorCode.NOT_FOUND, "The timeline has no video item.", retryable=False)
+        raise DavinciError(ErrorCode.NOT_FOUND, "No video item to grade.", retryable=False)
     graphs: list[ResolveObject] = []
     for item in items:  # fail before touching anything
         graph = item.GetNodeGraph()
@@ -1135,9 +1148,7 @@ def _grab_first(s: ResolveSession, tl: ResolveObject, first: ResolveObject) -> N
 class TitleParams(_Params):
     item: ItemRef
     text: str = Field(min_length=1, max_length=2000)
-    font: str | None = Field(
-        default=None, description="Font family, e.g. 'Avenir Next' ('Avenir Next Bold' is split)."
-    )
+    font: str | None = Field(default=None, description="Font family, e.g. 'Avenir Next'.")
     style: str | None = Field(default=None, description="Font style, e.g. 'Bold', 'Demi Bold'.")
     size_from: float = Field(default=0.0, ge=0.0, le=10.0, description="Text+ Size at frame 0.")
     size_to: float = Field(default=0.1, ge=0.0, le=10.0, description="Text+ Size at `frames`.")

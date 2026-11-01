@@ -438,8 +438,9 @@ class CloseProjectParams(_Params):
 
 
 def _verify_closed(s: ResolveSession, _p: CloseProjectParams, _r: Done) -> Verification:
+    # Resolve always reopens an empty "Untitled Project" after CloseProject.
     name = _current_name(s)
-    return Verification(ok=name is None, observed={"current_project": name})
+    return Verification(ok=name in (None, UNTITLED), observed={"current_project": name})
 
 
 @action(
@@ -778,7 +779,7 @@ class ImportProjectParams(_Params):
 def _verify_imported(s: ResolveSession, p: ImportProjectParams, r: TransferResult) -> Verification:
     names = _projects(s)
     ok = p.name in names if p.name else len(names) > r.projects_before
-    return Verification(ok=ok, observed={"projects": names})
+    return Verification(ok=ok, observed={"projects_count": len(names), "listed": ok})
 
 
 def _import(s: ResolveSession, p: ImportProjectParams, method: str) -> TransferResult:
@@ -918,7 +919,7 @@ def _plan_delete_project(s: ResolveSession, p: NameParams) -> PlanDraft:
     result=DeletedResult,
     plan=_plan_delete_project,
     verify=lambda s, p, _r: Verification(
-        ok=p.name not in _projects(s), observed={"projects": _projects(s)}
+        ok=p.name not in _projects(s), observed={"still_listed": p.name in _projects(s)}
     ),
 )
 def delete_project(s: ResolveSession, p: NameParams) -> DeletedResult:

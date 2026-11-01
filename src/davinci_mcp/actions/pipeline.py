@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING, Any, Literal, cast
 from mcp.types import ContentBlock, TextContent
 from pydantic import BaseModel, ValidationError
 
-from davinci_mcp.actions.registry import WriteOutput, shape
+from davinci_mcp.actions.registry import WriteOutput, compact_schema, shape
 from davinci_mcp.actions.repair import repair, unknown_keys
 from davinci_mcp.actions.spec import JobRequest, Kind, PlanDraft, SnapshotKind
 from davinci_mcp.errors import DavinciError, ErrorCode
@@ -114,9 +114,9 @@ class Pipeline:
                 if isinstance(raw_op, dict)
                 else None
             )
-            details: dict[str, Any] = {"errors": json.loads(exc.json(include_url=False))}
+            details: dict[str, Any] = {"errors": _dedupe(json.loads(exc.json(include_url=False)))}
             if isinstance(name, str) and name in tool.actions:
-                details["schema"] = tool.action_schema(name)
+                details["schema"] = compact_schema(tool.action_schema(name))
                 hint = f"{name}{shape(tool.op_models[name])}"
                 unknown = unknown_keys(tool.op_models[name], cast("dict[str, Any]", raw_op))
                 hint += "; " + "; ".join(unknown) if unknown else ""
@@ -376,3 +376,15 @@ def _repaired(
         return None
     notes.extend(found)
     return call
+
+
+def _dedupe(errors: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """One entry per distinct error: the same wrong value on 8 markers is one message."""
+    seen: dict[tuple[str, str], dict[str, Any]] = {}
+    for err in errors:
+        key = (str(err.get("type")), str(err.get("msg")))
+        if key in seen:
+            seen[key]["count"] = seen[key].get("count", 1) + 1
+            continue
+        seen[key] = {k: err[k] for k in ("loc", "msg", "input") if k in err}
+    return list(seen.values())

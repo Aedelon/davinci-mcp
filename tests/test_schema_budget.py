@@ -86,3 +86,15 @@ async def test_action_called_on_the_wrong_tool_is_redirected(settings: Settings)
         op = {"action": "set_audio_properties", "item": "x", "properties": {"AudioVolume": -8}}
         err, out = await call(client, "item_write", {"op": op})
     assert err and "set_audio_properties is an action of audio_write" in out["hint"]
+
+
+async def test_repeated_validation_errors_are_collapsed(settings: Settings) -> None:
+    async with mcp_client(make_resolve(), settings) as client:
+        markers = [{"frame": f, "color": "Orange"} for f in (1, 2, 3)]
+        err, out = await call(
+            client, "timeline_write", {"op": {"action": "add_markers", "markers": markers}}
+        )
+    assert err and out["code"] == "INVALID_PARAMS"
+    errors = out["details"]["errors"]
+    assert len(errors) == 1 and errors[0]["count"] == 3
+    assert "$defs" not in json.dumps(out["details"]["schema"])
