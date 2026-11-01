@@ -26,10 +26,16 @@ def _camel(text: str) -> str:
     return "".join(part.capitalize() for part in text.split("_"))
 
 
-SNAPSHOT_HELP = (
-    "true: copy the target timeline (or export the project) first; false: never; "
-    "omitted: server policy (destructive actions only, by default)."
-)
+SNAPSHOT_HELP = "true: back up the timeline/project first; omitted: server policy."
+DRY_RUN_HELP = "true: return the planned effect, change nothing."
+CONFIRM_HELP = "From the first call's plan; repeat that call with it to apply."
+# Opening line of each generated tool description, by kind.
+_LEAD = {
+    Kind.READ: "Read {domain} state, no side effects: use it to find ids and check results.",
+    Kind.WRITE: "Change {domain} state; may overwrite current values. Every change is read back "
+    "from Resolve (receipt.verified=false means it did not take).",
+    Kind.DESTRUCTIVE: "Remove {domain} objects.",
+}
 
 
 class WriteOutput(BaseModel):
@@ -70,7 +76,8 @@ class ToolDefinition:
         return {
             "title": f"{_camel(self.domain)} ({self.kind.value})",
             "readOnlyHint": read,
-            "destructiveHint": self.kind is Kind.DESTRUCTIVE,
+            # Writes may overwrite current values (a grade, a preset), so only reads are safe.
+            "destructiveHint": not read,
             "idempotentHint": read or all(s.idempotent for s in self.actions.values()),
             "openWorldHint": False,
         }
@@ -182,10 +189,18 @@ def _compact_input_schema(kind: Kind, specs: list[ActionSpec]) -> dict[str, Any]
         }
     }
     if kind is not Kind.READ:
-        props["dry_run"] = {"type": "boolean", "default": False}
-        props["snapshot"] = {"type": ["boolean", "null"], "default": None}
+        props["dry_run"] = {"type": "boolean", "default": False, "description": DRY_RUN_HELP}
+        props["snapshot"] = {
+            "type": ["boolean", "null"],
+            "default": None,
+            "description": SNAPSHOT_HELP,
+        }
     if kind is Kind.DESTRUCTIVE:
-        props["confirm_token"] = {"type": ["string", "null"], "default": None}
+        props["confirm_token"] = {
+            "type": ["string", "null"],
+            "default": None,
+            "description": CONFIRM_HELP,
+        }
     return {"type": "object", "properties": props, "required": ["op"]}
 
 
@@ -231,7 +246,7 @@ def _build_tool(
     if kind is not Kind.READ:
         fields["dry_run"] = (
             bool,
-            Field(default=False, description="Describe the effect without applying it."),
+            Field(default=False, description=DRY_RUN_HELP),
         )
         fields["snapshot"] = (
             bool | None,
@@ -240,7 +255,7 @@ def _build_tool(
     if kind is Kind.DESTRUCTIVE:
         fields["confirm_token"] = (
             str | None,
-            Field(default=None, description="Token from a previous planned call, to confirm it."),
+            Field(default=None, description=CONFIRM_HELP),
         )
     call_model = create_model(f"{_camel(name)}Call", **fields)
     adapter: TypeAdapter[Any] = TypeAdapter(call_model)
@@ -258,7 +273,10 @@ def _build_tool(
         output_model = WriteOutput
 
     op_by_name = {s.name: op for s, op in zip(specs, ops, strict=True)}
-    lines = [f"{_camel(domain)} {kind.value}. op.action, (params; * = required):"]
+    lines = [
+        _LEAD[kind].format(domain=domain.replace("_", " ")),
+        "op.action (params; * = required):",
+    ]
     lines += [
         f"- {s.name}{signature(op_by_name[s.name]) if compact_input else ''}: {s.summary}"
         + (" [job]" if s.long_running else "")
