@@ -110,12 +110,14 @@ Duplicate the approved cut as "QC", export it as FCPXML and OTIO, and render 01:
 
 ```mermaid
 flowchart LR
-    A["AI agent<br/>(Claude, Cursor…)"] -- MCP --> S["davinci-mcp"]
-    subgraph S["davinci-mcp"]
-      direction TB
-      V["validate<br/>+ repair"] --> C["consent<br/>(deletes)"] --> N["snapshot<br/>(destructive)"] --> X["call Resolve<br/>(one thread)"] --> R["read back<br/>→ receipt"] --> L["audit log"]
-    end
-    S -- "scripting API" --> D["DaVinci Resolve"]
+    A["AI agent<br/>Claude, Cursor…"] -->|MCP call| V["Validate<br/>+ repair"]
+    V --> C["Consent<br/>deletes only"]
+    C --> N["Snapshot<br/>destructive only"]
+    N --> X["Call Resolve<br/>one thread"]
+    X <-->|scripting API| D[("DaVinci<br/>Resolve")]
+    X --> R["Read back<br/>→ receipt"]
+    R --> L["Audit log"]
+    R -->|"verified: true / false"| A
 ```
 
 1. **Validate.** The agent calls a domain tool such as `timeline_write` with `{"op": {"action": ..., ...}}`, and the parameters are checked against a typed schema. Almost-right parameters are repaired, and each repair is reported.
