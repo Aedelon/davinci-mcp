@@ -42,7 +42,7 @@ from davinci_mcp.safety.paths import protect
 from davinci_mcp.safety.snapshots import SnapshotInfo, SnapshotManager
 
 INSTRUCTIONS = """\
-davinci-mcp controls DaVinci Resolve (Studio, or the free edition through the in-app bridge).
+davinci-mcp controls DaVinci Resolve Studio (the free edition only up to 21.0, via the bridge).
 Start with resolve_status. Domain tools are named <domain>_read, <domain>_write and
 <domain>_delete; pass {"op": {"action": ..., ...params}}. Each tool description lists its
 actions with parameter names (* = required); call this server's describe_action tool for the full

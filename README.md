@@ -135,7 +135,7 @@ flowchart LR
 <summary><b>Requirements</b></summary>
 
 - **DaVinci Resolve Studio 21.1 or later.** In *Preferences → General → External scripting using*, choose **Local**.
-- **The free edition** is reachable through the in-app bridge: run `davinci-mcp install --bridge`, then start the bridge from *Workspace → Scripts*.
+- **The free edition 21.1+ is not supported.** Resolve 21.1 took Python scripting out of the free edition, and its Lua sandbox can't reach the Resolve API (tested on 21.1.2). On the free 21.0.x, the in-app bridge should still work: run `davinci-mcp install --bridge`, then start it from *Workspace → Scripts*.
 - **Python 3.13+** and [uv](https://docs.astral.sh/uv/) (or pipx / pip).
 </details>
 
@@ -250,7 +250,7 @@ Then run `davinci-mcp doctor`.
 <details>
 <summary><b>Does it work with the free edition?</b></summary>
 
-Yes, through the in-app bridge (`davinci-mcp install --bridge`). Resolve 21.1 removed external scripting from the free edition, so the bridge runs inside Resolve instead.
+Not from 21.1 on. Resolve 21.1 removed both external scripting and in-app Python scripts from the free edition. In-app Lua scripts still run, but in a sandbox with no file access, no network and no access to the Resolve API (tested on free 21.1.2), so no bridge can work there. On the free 21.0.x, the in-app Python bridge (`davinci-mcp install --bridge`) should still work. Otherwise you need Resolve Studio.
 </details>
 
 <details>
