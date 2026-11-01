@@ -14,3 +14,6 @@ wheels/
 htmlcov/
 .env
 .venv.nosync/
+
+# macOS Finder metadata
+.DS_Store
