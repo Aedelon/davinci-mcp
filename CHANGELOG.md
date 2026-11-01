@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Config:** removed `[telemetry] otlp_endpoint`. It was accepted but never used. A `config.toml` that still sets it now fails validation: delete the `[telemetry]` section.
+
 ## 1.0.3 (2026-11-01)
 
 - **Tool descriptions:** every domain tool opens with when to use it; `dry_run`, `snapshot` and `confirm_token` are described in the compact schemas; `job_*`, `recipe_list`, `snapshot_list`, `resolve_status` and `search_api` explain their parameters and their siblings.
