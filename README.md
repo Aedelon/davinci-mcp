@@ -9,6 +9,7 @@
   <img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="Apache 2.0">
   <img src="https://img.shields.io/badge/DaVinci%20Resolve-21.1-d9381e" alt="DaVinci Resolve 21.1">
   <img src="https://img.shields.io/badge/MCP-2026--07--28-7a8a99" alt="MCP spec 2026-07-28">
+  <a href="https://ko-fi.com/aedelon"><img src="https://img.shields.io/badge/Ko--fi-support-ff5e5b?logo=ko-fi&logoColor=white" alt="Support on Ko-fi"></a>
 </p>
 
 <p align="center"><b>Let an AI agent edit, grade and deliver in DaVinci Resolve, with every change checked.</b></p>
@@ -125,7 +126,6 @@ flowchart LR
 3. **Call Resolve.** The call runs on a single executor thread, the only place Resolve is ever called from.
 4. **Read back.** The server reads the result back from Resolve and returns a receipt with `verified`. Long renders become jobs that the agent can wait on.
 
-[Architecture notes →](ARCHITECTURE.md)
 
 ## Install
 
@@ -281,5 +281,11 @@ uv run ruff check . && uv run pyright
 - Demo music: *Five Armies* by Kevin MacLeod ([incompetech.com](https://incompetech.com)), CC-BY 4.0.
 
 davinci-mcp is an independent project. It is not affiliated with, endorsed by or sponsored by Blackmagic Design. DaVinci Resolve is a trademark of Blackmagic Design Pty. Ltd.
+
+## Support
+
+davinci-mcp is free and open source. If it saves you time in the edit, you can buy me a coffee:
+
+<a href="https://ko-fi.com/aedelon"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support davinci-mcp on Ko-fi"></a>
 
 Made by Delanoe Pirard (Aedelon) · Apache 2.0
