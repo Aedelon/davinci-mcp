@@ -13,6 +13,7 @@
   <img src="https://img.shields.io/badge/MCP-2026--07--28-7a8a99" alt="MCP spec 2026-07-28">
   <a href="https://glama.ai/mcp/servers/Aedelon/davinci-mcp"><img src="https://glama.ai/mcp/servers/Aedelon/davinci-mcp/badges/score.svg" alt="Glama score"></a>
   <a href="https://mcprush.com/to/aedelon-davinci-resolve-mcp?ref=badge"><img src="https://mcprush.com/badge/aedelon-davinci-resolve-mcp/score.svg" alt="DaVinci Resolve MCP on mcprush"></a>
+  <a href="https://m8ven.ai/mcp/aedelon/davinci-mcp?s=readme"><img src="https://m8ven.ai/badge/mcp/aedelon/davinci-mcp" alt="M8ven Score"></a>
   <a href="https://ko-fi.com/aedelon"><img src="https://img.shields.io/badge/Ko--fi-support-ff5e5b?logo=ko-fi&logoColor=white" alt="Support on Ko-fi"></a>
 </p>
 
