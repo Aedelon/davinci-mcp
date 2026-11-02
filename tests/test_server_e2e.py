@@ -60,6 +60,16 @@ async def test_tool_list_is_deterministic_and_annotated(client: Client) -> None:
     assert delete.destructive_hint is True
     assert write.read_only_hint is False
     assert write.destructive_hint is True  # writes may overwrite current values
+    for tool in tools.values():  # some directories reject a tool with any hint missing
+        hints = tool.annotations
+        assert hints is not None, tool.name
+        for hint in (
+            hints.readOnlyHint,
+            hints.destructiveHint,
+            hints.idempotentHint,
+            hints.openWorldHint,
+        ):
+            assert isinstance(hint, bool), tool.name
     for tool in tools.values():
         schema = tool.input_schema
         assert schema["type"] == "object"
