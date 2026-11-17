@@ -1,8 +1,9 @@
 # Changelog
 
-## Unreleased
+## 1.0.5 (2026-11-17)
 
 - **Annotations:** every tool now sets all four hints (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`) explicitly. The kernel tools left some unset, and directories such as OpenAI's reject a tool with a missing hint. A test guards it.
+- **Benchmark:** davinci-mcp-professional joins the comparison (v9 in `eval/RESULTS.md`): 10/20 jobs, against 20/20 for davinci-mcp. The README table and charts show all four servers.
 
 ## 1.0.4 (2026-11-01)
 
