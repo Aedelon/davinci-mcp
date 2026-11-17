@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Annotations:** every tool now sets all four hints (`readOnlyHint`, `destructiveHint`, `idempotentHint`, `openWorldHint`) explicitly. The kernel tools left some unset, and directories such as OpenAI's reject a tool with a missing hint. A test guards it.
+
 ## 1.0.4 (2026-11-01)
 
 - **Fix:** `media_write.set_clip_properties` accepts numbers, and sends numeric keys (`Super Scale`, `FPS`) to Resolve as numbers. Resolve refused `"Super Scale": "2"`, so Super Scale could not be set; a string such as `"2"` is now converted.

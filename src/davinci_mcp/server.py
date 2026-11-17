@@ -70,7 +70,13 @@ and filterable (name_contains): ask only for what you need.
 # No tool is marked "anthropic/alwaysLoad": Claude Code then loads every tool of the
 # server up front instead of deferring them behind tool search (measured: 101k vs 49k
 # context tokens on the first turn, paid again on every turn).
-_READ_ONLY = ToolAnnotations(read_only_hint=True, idempotent_hint=True, open_world_hint=False)
+_READ_ONLY = ToolAnnotations(
+    read_only_hint=True, destructive_hint=False, idempotent_hint=True, open_world_hint=False
+)
+# Side-effecting kernel tools: all four hints explicit (some directories reject missing ones).
+_SIDE_EFFECTS = ToolAnnotations(
+    read_only_hint=False, destructive_hint=True, idempotent_hint=False, open_world_hint=False
+)
 
 
 @dataclass
@@ -397,7 +403,7 @@ def _add_recipe_tools(
         return _ok(RecipeListOutput(recipes=engine.infos(), load_errors=loaded.errors))
 
     @mcp.tool(
-        annotations=ToolAnnotations(destructive_hint=True, open_world_hint=False),
+        annotations=_SIDE_EFFECTS,
         output_schema=RecipeRun.model_json_schema(),
     )
     async def recipe_run(
@@ -440,7 +446,7 @@ MAX_BATCH_STEPS = 50
 
 def _add_batch_tool(mcp: FastMCP, engine: RecipeEngine) -> None:
     @mcp.tool(
-        annotations=ToolAnnotations(destructive_hint=True, open_world_hint=False),
+        annotations=_SIDE_EFFECTS,
         output_schema=RecipeRun.model_json_schema(),
     )
     async def batch_run(
@@ -517,7 +523,7 @@ def _add_job_and_snapshot_tools(mcp: FastMCP, services: Services) -> None:
             return error_result(err)
 
     @mcp.tool(
-        annotations=ToolAnnotations(destructive_hint=True, open_world_hint=False),
+        annotations=_SIDE_EFFECTS,
         output_schema=JobInfo.model_json_schema(),
     )
     async def job_cancel(job_id: str = _JOB_ID) -> ToolResult:
