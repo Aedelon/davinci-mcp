@@ -4,18 +4,20 @@
   <img src="https://raw.githubusercontent.com/Aedelon/davinci-mcp/main/docs/assets/banner.png" alt="davinci-mcp: the safe, verified MCP server for DaVinci Resolve" width="100%">
 </p>
 
-<p align="center">
-  <a href="https://github.com/Aedelon/davinci-mcp/actions/workflows/ci.yml"><img src="https://github.com/Aedelon/davinci-mcp/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://pypi.org/project/davinci-mcp/"><img src="https://img.shields.io/pypi/v/davinci-mcp?color=e9762b" alt="PyPI"></a>
-  <img src="https://img.shields.io/badge/python-3.13%2B-3776ab" alt="Python 3.13+">
-  <img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="Apache 2.0">
-  <img src="https://img.shields.io/badge/DaVinci%20Resolve-21.1-d9381e" alt="DaVinci Resolve 21.1">
-  <img src="https://img.shields.io/badge/MCP-2026--07--28-7a8a99" alt="MCP spec 2026-07-28">
-  <a href="https://glama.ai/mcp/servers/Aedelon/davinci-mcp"><img src="https://glama.ai/mcp/servers/Aedelon/davinci-mcp/badges/score.svg" alt="Glama score"></a>
-  <a href="https://mcprush.com/to/aedelon-davinci-resolve-mcp?ref=badge"><img src="https://mcprush.com/badge/aedelon-davinci-resolve-mcp/score.svg" alt="DaVinci Resolve MCP on mcprush"></a>
-  <a href="https://m8ven.ai/mcp/aedelon/davinci-mcp?s=readme"><img src="https://m8ven.ai/badge/mcp/aedelon/davinci-mcp" alt="M8ven Score"></a>
-  <a href="https://ko-fi.com/aedelon"><img src="https://img.shields.io/badge/Ko--fi-support-ff5e5b?logo=ko-fi&logoColor=white" alt="Support on Ko-fi"></a>
-</p>
+<div align="center">
+
+[![CI](https://github.com/Aedelon/davinci-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Aedelon/davinci-mcp/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/davinci-mcp?color=e9762b)](https://pypi.org/project/davinci-mcp/)
+![Python 3.13+](https://img.shields.io/badge/python-3.13%2B-3776ab)
+![Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue)
+![DaVinci Resolve 21.1](https://img.shields.io/badge/DaVinci%20Resolve-21.1-d9381e)
+![MCP spec 2026-07-28](https://img.shields.io/badge/MCP-2026--07--28-7a8a99)
+[![Aedelon/davinci-mcp MCP server](https://glama.ai/mcp/servers/Aedelon/davinci-mcp/badges/score.svg)](https://glama.ai/mcp/servers/Aedelon/davinci-mcp)
+[![DaVinci Resolve MCP on mcprush](https://mcprush.com/badge/aedelon-davinci-resolve-mcp/score.svg)](https://mcprush.com/to/aedelon-davinci-resolve-mcp?ref=badge)
+[![M8ven Score](https://m8ven.ai/badge/mcp/aedelon/davinci-mcp)](https://m8ven.ai/mcp/aedelon/davinci-mcp?s=readme)
+[![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-support-ff5e5b?logo=ko-fi&logoColor=white)](https://ko-fi.com/aedelon)
+
+</div>
 
 <p align="center"><b>Let an AI agent edit, grade and deliver in DaVinci Resolve, with every change checked.</b></p>
 
